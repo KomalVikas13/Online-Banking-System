@@ -1,6 +1,7 @@
 package com.project_14.OnlineBankingSystem.dto;
 
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,9 @@ public class CustomerDTO {
     private long customerId;
     private String customerFirstName;
     private String customerLastName;
-    private int customerAge;
+    private Date customerDateOfBirth;
+    private double customerPANCardNumber;
+    private double customerAadharCardNumber;
     private String customerGender;
     private String customerEmail;
     private double customerMobileNo;
@@ -26,17 +29,19 @@ public class CustomerDTO {
     private Date customerRegistrationDate;
     private String customerUserName;
     private String customerPassword;
-    private String accountType;
 
-    public CustomerDTO(long customerId, String customerFirstName, String customerLastName, int customerAge, String customerGender, String customerEmail, double customerMobileNo, String customerAddress, Date customerRegistrationDate) {
+    public CustomerDTO(long customerId, String customerFirstName, String customerLastName, Date customerDateOfBirth, double customerPANCardNumber, double customerAadharCardNumber, String customerGender, String customerEmail, double customerMobileNo, String customerAddress, Date customerRegistrationDate) {
         this.customerId = customerId;
         this.customerFirstName = customerFirstName;
         this.customerLastName = customerLastName;
-        this.customerAge = customerAge;
+        this.customerDateOfBirth = customerDateOfBirth;
+        this.customerPANCardNumber = customerPANCardNumber;
+        this.customerAadharCardNumber = customerAadharCardNumber;
         this.customerGender = customerGender;
         this.customerEmail = customerEmail;
         this.customerMobileNo = customerMobileNo;
         this.customerAddress = customerAddress;
         this.customerRegistrationDate = customerRegistrationDate;
     }
+
 }

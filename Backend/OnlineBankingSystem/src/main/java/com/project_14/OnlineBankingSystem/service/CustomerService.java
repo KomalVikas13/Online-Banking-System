@@ -17,10 +17,6 @@ public class CustomerService {
     @Autowired
     private final CustomerRepo customerRepo;
 
-    @Autowired
-    private AccountService accountService;
-
-
     public CustomerService(CustomerRepo customerRepo){
         this.customerRepo = customerRepo;
     }
@@ -29,23 +25,23 @@ public class CustomerService {
     public String addCustomerDto(CustomerDTO customerDTO){
         Optional<Customer> findCustomerEmail = customerRepo.findByCustomerEmail(customerDTO.getCustomerEmail());
         if(findCustomerEmail.isPresent()){
-            return "Already had an account";
+            return "Already registered..";
         }
         Map<String, String> credentials = generateCredentials(customerDTO);
         customerDTO.setCustomerUserName(credentials.get("username"));
         customerDTO.setCustomerPassword(credentials.get("password"));
         Customer customer = convertToEntity(customerDTO);
         customerRepo.save(customer);
-        return "Account created";
+        return "Registration completed successfully...!";
     }
 
     // Converts DTO class to Entity class
     private Customer convertToEntity(CustomerDTO customerDTO) {
-        return new Customer(customerDTO.getCustomerFirstName(),customerDTO.getCustomerLastName(),customerDTO.getCustomerAge(),customerDTO.getCustomerGender(),customerDTO.getCustomerEmail(),customerDTO.getCustomerMobileNo(),customerDTO.getCustomerAddress(),customerDTO.getCustomerRegistrationDate(),customerDTO.getCustomerUserName(),customerDTO.getCustomerPassword());
+        return new Customer(customerDTO.getCustomerFirstName(),customerDTO.getCustomerLastName(),customerDTO.getCustomerDateOfBirth(),customerDTO.getCustomerPANCardNumber(),customerDTO.getCustomerAadharCardNumber(),customerDTO.getCustomerGender(),customerDTO.getCustomerEmail(),customerDTO.getCustomerMobileNo(),customerDTO.getCustomerAddress(),customerDTO.getCustomerRegistrationDate(),customerDTO.getCustomerUserName(),customerDTO.getCustomerPassword());
     }
 
     private CustomerDTO convertToDTO(Customer customer){
-        return new CustomerDTO(customer.getCustomerId(),customer.getCustomerFirstName(),customer.getCustomerLastName(),customer.getCustomerAge(),customer.getCustomerGender(),customer.getCustomerEmail(),customer.getCustomerMobileNo(),customer.getCustomerAddress(),customer.getCustomerRegistrationDate());
+        return new CustomerDTO(customer.getCustomerId(),customer.getCustomerFirstName(),customer.getCustomerLastName(),customer.getCustomerDateOfBirth(),customer.getCustomerPANCardNumber(),customer.getCustomerAadharCardNumber(),customer.getCustomerGender(),customer.getCustomerEmail(),customer.getCustomerMobileNo(),customer.getCustomerAddress(),customer.getCustomerRegistrationDate());
     }
 
 
@@ -78,5 +74,10 @@ public class CustomerService {
             }
         }
         return null;
+    }
+
+    public Customer findByCustomerIdService(long customerId){
+        Optional<Customer> byCustomerId = customerRepo.findByCustomerId(customerId);
+        return byCustomerId.orElse(null);
     }
 }

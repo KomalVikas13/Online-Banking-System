@@ -1,5 +1,6 @@
 package com.project_14.OnlineBankingSystem.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.Date;
@@ -23,7 +24,8 @@ public class Account {
     private Date accountCreationDate;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", referencedColumnName = "customerId")
+    @JoinColumn(name = "customer_id", referencedColumnName = "customerId", nullable = false)
+    @JsonBackReference
     private Customer customer;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -35,5 +37,14 @@ public class Account {
             @JoinColumn(name = "transaction_id", referencedColumnName = "transactionId")
             }
     )
+    @ToString.Exclude
     private List<Transaction> transactionList;
+
+    public Account(String accountType, double accountBalance, Date accountCreationDate, Customer customer) {
+        this.accountType = accountType;
+        this.accountBalance = accountBalance;
+        this.accountCreationDate = accountCreationDate;
+        this.customer = customer;
+    }
+
 }

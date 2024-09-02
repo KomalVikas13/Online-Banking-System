@@ -3,7 +3,6 @@ package com.project_14.OnlineBankingSystem.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +14,7 @@ import java.util.List;
 @ToString
 public class Transaction {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long transactionId;
     @Column(nullable = false)
     private String transactionType;
