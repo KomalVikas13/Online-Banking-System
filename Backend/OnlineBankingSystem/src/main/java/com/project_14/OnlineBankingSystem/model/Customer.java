@@ -42,13 +42,20 @@ public class Customer {
     private String customerUserName;
     @Column(nullable = false)
     private String customerPassword;
+    @Column(nullable = false)
+    private boolean isEmailVerified = false;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Account> account;
 
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Token token;
+
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Beneficiary> beneficiaryList;
+
 
     public Customer(String customerFirstName, String customerLastName, Date customerDateOfBirth, double customerPANCardNumber, double customerAadharCardNumber, String customerGender, String customerEmail, double customerMobileNo, String customerAddress, Date customerRegistrationDate, String customerUserName, String customerPassword) {
         this.customerFirstName = customerFirstName;
