@@ -17,8 +17,5 @@ public class AccountDTO {
     private Date accountCreationDate;
     private long customerId;
     private Customer customer;
-    // test 1
-    // test 2
-    // test 4
-    // test 5
+
 }
