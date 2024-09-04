@@ -18,4 +18,6 @@ public class AccountDTO {
     private long customerId;
     private Customer customer;
 
+    public AccountDTO(String accountType, double v, Date customerRegistrationDate, Customer newCustomer) {
+    }
 }

@@ -5,24 +5,24 @@ import com.project_14.OnlineBankingSystem.model.Account;
 import com.project_14.OnlineBankingSystem.model.Customer;
 import com.project_14.OnlineBankingSystem.repo.AccountRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.Optional;
 
 @Service
 public class AccountService {
 
     @Autowired
-    private final AccountRepo accountRepo;
+    private AccountRepo accountRepo;
 
     @Autowired
-    private final CustomerService customerService;
+    private CustomerService customerService;
 
-    public AccountService(AccountRepo accountRepo, CustomerService customerService){
-        this.accountRepo = accountRepo;
-        this.customerService = customerService;
-    }
+//    public AccountService(AccountRepo accountRepo, CustomerService customerService){
+//        this.accountRepo = accountRepo;
+//        this.customerService = customerService;
+//    }
     public String createAccount(AccountDTO accountDTO){
         Account account = convertToEntity(accountDTO);
         if(account.getCustomer() == null){
@@ -37,9 +37,6 @@ public class AccountService {
         return new Account(accountDTO.getAccountType(),accountDTO.getAccountBalance(),accountDTO.getAccountCreationDate(),customer);
     }
 
-//    private AccountDTO convertToDTO(Account account){
-//
-//    }
 
     public Account getAccountDetailsByAccountId(long accountId) {
         Optional<Account> accountDetails = accountRepo.findByAccountId(accountId);

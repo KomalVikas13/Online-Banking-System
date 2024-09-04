@@ -1,6 +1,6 @@
 package com.project_14.OnlineBankingSystem.service;
 
-
+import com.project_14.OnlineBankingSystem.dto.AccountDTO;
 import com.project_14.OnlineBankingSystem.dto.CustomerDTO;
 import com.project_14.OnlineBankingSystem.model.Customer;
 import com.project_14.OnlineBankingSystem.repo.CustomerRepo;
@@ -15,11 +15,23 @@ import java.util.Optional;
 public class CustomerService {
 
     @Autowired
-    private final CustomerRepo customerRepo;
+    private CustomerRepo customerRepo;
 
     public CustomerService(CustomerRepo customerRepo){
         this.customerRepo = customerRepo;
     }
+
+//    private AccountService accountService;
+//
+//    @Autowired
+//    public void setAccountService(AccountService accountService) {
+//        this.accountService = accountService;
+//    }
+
+    //    public CustomerService(CustomerRepo customerRepo, AccountService accountService){
+//        this.customerRepo = customerRepo;
+//        this.accountService = accountService;
+//    }
 
     // add Customer to DataBase
     public String addCustomerDto(CustomerDTO customerDTO){
@@ -31,7 +43,12 @@ public class CustomerService {
         customerDTO.setCustomerUserName(credentials.get("username"));
         customerDTO.setCustomerPassword(credentials.get("password"));
         Customer customer = convertToEntity(customerDTO);
-        customerRepo.save(customer);
+        Customer newCustomer = customerRepo.save(customer);
+//        String response = accountService.createAccount(new AccountDTO(customerDTO.getAccountType(), 0.0, customerDTO.getCustomerRegistrationDate(), newCustomer));
+//        if(response.equals("Account created")){
+//            return "Registration completed successfully...!";
+//        }
+//        return "Registration failed";
         return "Registration completed successfully...!";
     }
 
@@ -48,7 +65,7 @@ public class CustomerService {
     // Generates customerUserName
     private Map<String, String> generateCredentials(CustomerDTO customerDTO) {
         Map<String, String> credentials = new HashMap<>();
-        String password = customerDTO.getCustomerMobileNo() + "";
+        String password = customerDTO.getCustomerMobileNo() + "pass";
         String baseUserName = customerDTO.getCustomerFirstName().toLowerCase();
         String uniqueUserName = baseUserName;
         int count = 0;
