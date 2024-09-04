@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
+import register from '../assets/images/Register.png';
+import Logo from '../assets/images/Logo.png';
 
 const Registration = () => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    age: '',
+    dob: '',
+    panCardNumber: '',
+    aadharCardNumber: '',
     customerGender: '',
     customerEmail: '',
     customerMobileNo: '',
     customerAddress: '',
+    accountType: '',
   });
 
   const [errors, setErrors] = useState({});
@@ -25,13 +30,30 @@ const Registration = () => {
     return emailRegex.test(email);
   };
 
-  const validateAge = (age) => {
+  const validateAge = (dob) => {
+    const today = new Date();
+    const birthDate = new Date(dob);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
     return age >= 18;
   };
 
   const validateMobileNo = (mobileNo) => {
     const mobileNoRegex = /^[0-9]{10}$/;
     return mobileNoRegex.test(mobileNo);
+  };
+
+  const validatePanCard = (panCardNumber) => {
+    const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+    return panRegex.test(panCardNumber);
+  };
+
+  const validateAadharCard = (aadharCardNumber) => {
+    const aadharRegex = /^[0-9]{12}$/;
+    return aadharRegex.test(aadharCardNumber);
   };
 
   const handleBlur = (e) => {
@@ -43,10 +65,14 @@ const Registration = () => {
     } else {
       if (name === 'customerEmail' && !validateEmail(value)) {
         error = 'Invalid email address. Must be a @gmail.com email.';
-      } else if (name === 'age' && !validateAge(Number(value))) {
+      } else if (name === 'dob' && !validateAge(value)) {
         error = 'Age must be above 18.';
       } else if (name === 'customerMobileNo' && !validateMobileNo(value)) {
         error = 'Mobile number must be 10 digits.';
+      } else if (name === 'panCardNumber' && !validatePanCard(value)) {
+        error = 'Invalid PAN Card Number.';
+      } else if (name === 'aadharCardNumber' && !validateAadharCard(value)) {
+        error = 'Aadhar Card Number must be 12 digits.';
       }
     }
 
@@ -64,11 +90,17 @@ const Registration = () => {
     if (!validateEmail(formData.customerEmail)) {
       newErrors.customerEmail = 'Invalid email address. Must be a @gmail.com email.';
     }
-    if (!validateAge(Number(formData.age))) {
-      newErrors.age = 'Age must be above 18.';
+    if (!validateAge(formData.dob)) {
+      newErrors.dob = 'Age must be above 18.';
     }
     if (!validateMobileNo(formData.customerMobileNo)) {
       newErrors.customerMobileNo = 'Mobile number must be 10 digits.';
+    }
+    if (!validatePanCard(formData.panCardNumber)) {
+      newErrors.panCardNumber = 'Invalid PAN Card Number.';
+    }
+    if (!validateAadharCard(formData.aadharCardNumber)) {
+      newErrors.aadharCardNumber = 'Aadhar Card Number must be 12 digits.';
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -83,18 +115,17 @@ const Registration = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white shadow-lg rounded-lg overflow-hidden md:flex md:w-3/4">
-        <div className="md:w-1/2 p-8">
-          <div className="mb-4 text-center">
-            <h2 className="text-2xl font-bold text-gray-800">Horizon</h2>
-          </div>
-          <h3 className="text-xl font-semibold text-gray-700 mb-2">Sign up</h3>
-          <p className="text-gray-600 mb-6">Please enter your details.</p>
-          <form onSubmit={handleSubmit}>
+    // <div className="flex justify-center">
+      <div className="bg-white flex justify-around">
+        <div className="w-1/2 p-5">
+        <h2 className="text-3xl font-bold text-gray-800 text-center mb-4">Sign up</h2>
+                    <p className="text-sm text-gray-600 text-center mb-8">
+                        Please enter your details.
+                    </p>
+          <form onSubmit={handleSubmit} className='w-[80%] mx-auto'>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="mb-4">
-                <label htmlFor="firstName" className="block text-gray-700">First Name</label>
+                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">First Name</label>
                 <input
                   type="text"
                   id="firstName"
@@ -111,7 +142,7 @@ const Registration = () => {
                 )}
               </div>
               <div className="mb-4">
-                <label htmlFor="lastName" className="block text-gray-700">Last Name</label>
+                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">Last Name</label>
                 <input
                   type="text"
                   id="lastName"
@@ -129,24 +160,57 @@ const Registration = () => {
               </div>
             </div>
             <div className="mb-4">
-              <label htmlFor="age" className="block text-gray-700">Age</label>
+              <label htmlFor="dob" className="block text-sm font-medium text-gray-700">Date of Birth</label>
               <input
-                type="number"
-                id="age"
-                name="age"
-                placeholder="Enter your age"
-                value={formData.age}
+                type="date"
+                id="dob"
+                name="dob"
+                value={formData.dob}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
-              {errors.age && (
-                <p className="text-red-500 text-sm mt-1">{errors.age}</p>
+              {errors.dob && (
+                <p className="text-red-500 text-sm mt-1">{errors.dob}</p>
               )}
             </div>
             <div className="mb-4">
-              <label htmlFor="customerGender" className="block text-gray-700">Gender</label>
+              <label htmlFor="panCardNumber" className="block text-sm font-medium text-gray-700">PAN Card Number</label>
+              <input
+                type="text"
+                id="panCardNumber"
+                name="panCardNumber"
+                placeholder="Enter your PAN Card Number"
+                value={formData.panCardNumber}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              {errors.panCardNumber && (
+                <p className="text-red-500 text-sm mt-1">{errors.panCardNumber}</p>
+              )}
+            </div>
+            <div className="mb-4">
+              <label htmlFor="aadharCardNumber" className="block text-sm font-medium text-gray-700">Aadhar Card Number</label>
+              <input
+                type="text"
+                id="aadharCardNumber"
+                name="aadharCardNumber"
+                placeholder="Enter your Aadhar Card Number"
+                value={formData.aadharCardNumber}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              {errors.aadharCardNumber && (
+                <p className="text-red-500 text-sm mt-1">{errors.aadharCardNumber}</p>
+              )}
+            </div>
+            <div className="mb-4">
+              <label htmlFor="customerGender" className="block text-sm font-medium text-gray-700">Gender</label>
               <select
                 id="customerGender"
                 name="customerGender"
@@ -166,7 +230,7 @@ const Registration = () => {
               )}
             </div>
             <div className="mb-4">
-              <label htmlFor="customerEmail" className="block text-gray-700">Email</label>
+              <label htmlFor="customerEmail" className="block text-sm font-medium text-gray-700">Email</label>
               <input
                 type="email"
                 id="customerEmail"
@@ -183,7 +247,7 @@ const Registration = () => {
               )}
             </div>
             <div className="mb-4">
-              <label htmlFor="customerMobileNo" className="block text-gray-700">Mobile Number</label>
+              <label htmlFor="customerMobileNo" className="block text-sm font-medium text-gray-700">Mobile Number</label>
               <input
                 type="tel"
                 id="customerMobileNo"
@@ -200,7 +264,7 @@ const Registration = () => {
               )}
             </div>
             <div className="mb-6">
-              <label htmlFor="customerAddress" className="block text-gray-700">Address</label>
+              <label htmlFor="customerAddress" className="block text-sm font-medium text-gray-700">Address</label>
               <input
                 type="text"
                 id="customerAddress"
@@ -216,13 +280,34 @@ const Registration = () => {
                 <p className="text-red-500 text-sm mt-1">{errors.customerAddress}</p>
               )}
             </div>
+            <div className="mb-6">
+              <label htmlFor="accountType" className="block text-sm font-medium text-gray-700">Account Type</label>
+              <select
+                id="accountType"
+                name="accountType"
+                value={formData.accountType}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Select Account Type</option>
+                <option value="saving">Saving</option>
+                <option value="current">Current</option>
+                <option value="fixed-deposit">Fixed Deposit</option>
+                <option value="loan">Loan Account</option>
+              </select>
+              {errors.accountType && (
+                <p className="text-red-500 text-sm mt-1">{errors.accountType}</p>
+              )}
+            </div>
             <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Sign up</button>
           </form>
           <p className="text-center text-gray-600 mt-4">Already have an account? <a href="#" className="text-blue-500 hover:underline">Login</a></p>
         </div>
-        <div className="hidden md:block md:w-1/2 bg-cover" style={{ backgroundImage: `url('../assets/images/Register.png')` }}></div>
+        <div className="w-2/5 bg-contain bg-no-repeat" style={{ backgroundImage: `url('${Logo}')` }}></div>
       </div>
-    </div>
+    // </div>
   );
 };
 

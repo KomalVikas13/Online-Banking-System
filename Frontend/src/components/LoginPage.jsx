@@ -71,14 +71,14 @@ const LoginPage = () => {
         <div className=" bg-gray-100">
              {/* <div className="flex bg-white rounded-lg shadow-lg overflow-hidden 4x w-full"> */}
             <div className="bg-white  flex  justify-center items-center mx-full w-full h-screen ">
-                <div className="w-1/2 ">
+                <div className="w-1/2 p-5">
                     <h2 className="text-3xl font-bold text-gray-800 text-center mb-4">Log in</h2>
                     <p className="text-sm text-gray-600 text-center mb-8">
                         Welcome back! Please enter your details.
                     </p>
 
-                    <form onSubmit={handleLogin} className=" bg-white border-0 shadow-none max-w-[80%]">
-                        <div className="space-y-2">
+                    <form onSubmit={handleLogin} className=" bg-white border-0 shadow-none w-[80%] mx-auto">
+                        <div className="my-3">
                             <label className="block text-sm font-medium text-gray-700">Customer ID:</label>
                             <input
                                 type="text"
@@ -91,7 +91,7 @@ const LoginPage = () => {
                             {errors.customerId && <p className="text-red-500 text-xs mt-1">{errors.customerId}</p>}
                         </div>
 
-                        <div className="space-y-2">
+                        <div className="my-3">
                             <label className="block text-sm font-medium text-gray-700">Password:</label>
                             <input
                                 type="password"
@@ -104,7 +104,7 @@ const LoginPage = () => {
                             {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
                         </div>
 
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between my-3">
                             <a href="#" onClick={handleForgotPassword} className="text-sm font-medium text-indigo-600 hover:underline">Forgot Password?</a>
                             <a href="#" onClick={handleNewUser} className="text-sm font-medium text-indigo-600  hover:underline">New User? Sign up</a>
                         </div>

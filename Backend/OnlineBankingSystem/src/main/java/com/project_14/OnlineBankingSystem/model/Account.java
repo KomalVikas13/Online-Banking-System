@@ -47,4 +47,13 @@ public class Account {
         this.customer = customer;
     }
 
+
+//    Branch
+//    State
+//    occupation
+//    annual income
+//    loan type
+//    active
+//
+//    serializable
 }
