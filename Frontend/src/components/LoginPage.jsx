@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Logo from '../assets/images/Logo.png';
+import Login from '../assets/images/Logo.png';
 
 const LoginPage = () => {
     const [customerId, setCustomerId] = useState('');
@@ -120,7 +120,7 @@ const LoginPage = () => {
 
                 <div className="w-1/2  ">
                     <img
-                        src={Logo}
+                        src={Login}
                         alt="Logo"
                         className="w-3/4 mx-auto"
                     />

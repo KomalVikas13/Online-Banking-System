@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "../styling/ResetPassword.css"
 
 const ResetPassword = () => {
     const [formInput, setFormInput] = useState({
@@ -104,54 +103,54 @@ const ResetPassword = () => {
     };
 
     return (
-        <div className="container mx-0 p-0">
-            <div className="card">
-                <div className="card-header">
-                    <div className="title">Reset Password</div>
-                </div>
+        <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+            <div className="max-w-md w-full bg-white rounded-lg shadow-md p-6">
+                <h2 className="text-2xl font-semibold text-gray-700 mb-4">Reset Password</h2>
+                <form onSubmit={validateFormInput}>
+                    <label className="block text-sm font-medium text-gray-600 mt-3">Email</label>
+                    <input
+                        value={formInput.email}
+                        onChange={({ target }) => handleUserInput(target.name, target.value)}
+                        onBlur={({ target }) => validateInput(target.name, target.value)}
+                        name="email"
+                        type="text"
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                        placeholder="Enter email"
+                    />
+                    <p className="text-xs text-red-500 mt-1">{formError.email}</p>
 
-                <div className="card-body">
-                    <form onSubmit={validateFormInput}>
-                        <p className="label">Email</p>
-                        <input
-                            value={formInput.email}
-                            onChange={({ target }) => handleUserInput(target.name, target.value)}
-                            onBlur={({ target }) => validateInput(target.name, target.value)}
-                            name="email"
-                            type="text"
-                            className="input"
-                            placeholder="Enter email"
-                        />
-                        <p className="error-message">{formError.email}</p>
+                    <label className="block text-sm font-medium text-gray-700 mt-3">Password</label>
+                    <input
+                        value={formInput.password}
+                        onChange={({ target }) => handleUserInput(target.name, target.value)}
+                        onBlur={({ target }) => validateInput(target.name, target.value)}
+                        name="password"
+                        type="password"
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                        placeholder="Enter Password"
+                    />
+                    <p className="text-xs text-red-500 mt-1">{formError.password}</p>
 
-                        <p className="label">Password</p>
-                        <input
-                            value={formInput.password}
-                            onChange={({ target }) => handleUserInput(target.name, target.value)}
-                            onBlur={({ target }) => validateInput(target.name, target.value)}
-                            name="password"
-                            type="password"
-                            className="input"
-                            placeholder="Enter Password"
-                        />
-                        <p className="error-message">{formError.password}</p>
+                    <label className="block text-sm font-medium text-gray-700 mt-3">Confirm Password</label>
+                    <input
+                        value={formInput.confirmPassword}
+                        onChange={({ target }) => handleUserInput(target.name, target.value)}
+                        onBlur={({ target }) => validateInput(target.name, target.value)}
+                        name="confirmPassword"
+                        type="password"
+                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                        placeholder="Enter Confirm Password"
+                    />
+                    <p className="text-xs text-red-500 mt-1">{formError.confirmPassword}</p>
+                    <p className="text-sm text-green-500 mt-2">{formInput.successMsg}</p>
 
-                        <p className="label">Confirm Password</p>
-                        <input
-                            value={formInput.confirmPassword}
-                            onChange={({ target }) => handleUserInput(target.name, target.value)}
-                            onBlur={({ target }) => validateInput(target.name, target.value)}
-                            name="confirmPassword"
-                            type="password"
-                            className="input"
-                            placeholder="Enter Confirm Password"
-                        />
-                        <p className="error-message">{formError.confirmPassword}</p>
-                        <p className="success-message">{formInput.successMsg}</p>
-
-                        <input type="submit" className="btn" value="Submit" />
-                    </form>
-                </div>
+                    <button
+                        type="submit"
+                        className="w-full mt-6 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"
+                    >
+                        Submit
+                    </button>
+                </form>
             </div>
         </div>
     );
