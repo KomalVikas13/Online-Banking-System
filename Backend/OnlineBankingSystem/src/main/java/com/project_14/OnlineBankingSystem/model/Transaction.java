@@ -1,5 +1,6 @@
 package com.project_14.OnlineBankingSystem.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +22,7 @@ public class Transaction {
     @Column(nullable = false)
     private double transactionAmount;
     @Column(nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "ddMMyyyy")
     private Date transactionDate;
 
     @ManyToMany(mappedBy = "transactionList", fetch = FetchType.LAZY)

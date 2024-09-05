@@ -12,9 +12,6 @@ function App() {
         <Route path="/register" element={<Registration></Registration>}></Route>
         <Route path="/passwordReset" element={<ResetPassword></ResetPassword>}></Route>
       </Routes>
-      // <Registration></Registration>
-      {/* <LoginPage></LoginPage> */}
-      {/* <ResetPassword></ResetPassword> */}
     </>
   )
 }

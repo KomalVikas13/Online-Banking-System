@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import register from '../assets/images/Register.png';
-import Logo from '../assets/images/Logo.png';
+// import Logo from '../assets/images/Logo.png';
 
 const Registration = () => {
   const [formData, setFormData] = useState({
@@ -305,7 +305,7 @@ const Registration = () => {
           </form>
           <p className="text-center text-gray-600 mt-4">Already have an account? <a href="#" className="text-blue-500 hover:underline">Login</a></p>
         </div>
-        <div className="w-2/5 bg-contain bg-no-repeat" style={{ backgroundImage: `url('${Logo}')` }}></div>
+        <div className="w-1/2 bg-contain bg-no-repeat" style={{ backgroundImage: `url('${register}')` }}></div>
       </div>
     // </div>
   );

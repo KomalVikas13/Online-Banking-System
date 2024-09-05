@@ -2,12 +2,13 @@ package com.project_14.OnlineBankingSystem.service;
 
 import com.project_14.OnlineBankingSystem.dto.AccountDTO;
 import com.project_14.OnlineBankingSystem.model.Account;
-import com.project_14.OnlineBankingSystem.model.Customer;
 import com.project_14.OnlineBankingSystem.repo.AccountRepo;
+import com.project_14.OnlineBankingSystem.repo.CustomerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Service
@@ -16,15 +17,11 @@ public class AccountService {
     @Autowired
     private AccountRepo accountRepo;
 
-    @Autowired
-    private CustomerService customerService;
-
-//    public AccountService(AccountRepo accountRepo, CustomerService customerService){
-//        this.accountRepo = accountRepo;
-//        this.customerService = customerService;
-//    }
     public String createAccount(AccountDTO accountDTO){
+        Long accountId = generateUniqueAccountId();
+        accountDTO.setAccountId(accountId);
         Account account = convertToEntity(accountDTO);
+        System.out.println(account.getCustomer());
         if(account.getCustomer() == null){
             return "not found";
         }
@@ -33,13 +30,24 @@ public class AccountService {
     }
 
     private Account convertToEntity(AccountDTO accountDTO){
-        Customer customer = customerService.findByCustomerIdService(accountDTO.getCustomerId());
-        return new Account(accountDTO.getAccountType(),accountDTO.getAccountBalance(),accountDTO.getAccountCreationDate(),customer);
+        return new Account(accountDTO.getAccountId(),accountDTO.getAccountType(),accountDTO.getAccountBalance(),accountDTO.getAccountCreationDate(),accountDTO.getCustomer());
     }
 
 
     public Account getAccountDetailsByAccountId(long accountId) {
         Optional<Account> accountDetails = accountRepo.findByAccountId(accountId);
         return accountDetails.orElse(null);
+    }
+
+    public synchronized Long generateUniqueAccountId() {
+        String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
+
+        int count = 1;
+        String uniqueAccountId = currentDate + count;
+        while (accountRepo.findByAccountId(Long.parseLong(uniqueAccountId)).isPresent()) {
+            count++;
+            uniqueAccountId = currentDate + count;
+        }
+        return Long.parseLong(uniqueAccountId);
     }
 }
