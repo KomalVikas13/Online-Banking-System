@@ -1,6 +1,5 @@
 package com.project_14.OnlineBankingSystem.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,7 +22,6 @@ public class Customer {
     @Column(nullable = false)
     private String customerLastName;
     @Column(nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "ddMMyyyy")
     private Date customerDateOfBirth;
     @Column(nullable = false)
     private double customerPANCardNumber;
@@ -38,14 +36,19 @@ public class Customer {
     @Column(nullable = false)
     private String customerAddress;
     @Column(nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "ddMMyyyy")
     private Date customerRegistrationDate;
     @Column(nullable = false)
     private String customerPassword;
+    @Column(nullable = false)
+    private boolean isEmailVerified = false;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Account> account;
+
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Token token;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Beneficiary> beneficiaryList;
