@@ -39,4 +39,20 @@ public class MailService {
             e.printStackTrace();
         }
     }
+    public String getMailContent(MailService mailServiceRequest, String generatedToken) {
+        String mailContent = "<p>Dear " + mailServiceRequest.getReceiverName() + ",</p>";
+        mailContent += "<p>Please click the link below to verify your registration:</p>";
+        mailContent += "<h3><a href=\"http://localhost:9999/customer/verifyToken?email="+ mailServiceRequest.getTo()+"&code=" + generatedToken + "\" style=\"background-color:#328bff;color:white;margin-top:20px;padding:10px;text-decoration:none;border-radius:50px\">Verify Email</a></h3>";
+        mailContent += "<p>Thank you,<br>The Nova Banking Team</p>";
+        return mailContent;
+    }
+
+    public String getOTPMailContent(MailService mailServiceRequest, String generatedOTP) {
+        String mailContent = "<p>Dear " + mailServiceRequest.getReceiverName() + ",</p>";
+        mailContent += "<p style=\"margin-bottom:0;padding-bottom:0\">Your One-Time-Password (OTP).</p>";
+        mailContent += "<h1 style=\"margin: 2rem 0;background-color:#328bff;color:white;padding:10px;display:inline-block;letter-spacing:5px;\">"+generatedOTP+"</h1>";
+        mailContent += "<small style=\"display:block\"><b>Note: Please don't share this otp with anyone.</b></small>";
+        mailContent += "<p>Thank you,<br>The Nova Banking Team</p>";
+        return mailContent;
+    }
 }
