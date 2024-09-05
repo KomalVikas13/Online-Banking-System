@@ -16,7 +16,6 @@ import java.util.List;
 public class Customer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long customerId;
     @Column(nullable = false)
     private String customerFirstName;
@@ -39,8 +38,6 @@ public class Customer {
     @Column(nullable = false)
     private Date customerRegistrationDate;
     @Column(nullable = false)
-    private String customerUserName;
-    @Column(nullable = false)
     private String customerPassword;
     @Column(nullable = false)
     private boolean isEmailVerified = false;
@@ -56,8 +53,8 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Beneficiary> beneficiaryList;
 
-
-    public Customer(String customerFirstName, String customerLastName, Date customerDateOfBirth, double customerPANCardNumber, double customerAadharCardNumber, String customerGender, String customerEmail, double customerMobileNo, String customerAddress, Date customerRegistrationDate, String customerUserName, String customerPassword) {
+    public Customer(long customerId, String customerFirstName, String customerLastName, Date customerDateOfBirth, double customerPANCardNumber, double customerAadharCardNumber, String customerGender, String customerEmail, double customerMobileNo, String customerAddress, Date customerRegistrationDate, String customerPassword) {
+        this.customerId = customerId;
         this.customerFirstName = customerFirstName;
         this.customerLastName = customerLastName;
         this.customerDateOfBirth = customerDateOfBirth;
@@ -68,8 +65,6 @@ public class Customer {
         this.customerMobileNo = customerMobileNo;
         this.customerAddress = customerAddress;
         this.customerRegistrationDate = customerRegistrationDate;
-        this.customerUserName = customerUserName;
         this.customerPassword = customerPassword;
     }
-
 }

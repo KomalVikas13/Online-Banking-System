@@ -1,231 +1,311 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-// import { useNavigate } from 'react-router-dom';
-import "../styling/Registration.css"
+import register from '../assets/images/Register.png';
 
-function Registration() {
+const Registration = () => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    age: '',
+    dob: '',
+    panCardNumber: '',
+    aadharCardNumber: '',
     customerGender: '',
     customerEmail: '',
     customerMobileNo: '',
     customerAddress: '',
+    accountType: '',
   });
 
   const [errors, setErrors] = useState({});
-  // const navigate = useNavigate();
 
-  const validateField = (name, value) => {
-    let error = '';
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const mobileRegex = /^[0-9]{10}$/;
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-    switch (name) {
-      case 'firstName':
-        if (!value.trim()) {
-          error = 'First Name is required';
-        }
-        break;
-      case 'lastName':
-        if (!value.trim()) {
-          error = 'Last Name is required';
-        }
-        break;
-      case 'age':
-        if (!value || value < 18 || value > 100) {
-          error = 'Age must be between 18 and 100';
-        }
-        break;
-      case 'customerGender':
-        if (!value) {
-          error = 'Gender is required';
-        }
-        break;
-      case 'customerEmail':
-        if (!value || !emailRegex.test(value)) {
-          error = 'Valid Email is required';
-        }
-        break;
-      case 'customerMobileNo':
-        if (!value || !mobileRegex.test(value)) {
-          error = 'Valid 10-digit Mobile Number is required';
-        }
-        break;
-      case 'customerAddress':
-        if (!value.trim()) {
-          error = 'Address is required';
-        }
-        break;
-      default:
-        break;
+  const validateEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    return emailRegex.test(email);
+  };
+
+  const validateAge = (dob) => {
+    const today = new Date();
+    const birthDate = new Date(dob);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
     }
+    return age >= 18;
+  };
 
-    return error;
+  const validateMobileNo = (mobileNo) => {
+    const mobileNoRegex = /^[0-9]{10}$/;
+    return mobileNoRegex.test(mobileNo);
+  };
+
+  const validatePanCard = (panCardNumber) => {
+    const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+    return panRegex.test(panCardNumber);
+  };
+
+  const validateAadharCard = (aadharCardNumber) => {
+    const aadharRegex = /^[0-9]{12}$/;
+    return aadharRegex.test(aadharCardNumber);
   };
 
   const handleBlur = (e) => {
     const { name, value } = e.target;
-    const error = validateField(name, value);
-    setErrors({
-      ...errors,
-      [name]: error,
-    });
-  };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-
-    if (errors[name]) {
-      const error = validateField(name, value);
-      setErrors({
-        ...errors,
-        [name]: error,
-      });
-    }
-  };
-
-  const validate = () => {
-    const errors = {};
-    Object.keys(formData).forEach((name) => {
-      const error = validateField(name, formData[name]);
-      if (error) errors[name] = error;
-    });
-    setErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validate()) return;
-
-    try {
-      const response = await axios.post('http://localhost:8080/dummy/api/register', formData);
-      console.log("form data=", formData);
-      if (response.status === 200) {
-        alert('Registration successful!');
-        setFormData({
-          firstName: '',
-          lastName: '',
-          age: '',
-          customerGender: '',
-          customerEmail: '',
-          customerMobileNo: '',
-          customerAddress: '',
-        });
-        // navigate('/login');  // Replace with the path to your login page
-      } else {
-        alert('Registration failed.');
+    let error = '';
+    if (!value.trim()) {
+      error = `${name} is required`;
+    } else {
+      if (name === 'customerEmail' && !validateEmail(value)) {
+        error = 'Invalid email address. Must be a @gmail.com email.';
+      } else if (name === 'dob' && !validateAge(value)) {
+        error = 'Age must be above 18.';
+      } else if (name === 'customerMobileNo' && !validateMobileNo(value)) {
+        error = 'Mobile number must be 10 digits.';
+      } else if (name === 'panCardNumber' && !validatePanCard(value)) {
+        error = 'Invalid PAN Card Number.';
+      } else if (name === 'aadharCardNumber' && !validateAadharCard(value)) {
+        error = 'Aadhar Card Number must be 12 digits.';
       }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred during registration.');
+    }
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: error,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const newErrors = {};
+
+    if (!validateEmail(formData.customerEmail)) {
+      newErrors.customerEmail = 'Invalid email address. Must be a @gmail.com email.';
+    }
+    if (!validateAge(formData.dob)) {
+      newErrors.dob = 'Age must be above 18.';
+    }
+    if (!validateMobileNo(formData.customerMobileNo)) {
+      newErrors.customerMobileNo = 'Mobile number must be 10 digits.';
+    }
+    if (!validatePanCard(formData.panCardNumber)) {
+      newErrors.panCardNumber = 'Invalid PAN Card Number.';
+    }
+    if (!validateAadharCard(formData.aadharCardNumber)) {
+      newErrors.aadharCardNumber = 'Aadhar Card Number must be 12 digits.';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+    } else {
+      // If no errors, perform form submission logic
+      console.log('Form submitted:', formData);
+      // axios.post('http://localhost:8080/dummy/api/register', formData)
+      //   .then(response => console.log(response))
+      //   .catch(error => console.log(error));
     }
   };
 
   return (
-    <>
-      {/* <h1 className="text-3xl text-darkBulish bg-lightBlusih font-bold underline">
-        Hello world!
-      </h1> */}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>First Name:</label>
-          <input
-            type="text"
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          {errors.firstName && <p className="error">{errors.firstName}</p>}
+      <div className="bg-white flex justify-around">
+        <div className="w-1/2 p-5">
+        <h2 className="text-3xl font-bold text-gray-800 text-center mb-4">Sign up</h2>
+                    <p className="text-sm text-gray-600 text-center mb-8">
+                        Please enter your details.
+                    </p>
+          <form onSubmit={handleSubmit} className='w-[80%] mx-auto'>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="mb-4">
+                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">First Name</label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  placeholder="Enter your first name"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+                {errors.firstName && (
+                  <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
+                )}
+              </div>
+              <div className="mb-4">
+                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">Last Name</label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  placeholder="Enter your last name"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+                {errors.lastName && (
+                  <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
+                )}
+              </div>
+            </div>
+            <div className="mb-4">
+              <label htmlFor="dob" className="block text-sm font-medium text-gray-700">Date of Birth</label>
+              <input
+                type="date"
+                id="dob"
+                name="dob"
+                value={formData.dob}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              {errors.dob && (
+                <p className="text-red-500 text-sm mt-1">{errors.dob}</p>
+              )}
+            </div>
+            <div className="mb-4">
+              <label htmlFor="panCardNumber" className="block text-sm font-medium text-gray-700">PAN Card Number</label>
+              <input
+                type="text"
+                id="panCardNumber"
+                name="panCardNumber"
+                placeholder="Enter your PAN Card Number"
+                value={formData.panCardNumber}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              {errors.panCardNumber && (
+                <p className="text-red-500 text-sm mt-1">{errors.panCardNumber}</p>
+              )}
+            </div>
+            <div className="mb-4">
+              <label htmlFor="aadharCardNumber" className="block text-sm font-medium text-gray-700">Aadhar Card Number</label>
+              <input
+                type="text"
+                id="aadharCardNumber"
+                name="aadharCardNumber"
+                placeholder="Enter your Aadhar Card Number"
+                value={formData.aadharCardNumber}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              {errors.aadharCardNumber && (
+                <p className="text-red-500 text-sm mt-1">{errors.aadharCardNumber}</p>
+              )}
+            </div>
+            <div className="mb-4">
+              <label htmlFor="customerGender" className="block text-sm font-medium text-gray-700">Gender</label>
+              <select
+                id="customerGender"
+                name="customerGender"
+                value={formData.customerGender}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+              {errors.customerGender && (
+                <p className="text-red-500 text-sm mt-1">{errors.customerGender}</p>
+              )}
+            </div>
+            <div className="mb-4">
+              <label htmlFor="customerEmail" className="block text-sm font-medium text-gray-700">Email</label>
+              <input
+                type="email"
+                id="customerEmail"
+                name="customerEmail"
+                placeholder="Enter your email"
+                value={formData.customerEmail}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              {errors.customerEmail && (
+                <p className="text-red-500 text-sm mt-1">{errors.customerEmail}</p>
+              )}
+            </div>
+            <div className="mb-4">
+              <label htmlFor="customerMobileNo" className="block text-sm font-medium text-gray-700">Mobile Number</label>
+              <input
+                type="tel"
+                id="customerMobileNo"
+                name="customerMobileNo"
+                placeholder="Enter your mobile number"
+                value={formData.customerMobileNo}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              {errors.customerMobileNo && (
+                <p className="text-red-500 text-sm mt-1">{errors.customerMobileNo}</p>
+              )}
+            </div>
+            <div className="mb-6">
+              <label htmlFor="customerAddress" className="block text-sm font-medium text-gray-700">Address</label>
+              <input
+                type="text"
+                id="customerAddress"
+                name="customerAddress"
+                placeholder="Enter your address"
+                value={formData.customerAddress}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              {errors.customerAddress && (
+                <p className="text-red-500 text-sm mt-1">{errors.customerAddress}</p>
+              )}
+            </div>
+            <div className="mb-6">
+              <label htmlFor="accountType" className="block text-sm font-medium text-gray-700">Account Type</label>
+              <select
+                id="accountType"
+                name="accountType"
+                value={formData.accountType}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Select Account Type</option>
+                <option value="saving">Saving</option>
+                <option value="current">Current</option>
+                <option value="fixed-deposit">Fixed Deposit</option>
+                <option value="loan">Loan Account</option>
+              </select>
+              {errors.accountType && (
+                <p className="text-red-500 text-sm mt-1">{errors.accountType}</p>
+              )}
+            </div>
+            <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Sign up</button>
+          </form>
+          <p className="text-center text-gray-600 mt-4">Already have an account? <a href="#" className="text-blue-500 hover:underline">Login</a></p>
         </div>
-
-        <div>
-          <label>Last Name:</label>
-          <input
-            type="text"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          {errors.lastName && <p className="error">{errors.lastName}</p>}
-        </div>
-
-        <div>
-          <label>Age:</label>
-          <input
-            type="number"
-            name="age"
-            value={formData.age}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          {errors.age && <p className="error">{errors.age}</p>}
-        </div>
-
-        <div>
-          <label>Gender:</label>
-          <select
-            name="customerGender"
-            value={formData.customerGender}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          >
-            <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-          </select>
-          {errors.customerGender && <p className="error">{errors.customerGender}</p>}
-        </div>
-
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            name="customerEmail"
-            value={formData.customerEmail}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          {errors.customerEmail && <p className="error">{errors.customerEmail}</p>}
-        </div>
-
-        <div>
-          <label>Mobile No:</label>
-          <input
-            type="text"
-            name="customerMobileNo"
-            value={formData.customerMobileNo}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          {errors.customerMobileNo && <p className="error">{errors.customerMobileNo}</p>}
-        </div>
-
-        <div>
-          <label>Address:</label>
-          <input
-            type="text"
-            name="customerAddress"
-            value={formData.customerAddress}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          {errors.customerAddress && <p className="error">{errors.customerAddress}</p>}
-        </div>
-
-        <button type="submit">Register</button>
-      </form>
-    </>
+        <div className="w-1/2 bg-contain bg-no-repeat" style={{ backgroundImage: `url('${register}')` }}></div>
+      </div>
   );
-}
+};
 
 export default Registration;

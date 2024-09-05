@@ -27,9 +27,9 @@ public class CustomerDTO {
     private double customerMobileNo;
     private String customerAddress;
     private Date customerRegistrationDate;
-    private String customerUserName;
     private String customerPassword;
     private boolean isEmailVerified;
+    private String accountType;
 
     public CustomerDTO(long customerId, String customerFirstName, String customerLastName, Date customerDateOfBirth, double customerPANCardNumber, double customerAadharCardNumber, String customerGender, String customerEmail, double customerMobileNo, String customerAddress, Date customerRegistrationDate) {
         this.customerId = customerId;

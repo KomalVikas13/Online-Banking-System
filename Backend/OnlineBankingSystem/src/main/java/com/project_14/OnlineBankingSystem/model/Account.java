@@ -1,6 +1,7 @@
 package com.project_14.OnlineBankingSystem.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.Date;
@@ -14,13 +15,13 @@ import java.util.List;
 @ToString
 public class Account {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long accountId;
     @Column(nullable = false)
     private String accountType;
     @Column(nullable = false)
     private double accountBalance;
     @Column(nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "ddMMyyyy")
     private Date accountCreationDate;
 
     @ManyToOne
@@ -40,11 +41,21 @@ public class Account {
     @ToString.Exclude
     private List<Transaction> transactionList;
 
-    public Account(String accountType, double accountBalance, Date accountCreationDate, Customer customer) {
+    public Account(Long accountId, String accountType, double accountBalance, Date accountCreationDate, Customer customer) {
+        this.accountId = accountId;
         this.accountType = accountType;
         this.accountBalance = accountBalance;
         this.accountCreationDate = accountCreationDate;
         this.customer = customer;
     }
 
+
+//    Branch
+//    State
+//    occupation
+//    annual income
+//    loan type
+//    active
+//
+//    serializable
 }

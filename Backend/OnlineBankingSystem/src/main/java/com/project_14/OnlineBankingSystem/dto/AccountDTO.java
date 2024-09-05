@@ -17,4 +17,11 @@ public class AccountDTO {
     private Date accountCreationDate;
     private long customerId;
     private Customer customer;
+
+    public AccountDTO(String accountType, double accountBalance, Date accountCreationDate, Customer customer) {
+        this.accountType = accountType;
+        this.accountBalance = accountBalance;
+        this.accountCreationDate = accountCreationDate;
+        this.customer = customer;
+    }
 }
