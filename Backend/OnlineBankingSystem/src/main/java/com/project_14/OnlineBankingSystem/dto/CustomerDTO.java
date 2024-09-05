@@ -27,7 +27,6 @@ public class CustomerDTO {
     private double customerMobileNo;
     private String customerAddress;
     private Date customerRegistrationDate;
-    private String customerUserName;
     private String customerPassword;
     private String accountType;
 

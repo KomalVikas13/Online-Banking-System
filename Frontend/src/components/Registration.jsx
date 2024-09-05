@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import register from '../assets/images/Register.png';
-import Logo from '../assets/images/Logo.png';
 
 const Registration = () => {
   const [formData, setFormData] = useState({
@@ -115,7 +114,6 @@ const Registration = () => {
   };
 
   return (
-    // <div className="flex justify-center">
       <div className="bg-white flex justify-around">
         <div className="w-1/2 p-5">
         <h2 className="text-3xl font-bold text-gray-800 text-center mb-4">Sign up</h2>
@@ -305,9 +303,8 @@ const Registration = () => {
           </form>
           <p className="text-center text-gray-600 mt-4">Already have an account? <a href="#" className="text-blue-500 hover:underline">Login</a></p>
         </div>
-        <div className="w-2/5 bg-contain bg-no-repeat" style={{ backgroundImage: `url('${Logo}')` }}></div>
+        <div className="w-1/2 bg-contain bg-no-repeat" style={{ backgroundImage: `url('${register}')` }}></div>
       </div>
-    // </div>
   );
 };
 
