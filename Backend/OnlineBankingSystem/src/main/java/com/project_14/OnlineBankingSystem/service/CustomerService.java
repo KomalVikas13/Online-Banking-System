@@ -30,24 +30,38 @@ public class CustomerService {
 
     // add Customer to DataBase
     public String addCustomerDto(CustomerDTO customerDTO){
+        String msg;
         Optional<Customer> findCustomerEmail = customerRepo.findByCustomerEmail(customerDTO.getCustomerEmail());
         if(findCustomerEmail.isPresent()){
-            return "Already registered..";
+            msg="EXISTS";
+            return msg;
         }
         customerDTO.setCustomerId(generateUniqueCustomerId());
         System.out.println("customer dto id");
         System.out.println(customerDTO.getCustomerId());
         customerDTO.setCustomerPassword(customerDTO.getCustomerMobileNo()+"");
         Customer customer = convertToEntity(customerDTO);
-        Customer newCustomer = customerRepo.save(customer);
-        System.out.println("newCustomer");
-        System.out.println(newCustomer);
-        String response = accountService.createAccount(new AccountDTO(customerDTO.getAccountType(), 0.0, customerDTO.getCustomerRegistrationDate(), newCustomer));
-        if(response.equals("Account created")){
-            return "Registration and Account creation successfully...!";
+        try {
+            Customer newCustomer = customerRepo.save(customer);
+            System.out.println("newCustomer");
+            System.out.println(newCustomer);
+            String response = accountService.createAccount(new AccountDTO(customerDTO.getAccountType(), 0.0, customerDTO.getCustomerRegistrationDate(), newCustomer));
+            if(response.equals("Account created")){
+                msg="CREATED";
+                return msg;
+            }else {
+                msg="FAILED";
+                return msg;
+            }
+
+        }catch(Exception e) {
+            e.printStackTrace();
+            return "FAILED";
         }
-        return "Registration failed";
+
+//        return "Registration failed";
 //        return "Registration completed successfully...!";
+
     }
 
     // Converts DTO class to Entity class
