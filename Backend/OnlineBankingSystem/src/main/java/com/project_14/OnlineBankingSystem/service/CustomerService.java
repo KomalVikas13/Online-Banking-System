@@ -50,7 +50,6 @@ public class CustomerService {
                 msg="FAILED";
                 return msg;
             }
-
         }catch(Exception e) {
             e.printStackTrace();
             return "FAILED";
@@ -90,11 +89,4 @@ public class CustomerService {
         }
         return Long.parseLong(uniqueCustomerId);
     }
-
-//    import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
-//
-//    public String generateShortUniqueId() {
-//        return NanoIdUtils.randomNanoId();
-//    }
-
 }

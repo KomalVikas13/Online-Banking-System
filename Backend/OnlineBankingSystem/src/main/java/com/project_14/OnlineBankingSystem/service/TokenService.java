@@ -22,20 +22,25 @@ public class TokenService {
     private CustomerRepo customerRepo;
 
     public String generateVerificationToken(String customerEmail) {
-          Optional<Customer> customerData = customerRepo.findByCustomerEmail(customerEmail);
-          if (customerData.isPresent()) {
-              Customer customer = customerData.get();
-              Token token = customer.getToken();
-              if (token == null) {
-                  token = new Token();
-                  token.setCustomer(customerData.get());
-              }
-              token.setToken(UUID.randomUUID().toString());
-              tokenRepo.save(token);
-              return token.getToken();
-          }else {
-              throw new IllegalArgumentException("Customer not found with email: " + customerEmail);
-          }
+        try{
+            Optional<Customer> customerData = customerRepo.findByCustomerEmail(customerEmail);
+            if (customerData.isPresent()) {
+                Customer customer = customerData.get();
+                Token token = customer.getToken();
+                if (token == null) {
+                    token = new Token();
+                    token.setCustomer(customerData.get());
+                }
+                token.setToken(UUID.randomUUID().toString());
+                tokenRepo.save(token);
+                return token.getToken();
+            }else {
+               return "EMAIL NOT FOUND";
+            }
+        } catch (Exception e) {
+            return "Something went wrong!! "+e.toString();
+        }
+
     }
     public long getDifferenceInMilliseconds(LocalDateTime givenDate) {
         LocalDateTime now = LocalDateTime.now();
