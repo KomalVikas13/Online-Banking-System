@@ -1,11 +1,33 @@
 package com.project_14.OnlineBankingSystem.service;
-
+import com.project_14.OnlineBankingSystem.repo.CustomerRepo;
+import jakarta.servlet.http.HttpSession;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Random;
 
+@Getter
+@Setter
+@NoArgsConstructor(force = true)
+@ToString
 @Service
 public class OTPService {
+
+    private String otp;
+
+    @Autowired
+    private  HttpSession httpSession;
+
+    @Autowired
+    public OTPService(HttpSession httpSession) {
+        this.httpSession = httpSession;
+    }
+
     public String generateOTP() {
         System.out.println("Hi, I am OTP Method...!!");
         StringBuilder otp = new StringBuilder(6);
@@ -15,5 +37,20 @@ public class OTPService {
             otp.append(randomIntBounded);
         }
         return otp.toString();
+    }
+
+    public String verifyOTP(String otpToVerify) {
+        String sessionOTP = (String) httpSession.getAttribute("OTP");
+        System.out.println("OTP from user: " + otpToVerify);
+        System.out.println("OTP from session: " + sessionOTP);
+        if (sessionOTP == null) {
+            return "OTP not found in session.";
+        }
+        System.out.println(otpToVerify.equals(sessionOTP));
+            if(otpToVerify.equals(sessionOTP)) {
+                return "VERIFIED";
+            }else{
+                return "INVALID OTP";
+            }
     }
 }

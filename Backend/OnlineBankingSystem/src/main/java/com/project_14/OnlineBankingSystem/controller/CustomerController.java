@@ -77,7 +77,7 @@ public class CustomerController {
             String generatedOTP =otpService.generateOTP();
 //========= Store otp in Session ===========
             httpSession.setAttribute("OTP",generatedOTP);
-            String OTP = (String) httpSession.getAttribute("OTP");
+            httpSession.getAttribute("OTP");
             System.out.println(generatedOTP);
 //========= Send OTP via mail ===========
             mailService.setSubject("OTP");
@@ -94,7 +94,7 @@ public class CustomerController {
         }
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body("LOGIN SUCCESSFUL!");
+                .body("VALID CREDENTIALS");
     }
 
     //========= Verify Customer Mail ==========
@@ -126,4 +126,17 @@ public class CustomerController {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something went wrong!!");
     }
+
+        //=========== Verify OTP =============
+        @PostMapping("/verifyOtp")
+        public ResponseEntity<String> verifyUserOTP(@RequestBody OTPService otpToVerify) {
+            System.out.println(otpToVerify);
+            try{
+                String responseMsg = otpService.verifyOTP(otpToVerify.getOtp());
+                System.out.println(responseMsg);
+                return ResponseEntity.status(HttpStatus.OK).body(responseMsg);
+            }catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.OK).body(e.getMessage());
+            }
+        }
 }
