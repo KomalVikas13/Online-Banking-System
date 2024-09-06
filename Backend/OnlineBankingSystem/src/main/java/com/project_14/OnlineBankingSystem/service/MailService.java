@@ -43,8 +43,10 @@ public class MailService {
     public String getMailContent(MailService mailServiceRequest, CustomerDTO customerDetails, String generatedToken) {
         String mailContent = "<p>Dear " + mailServiceRequest.getReceiverName() + ",</p>";
         mailContent += "<p>Congratulation, Your account has been created!! <br> Here is your login credentials:</p>";
-        mailContent += "<p><b>Customer Id: "+customerDetails.getCustomerId()+"</b></p>";
-        mailContent += "<p><b>AUto-Generated Password: "+customerDetails.getCustomerPassword()+"</b></p>";
+        if(customerDetails!=null) {
+            mailContent += "<p><b>Customer Id: "+customerDetails.getCustomerId()+"</b></p>";
+            mailContent += "<p><b>AUto-Generated Password: "+customerDetails.getCustomerPassword()+"</b></p>";
+        }
         mailContent += "<p>Please click the link below to verify your registration:</p>";
         mailContent += "<h3><a href=\"http://localhost:9999/customer/verifyToken?email="+ mailServiceRequest.getTo()+"&code=" + generatedToken + "\" style=\"background-color:#328bff;color:white;margin-top:20px;padding:10px;text-decoration:none;border-radius:50px\">Verify Email</a></h3>";
         mailContent += "<p>Thank you,<br>The Nova Banking Team</p>";

@@ -56,9 +56,6 @@ public class CustomerService {
             return "FAILED";
         }
 
-//        return "Registration failed";
-//        return "Registration completed successfully...!";
-
     }
 
     // Converts DTO class to Entity class
@@ -67,7 +64,7 @@ public class CustomerService {
     }
 
     private CustomerDTO convertToDTO(Customer customer){
-        return new CustomerDTO(customer.getCustomerId(),customer.getCustomerFirstName(),customer.getCustomerLastName(),customer.getCustomerDateOfBirth(),customer.getCustomerPANCardNumber(),customer.getCustomerAadharCardNumber(),customer.getCustomerGender(),customer.getCustomerEmail(),customer.getCustomerMobileNo(),customer.getCustomerAddress(),customer.getCustomerRegistrationDate());
+        return new CustomerDTO(customer.getCustomerId(),customer.getCustomerFirstName(),customer.getCustomerLastName(),customer.getCustomerDateOfBirth(),customer.getCustomerPANCardNumber(),customer.getCustomerAadharCardNumber(),customer.getCustomerGender(),customer.getCustomerEmail(),customer.getCustomerMobileNo(),customer.getCustomerAddress(),customer.getCustomerRegistrationDate(),customer.isEmailVerified());
     }
 
     public CustomerDTO verifyCredentials(CustomerDTO customerDTO) {
