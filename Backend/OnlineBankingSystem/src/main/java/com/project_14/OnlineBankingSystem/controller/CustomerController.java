@@ -1,7 +1,6 @@
 package com.project_14.OnlineBankingSystem.controller;
 
 import com.project_14.OnlineBankingSystem.dto.CustomerDTO;
-import com.project_14.OnlineBankingSystem.model.Token;
 import com.project_14.OnlineBankingSystem.service.CustomerService;
 import com.project_14.OnlineBankingSystem.service.MailService;
 import com.project_14.OnlineBankingSystem.service.OTPService;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
 @CrossOrigin("*")
 @RestController
@@ -36,6 +34,7 @@ public class CustomerController {
         this.mailService = mailService;
     }
 
+    //========= Registration ==========
     @PostMapping("/register")
     public ResponseEntity<String> registration(@RequestBody CustomerDTO customerDTO){
         HttpStatus status;
@@ -43,6 +42,7 @@ public class CustomerController {
         String responseMsg = customerService.addCustomerDto(customerDTO);
         System.out.println(responseMsg);
         if(responseMsg.equals("CREATED")) {
+            //========= Send Verification Mail ===========
                 status = HttpStatus.OK;
                 String generatedToken = token.generateVerificationToken(customerDTO.getCustomerEmail());
                 mailService.setSubject("NOVA Banking| Verify Your Account");
@@ -60,16 +60,20 @@ public class CustomerController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseMsg);
         }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
     }
 
+    //========= Login ==========
     @PostMapping("/login")
     public ResponseEntity<Object> customerDetails(@RequestBody CustomerDTO customerDTO, HttpSession httpSession){
         CustomerDTO customerData =  customerService.verifyCredentials(customerDTO);
         try{
             if(customerData != null){
+                if(!customerData.isEmailVerified()) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("ACCOUNT NOT VERIFIED");
+                }
 //========= Generate OTP ===========
             String generatedOTP =otpService.generateOTP();
 //========= Store otp in Session ===========
@@ -83,7 +87,7 @@ public class CustomerController {
             String mailContent= mailService.getOTPMailContent(mailService,generatedOTP);
             mailService.setBody(mailContent);
             mailService.sendMail();
-            }
+           }
         }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -92,15 +96,15 @@ public class CustomerController {
                 .body(customerData);
     }
 
+    //========= Verify Customer Mail ==========
     @PostMapping("/verifyEmail")
     public ResponseEntity<String> sendMail(@RequestBody MailService mailServiceRequest){
         try {
             String generatedToken = token.generateVerificationToken(mailServiceRequest.getTo());
             mailService.setSubject("NOVA Banking| Verify Your Account");
-            String mailContent = mailService.getMailContent(mailServiceRequest,new CustomerDTO(), generatedToken);
+            String mailContent = mailService.getMailContent(mailServiceRequest, null,generatedToken);
             mailService.setBody(mailContent);
             mailService.setTo(mailServiceRequest.getTo());
-//            System.out.println(mailService);
             mailService.sendMail();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.toString());
@@ -108,8 +112,7 @@ public class CustomerController {
         return ResponseEntity.status(HttpStatus.OK).body("Mail sent successfully");
     }
 
-
-
+    //========= Verify Token ==========
     @GetMapping("/verifyToken")
     public ResponseEntity<String> verifyToken(@RequestParam String email, @RequestParam String code) {
         String tokenResponse = token.verifyCustomerToken(email,code);

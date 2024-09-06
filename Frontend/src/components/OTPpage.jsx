@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const OTPPage = () => {
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
     const [formError, setFormError] = useState("");
     const [successMsg, setSuccessMsg] = useState("");
+
+    const inputRefs = useRef([]);
 
     // Handles change for each OTP input
     const handleOtpChange = (index, value) => {
@@ -14,10 +16,21 @@ const OTPPage = () => {
 
         // Focus on the next input field if the current one is filled
         if (value && index < otp.length - 1) {
-            document.getElementById(`otp-input-${index + 1}`).focus();
+            inputRefs.current[index + 1].focus();
         }
     };
 
+    // Handles the backspace key to focus on the previous input
+    const handleKeyDown = (e, index) => {
+        if (e.key === "Backspace" && !otp[index] && index > 0) {
+            const newOtp = [...otp];
+            newOtp[index - 1] = "";
+            setOtp(newOtp);
+            inputRefs.current[index - 1].focus();
+        }
+    };
+
+    // Validates OTP input
     const validateOtp = () => {
         if (otp.some((digit) => digit === "")) {
             setFormError("Please enter all 6 digits of the OTP.");
@@ -32,6 +45,13 @@ const OTPPage = () => {
         validateOtp();
     };
 
+    // Focus on the first input box when the page loads
+    useEffect(() => {
+        if (inputRefs.current[0]) {
+            inputRefs.current[0].focus();
+        }
+    }, []);
+
     return (
         <div className="bg-gray-100 flex justify-center items-center min-h-screen">
             <div className="bg-white w-full max-w-md p-8 rounded-lg shadow-lg">
@@ -45,10 +65,12 @@ const OTPPage = () => {
                         {otp.map((digit, index) => (
                             <input
                                 key={index}
+                                ref={(el) => (inputRefs.current[index] = el)}
                                 id={`otp-input-${index}`}
                                 type="text"
                                 value={digit}
                                 onChange={({ target }) => handleOtpChange(index, target.value)}
+                                onKeyDown={(e) => handleKeyDown(e, index)}
                                 className="w-10 h-10 border border-gray-300 rounded-lg text-center text-xl focus:ring-blue-500 focus:border-blue-500"
                                 maxLength="1"
                             />
