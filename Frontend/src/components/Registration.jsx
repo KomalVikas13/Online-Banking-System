@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import register from '../assets/images/Register.png';
-
+import axios from 'axios';
+import formRules from '../formRules';
 const Registration = () => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    dob: '',
-    panCardNumber: '',
-    aadharCardNumber: '',
-    customerGender: '',
-    customerEmail: '',
-    customerMobileNo: '',
-    customerAddress: '',
-    accountType: '',
+      customerFirstName : "",
+      customerLastName : "",
+      customerDateOfBirth : "",
+      customerPANCardNumber : "",
+      customerAadharCardNumber : "",
+      customerGender : "",
+      customerEmail : "",
+      customerMobileNo : "",
+      customerAddress : "",
+      customerRegistrationDate : "",
   });
 
   const [errors, setErrors] = useState({});
@@ -24,60 +25,14 @@ const Registration = () => {
     });
   };
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-    return emailRegex.test(email);
-  };
-
-  const validateAge = (dob) => {
-    const today = new Date();
-    const birthDate = new Date(dob);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age >= 18;
-  };
-
-  const validateMobileNo = (mobileNo) => {
-    const mobileNoRegex = /^[0-9]{10}$/;
-    return mobileNoRegex.test(mobileNo);
-  };
-
-  const validatePanCard = (panCardNumber) => {
-    const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
-    return panRegex.test(panCardNumber);
-  };
-
-  const validateAadharCard = (aadharCardNumber) => {
-    const aadharRegex = /^[0-9]{12}$/;
-    return aadharRegex.test(aadharCardNumber);
-  };
-
   const handleBlur = (e) => {
-    const { name, value } = e.target;
-
-    let error = '';
-    if (!value.trim()) {
-      error = `${name} is required`;
-    } else {
-      if (name === 'customerEmail' && !validateEmail(value)) {
-        error = 'Invalid email address. Must be a @gmail.com email.';
-      } else if (name === 'dob' && !validateAge(value)) {
-        error = 'Age must be above 18.';
-      } else if (name === 'customerMobileNo' && !validateMobileNo(value)) {
-        error = 'Mobile number must be 10 digits.';
-      } else if (name === 'panCardNumber' && !validatePanCard(value)) {
-        error = 'Invalid PAN Card Number.';
-      } else if (name === 'aadharCardNumber' && !validateAadharCard(value)) {
-        error = 'Aadhar Card Number must be 12 digits.';
-      }
-    }
+    const {id} = e.target
+    let error = formRules.registrationFormRules(e);
+    console.log(error)
 
     setErrors((prevErrors) => ({
       ...prevErrors,
-      [name]: error,
+      [id]: error,
     }));
   };
 
@@ -89,27 +44,26 @@ const Registration = () => {
     if (!validateEmail(formData.customerEmail)) {
       newErrors.customerEmail = 'Invalid email address. Must be a @gmail.com email.';
     }
-    if (!validateAge(formData.dob)) {
-      newErrors.dob = 'Age must be above 18.';
+    if (!validateAge(formData.customerDateOfBirth)) {
+      newErrors.customerDateOfBirth = 'Age must be above 18.';
     }
     if (!validateMobileNo(formData.customerMobileNo)) {
       newErrors.customerMobileNo = 'Mobile number must be 10 digits.';
     }
-    if (!validatePanCard(formData.panCardNumber)) {
-      newErrors.panCardNumber = 'Invalid PAN Card Number.';
+    if (!validatePanCard(formData.customerPANCardNumber)) {
+      newErrors.customerPANCardNumber = 'Invalid PAN Card Number.';
     }
-    if (!validateAadharCard(formData.aadharCardNumber)) {
-      newErrors.aadharCardNumber = 'Aadhar Card Number must be 12 digits.';
+    if (!validateAadharCard(formData.customerAadharCardNumber)) {
+      newErrors.customerAadharCardNumber = 'Aadhar Card Number must be 12 digits.';
     }
 
     if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+      console.log(newErrors)
+      setErrors(() => newErrors);
     } else {
-      // If no errors, perform form submission logic
-      console.log('Form submitted:', formData);
-      // axios.post('http://localhost:8080/dummy/api/register', formData)
-      //   .then(response => console.log(response))
-      //   .catch(error => console.log(error));
+      console.log(formData)
+        const response = axios.post("http://localhost:9999/customer/register",formData)
+        console.log(response)
     }
   };
 
@@ -123,13 +77,13 @@ const Registration = () => {
           <form onSubmit={handleSubmit} className='w-[80%] mx-auto'>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="mb-4">
-                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">First Name</label>
+                <label htmlFor="FirstName" className="block text-sm font-medium text-gray-700">First Name</label>
                 <input
                   type="text"
                   id="firstName"
-                  name="firstName"
+                  name="customerFirstName"
                   placeholder="Enter your first name"
-                  value={formData.firstName}
+                  value={formData.customerFirstName}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -144,9 +98,9 @@ const Registration = () => {
                 <input
                   type="text"
                   id="lastName"
-                  name="lastName"
+                  name="customerLastName"
                   placeholder="Enter your last name"
-                  value={formData.lastName}
+                  value={formData.customerLastName}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -162,8 +116,8 @@ const Registration = () => {
               <input
                 type="date"
                 id="dob"
-                name="dob"
-                value={formData.dob}
+                name="customerDateOfBirth"
+                value={formData.customerDateOfBirth}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -178,9 +132,9 @@ const Registration = () => {
               <input
                 type="text"
                 id="panCardNumber"
-                name="panCardNumber"
+                name="customerPANCardNumber"
                 placeholder="Enter your PAN Card Number"
-                value={formData.panCardNumber}
+                value={formData.customerPANCardNumber}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -195,9 +149,9 @@ const Registration = () => {
               <input
                 type="text"
                 id="aadharCardNumber"
-                name="aadharCardNumber"
+                name="customerAadharCardNumber"
                 placeholder="Enter your Aadhar Card Number"
-                value={formData.aadharCardNumber}
+                value={formData.customerAadharCardNumber}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
