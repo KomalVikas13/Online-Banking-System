@@ -31,7 +31,7 @@ public class CustomerDTO {
     private boolean isEmailVerified;
     private String accountType;
 
-    public CustomerDTO(long customerId, String customerFirstName, String customerLastName, Date customerDateOfBirth, double customerPANCardNumber, double customerAadharCardNumber, String customerGender, String customerEmail, double customerMobileNo, String customerAddress, Date customerRegistrationDate,Boolean isEmailVerified) {
+    public CustomerDTO(long customerId, String customerFirstName, String customerLastName, Date customerDateOfBirth, double customerPANCardNumber, double customerAadharCardNumber, String customerGender, String customerEmail, double customerMobileNo, String customerAddress, Date customerRegistrationDate, boolean isEmailVerified) {
         this.customerId = customerId;
         this.customerFirstName = customerFirstName;
         this.customerLastName = customerLastName;
