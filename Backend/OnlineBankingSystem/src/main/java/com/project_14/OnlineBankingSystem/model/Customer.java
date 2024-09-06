@@ -42,15 +42,15 @@ public class Customer {
     @Column(nullable = false)
     private boolean isEmailVerified = false;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Account> account;
 
-    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonManagedReference
     private Token token;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Beneficiary> beneficiaryList;
 
     public Customer(long customerId, String customerFirstName, String customerLastName, Date customerDateOfBirth, double customerPANCardNumber, double customerAadharCardNumber, String customerGender, String customerEmail, double customerMobileNo, String customerAddress, Date customerRegistrationDate, String customerPassword) {

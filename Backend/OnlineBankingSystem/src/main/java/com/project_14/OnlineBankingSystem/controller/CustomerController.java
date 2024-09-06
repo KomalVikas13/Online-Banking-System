@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
 @RequestMapping("/customer")
@@ -36,9 +37,31 @@ public class CustomerController {
 
     @PostMapping("/register")
     public ResponseEntity<String> registration(@RequestBody CustomerDTO customerDTO){
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(customerService.addCustomerDto(customerDTO));
+        HttpStatus status;
+        try {
+        String responseMsg = customerService.addCustomerDto(customerDTO);
+        System.out.println(responseMsg);
+        if(responseMsg.equals("CREATED")) {
+                status = HttpStatus.OK;
+                String generatedToken = token.generateVerificationToken(customerDTO.getCustomerEmail());
+                mailService.setSubject("NOVA Banking| Verify Your Account");
+                mailService.setTo(customerDTO.getCustomerEmail());
+                mailService.setReceiverName(customerDTO.getCustomerFirstName());
+                String mailContent = mailService.getMailContent(mailService, customerDTO, generatedToken);
+                mailService.setBody(mailContent);
+                System.out.println(mailService);
+                mailService.sendMail();
+                return ResponseEntity.status(status).body(responseMsg);
+        } else if (responseMsg.equals("EXISTS")) {
+            status = HttpStatus.CONFLICT;
+            return ResponseEntity.status(status).body(responseMsg);
+        }else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseMsg);
+        }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.toString());
+        }
+
     }
 
     @PostMapping("/login")
@@ -72,8 +95,8 @@ public class CustomerController {
     public ResponseEntity<String> sendMail(@RequestBody MailService mailServiceRequest){
         try {
             String generatedToken = token.generateVerificationToken(mailServiceRequest.getTo());
-            mailService.setSubject("Test mail");
-            String mailContent = mailService.getMailContent(mailServiceRequest, generatedToken);
+            mailService.setSubject("NOVA Banking| Verify Your Account");
+            String mailContent = mailService.getMailContent(mailServiceRequest,new CustomerDTO(), generatedToken);
             mailService.setBody(mailContent);
             mailService.setTo(mailServiceRequest.getTo());
 //            System.out.println(mailService);
@@ -88,14 +111,13 @@ public class CustomerController {
 
     @GetMapping("/verifyToken")
     public ResponseEntity<String> verifyToken(@RequestParam String email, @RequestParam String code) {
-        System.out.println();
         String tokenResponse = token.verifyCustomerToken(email,code);
         if(tokenResponse.equals("account verified")) {
-            return ResponseEntity.status(HttpStatus.OK).body("Congratulations, Your account verified! Please Create New Password!!<br> <a href=\"https://localhost:5173/reset_password\">Create Password</a>");
+            return ResponseEntity.status(HttpStatus.OK).body("Congratulations, Your account verified! You can login <a style=\"margin-right:10px;background:#328bff;color:white;padding:10px 20px;text-decoration:none\" href=\"https://localhost:5173/login\">Login</a> or create <a style=\"margin-right:10px;background:#328bff;color:white;padding:10px 20px;text-decoration:none\" href=\"https://localhost:5173/reset_password\">Create Password</a><br>");
         }else if(tokenResponse.equals("token expired")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token Expired!! <a href=\"https://localhost:5173/verifyEmail\">Resend Verification mail</a>");
         }else if(tokenResponse.equals("user already verified")) {
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Your account already verified, Please Create New Password!! <a href=\"https://localhost:5173/reset_password\">Create Password</a>");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Your account already verified,You can login <a style=\"margin-right:10px;background:#328bff;color:white;padding:10px 20px;text-decoration:none\" href=\"https://localhost:5173/login\">Login</a> or create <a style=\"margin-right:10px;background:#328bff;color:white;padding:10px 20px;text-decoration:none\" href=\"https://localhost:5173/reset_password\">Create Password</a><br>");
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something went wrong!!");
     }
