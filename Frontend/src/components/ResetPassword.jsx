@@ -2,14 +2,12 @@ import React, { useState } from "react";
 
 const ResetPassword = () => {
     const [formInput, setFormInput] = useState({
-        email: "",
         password: "",
         confirmPassword: "",
         successMsg: "",
     });
 
     const [formError, setFormError] = useState({
-        email: "",
         password: "",
         confirmPassword: "",
     });
@@ -23,13 +21,6 @@ const ResetPassword = () => {
 
     const validateInput = (name, value) => {
         let error = "";
-
-        if (name === "email") {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!value || !emailRegex.test(value)) {
-                error = "Enter a valid email address";
-            }
-        }
 
         if (name === "password") {
             const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -57,20 +48,9 @@ const ResetPassword = () => {
         event.preventDefault();
 
         let inputError = {
-            email: "",
             password: "",
             confirmPassword: "",
         };
-
-        // Validate email
-        if (!formInput.email) {
-            inputError.email = "Enter a valid email address";
-        } else {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(formInput.email)) {
-                inputError.email = "Enter a valid email address";
-            }
-        }
 
         // Validate password
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -87,7 +67,7 @@ const ResetPassword = () => {
         }
 
         // If there are no errors, show success message
-        if (!inputError.email && !inputError.password && !inputError.confirmPassword) {
+        if (!inputError.password && !inputError.confirmPassword) {
             setFormInput((prevState) => ({
                 ...prevState,
                 successMsg: "Validation Success",
@@ -107,17 +87,6 @@ const ResetPassword = () => {
             <div className="max-w-md w-full bg-white rounded-lg shadow-md p-6">
                 <h2 className="text-2xl font-semibold text-gray-700 mb-4">Reset Password</h2>
                 <form onSubmit={validateFormInput}>
-                    <label className="block text-sm font-medium text-gray-600 mt-3">Email</label>
-                    <input
-                        value={formInput.email}
-                        onChange={({ target }) => handleUserInput(target.name, target.value)}
-                        onBlur={({ target }) => validateInput(target.name, target.value)}
-                        name="email"
-                        type="text"
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
-                        placeholder="Enter email"
-                    />
-                    <p className="text-xs text-red-500 mt-1">{formError.email}</p>
 
                     <label className="block text-sm font-medium text-gray-700 mt-3">Password</label>
                     <input
