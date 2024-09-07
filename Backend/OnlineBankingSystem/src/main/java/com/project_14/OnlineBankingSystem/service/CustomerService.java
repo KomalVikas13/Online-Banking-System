@@ -25,6 +25,9 @@ public class CustomerService {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private PasswordGeneratorService passwordGeneratorService;
+
     // add Customer to DataBase
     public String addCustomerDto(CustomerDTO customerDTO){
         String msg;
@@ -36,7 +39,9 @@ public class CustomerService {
         customerDTO.setCustomerId(generateUniqueCustomerId());
         System.out.println("customer dto id");
         System.out.println(customerDTO.getCustomerId());
-        customerDTO.setCustomerPassword(customerDTO.getCustomerMobileNo()+"");
+        String password = passwordGeneratorService.generateRandomPassword();
+        System.out.println(password);
+        customerDTO.setCustomerPassword(password);
         Customer customer = convertToEntity(customerDTO);
         try {
             Customer newCustomer = customerRepo.save(customer);

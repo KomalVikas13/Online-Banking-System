@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
 import Login from '../assets/images/Logo.png';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const LoginPage = () => {
-    const [customerId, setCustomerId] = useState('');
-    const [password, setPassword] = useState('');
+    const [formData, setFormData] = useState({
+        customerId : "",
+        customerPassword : ""
+    })
     const [errors, setErrors] = useState({});
+    const navigator = useNavigate();
 
     const validateCustomerId = (id) => {
         const regex = /^\d{6,}$/; // Customer ID should be a number with at least 6 digits
@@ -16,57 +23,82 @@ const LoginPage = () => {
         return regex.test(password);
     };
 
-    const handleBlur = (field) => {
-        const newErrors = { ...errors };
+    const handleChange = (e) => {
+        const {name, value} = e.target;
+        setFormData(prevData => ({
+            ...prevData,
+            [name] : value,
+        }))
+    }
+    const handleBlur = (e) => {
+        const {name} = e.target
+        let error = ""
 
-        if (field === 'customerId') {
-            if (!validateCustomerId(customerId)) {
-                newErrors.customerId = 'Customer ID is required';
-            } else {
-                delete newErrors.customerId;
+        if (name === 'customerId') {
+            if (!formData.customerId) {
+                error = 'Customer ID is required.';
+            }
+            else if (formData.customerId && !validateCustomerId(formData.customerId)) {
+                error = 'Customer ID must be a number with at least 6 digits.';
+            }else{
+                error = ''
             }
         }
 
-        if (field === 'password') {
-            if (!validatePassword(password)) {
-                newErrors.password = 'Password is required';
-            } else {
-                delete newErrors.password;
+        if (name === 'customerPassword') { 
+            if (!formData.customerPassword) {
+                error = 'Password is required';
+            }
+            else if (formData.customerPassword && !validatePassword(formData.customerPassword)) {
+                error = 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.';
+            }else{
+                error = ''
             }
         }
 
-        setErrors(newErrors);
+        setErrors(prevErrors => ({
+            ...prevErrors,
+            [name] : error
+        }));
     };
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
         const newErrors = {};
 
-        if (!validateCustomerId(customerId)) {
-            newErrors.customerId = 'Customer ID must be a number with at least 6 digits.';
+        if (!formData.customerId) {
+            newErrors.customerId = 'Customer ID is required.';
         }
 
-        if (!validatePassword(password)) {
-            newErrors.password = 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.';
+        if (!formData.customerPassword) {
+            newErrors.customerPassword = 'Password is required';
+        }
+        if (formData.customerId && !validateCustomerId(formData.customerId)) {
+            newErrors.customerPassword = 'Customer ID must be a number with at least 6 digits.';
+        }
+
+        if (formData.customerPassword && !validatePassword(formData.customerPassword)) {
+            newErrors.customerPassword = 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.';
         }
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
             return;
         }
-
-        setErrors({});
-        console.log('Login:', { customerId, password });
+        console.log(formData)
+        try {
+            const response = await axios.post("http://localhost:9999/customer/login",formData)
+            console.log(response)
+        } catch (error) {
+            handleServerResponse(error.response.status)
+            console.log(error.response.status)
+        }
+        
     };
 
-    const handleForgotPassword = () => {
-        console.log('Forgot Password');
-    };
-
-    const handleNewUser = () => {
-        console.log('New User Registration');
-    };
-
+    const handleServerResponse = (status) => {
+        toast(status)
+    }
     return (
         <div className=" bg-gray-100">
              {/* <div className="flex bg-white rounded-lg shadow-lg overflow-hidden 4x w-full"> */}
@@ -77,14 +109,15 @@ const LoginPage = () => {
                         Welcome back! Please enter your details.
                     </p>
 
-                    <form onSubmit={handleLogin} className=" bg-white border-0 shadow-none w-[80%] mx-auto">
+                    <form className=" bg-white border-0 shadow-none w-[80%] mx-auto">
                         <div className="my-3">
                             <label className="block text-sm font-medium text-gray-700">Customer ID:</label>
                             <input
-                                type="text"
-                                value={customerId}
-                                onChange={(e) => setCustomerId(e.target.value)}
-                                onBlur={() => handleBlur('customerId')}
+                                type="number"
+                                name='customerId'
+                                value={formData.customerId}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
                                 required
                                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                             />
@@ -95,23 +128,25 @@ const LoginPage = () => {
                             <label className="block text-sm font-medium text-gray-700">Password:</label>
                             <input
                                 type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                onBlur={() => handleBlur('password')}
+                                name="customerPassword"
+                                value={formData.customerPassword}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
                                 required
                                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                             />
-                            {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+                            {errors.customerPassword && <p className="text-red-500 text-xs mt-1">{errors.customerPassword}</p>}
                         </div>
 
                         <div className="flex items-center justify-between my-3">
-                            <a href="#" onClick={handleForgotPassword} className="text-sm font-medium text-indigo-600 hover:underline">Forgot Password?</a>
-                            <a href="#" onClick={handleNewUser} className="text-sm font-medium text-indigo-600  hover:underline">New User? Sign up</a>
+                            <a href="" onClick={()=>{navigator("/email")}} className="text-sm font-medium text-indigo-600 hover:underline">Forgot Password?</a>
+                            <a href="" onClick={()=>{navigator("/register")}} className="text-sm font-medium text-indigo-600  hover:underline">New User? Sign up</a>
                         </div>
 
                         <button
                             type="submit"
                             className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            onClick={handleLogin}
                         >
                             Login
                         </button>

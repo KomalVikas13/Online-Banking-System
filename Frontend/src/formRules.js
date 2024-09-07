@@ -3,7 +3,7 @@ const validateEmail = (email) => {
     return emailRegex.test(email);
   };
   
-  const validateAge = (dob) => {
+const validateAge = (dob) => {
     const today = new Date();
     const birthDate = new Date(dob);
     let age = today.getFullYear() - birthDate.getFullYear();
@@ -14,27 +14,27 @@ const validateEmail = (email) => {
     return age >= 18;
   };
   
-  const validateMobileNo = (mobileNo) => {
+const validateMobileNo = (mobileNo) => {
     const mobileNoRegex = /^[0-9]{10}$/;
     return mobileNoRegex.test(mobileNo);
   };
   
-  const validatePanCard = (panCardNumber) => {
+const validatePanCard = (panCardNumber) => {
     const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
     return panRegex.test(panCardNumber);
   };
   
-  const validateAadharCard = (aadharCardNumber) => {
+const validateAadharCard = (aadharCardNumber) => {
     const aadharRegex = /^[0-9]{12}$/;
     return aadharRegex.test(aadharCardNumber);
   };
   
-  const registrationForm = (e) => {
-    const { id, name, value } = e.target;
+const registrationForm = (e) => {
+    const { name, value } = e.target;
   
     let error = '';
     if (!value.trim()) {
-      error = `${id} is required`;
+      error = `This field is required`;
     } else {
       if (name === 'customerEmail' && !validateEmail(value)) {
         error = 'Invalid email address. Must be a @gmail.com email.';
@@ -53,7 +53,13 @@ const validateEmail = (email) => {
   };
   
   const formRules = {
-    registrationFormRules: registrationForm,
+    registrationFormOnBlurRules: registrationForm,
+    email : validateEmail,
+    age : validateAge,
+    aadharCardNumber : validateAadharCard,
+    panCardNumber : validatePanCard,
+    mobileNo : validateMobileNo 
+
   };
   
   export default formRules;
