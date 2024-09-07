@@ -67,8 +67,8 @@ public class CustomerController {
     //========= Login ==========
     @PostMapping("/login")
     public ResponseEntity<Object> customerDetails(@RequestBody CustomerDTO customerDTO, HttpSession httpSession){
-        CustomerDTO customerData =  customerService.verifyCredentials(customerDTO);
         try{
+            CustomerDTO customerData =  customerService.verifyCredentials(customerDTO);
             if(customerData != null){
                 if(!customerData.isEmailVerified()) {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("ACCOUNT NOT VERIFIED");
@@ -77,7 +77,7 @@ public class CustomerController {
             String generatedOTP =otpService.generateOTP();
 //========= Store otp in Session ===========
             httpSession.setAttribute("OTP",generatedOTP);
-            String OTP = (String) httpSession.getAttribute("OTP");
+            httpSession.getAttribute("OTP");
             System.out.println(generatedOTP);
 //========= Send OTP via mail ===========
             mailService.setSubject("OTP");
@@ -86,13 +86,15 @@ public class CustomerController {
             String mailContent= mailService.getOTPMailContent(mailService,generatedOTP);
             mailService.setBody(mailContent);
             mailService.sendMail();
-           }
+           }else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("INVALID CREDENTIALS");
+            }
         }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(customerData);
+                .body("VALID CREDENTIALS");
     }
 
     //========= Verify Customer Mail ==========
@@ -116,12 +118,25 @@ public class CustomerController {
     public ResponseEntity<String> verifyToken(@RequestParam String email, @RequestParam String code) {
         String tokenResponse = token.verifyCustomerToken(email,code);
         if(tokenResponse.equals("account verified")) {
-            return ResponseEntity.status(HttpStatus.OK).body("Congratulations, Your account verified! You can login <a style=\"margin-right:10px;background:#328bff;color:white;padding:10px 20px;text-decoration:none\" href=\"https://localhost:5173/login\">Login</a> or create <a style=\"margin-right:10px;background:#328bff;color:white;padding:10px 20px;text-decoration:none\" href=\"https://localhost:5173/reset_password\">Create Password</a><br>");
+            return ResponseEntity.status(HttpStatus.OK).body("Congratulations, Your account verified! You can login <a style=\"margin-right:10px;background:#328bff;color:white;padding:10px 20px;text-decoration:none\" href=\"https://localhost:5173/\">Login</a> or create <a style=\"margin-right:10px;background:#328bff;color:white;padding:10px 20px;text-decoration:none\" href=\"https://localhost:5173/reset_password\">Create Password</a><br>");
         }else if(tokenResponse.equals("token expired")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token Expired!! <a href=\"https://localhost:5173/verifyEmail\">Resend Verification mail</a>");
         }else if(tokenResponse.equals("user already verified")) {
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Your account already verified,You can login <a style=\"margin-right:10px;background:#328bff;color:white;padding:10px 20px;text-decoration:none\" href=\"https://localhost:5173/login\">Login</a> or create <a style=\"margin-right:10px;background:#328bff;color:white;padding:10px 20px;text-decoration:none\" href=\"https://localhost:5173/reset_password\">Create Password</a><br>");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Your account already verified,You can login <a style=\"margin-right:10px;background:#328bff;color:white;padding:10px 20px;text-decoration:none\" href=\"https://localhost:5173/\">Login</a> or create <a style=\"margin-right:10px;background:#328bff;color:white;padding:10px 20px;text-decoration:none\" href=\"https://localhost:5173/reset_password\">Create Password</a><br>");
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something went wrong!!");
     }
+
+        //=========== Verify OTP =============
+        @PostMapping("/verifyOtp")
+        public ResponseEntity<String> verifyUserOTP(@RequestBody OTPService otpToVerify) {
+            System.out.println(otpToVerify);
+            try{
+                String responseMsg = otpService.verifyOTP(otpToVerify.getOtp());
+                System.out.println(responseMsg);
+                return ResponseEntity.status(HttpStatus.OK).body(responseMsg);
+            }catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.OK).body(e.getMessage());
+            }
+        }
 }
