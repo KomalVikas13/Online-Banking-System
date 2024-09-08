@@ -20,7 +20,7 @@ public class CustomerDTO {
     private String customerFirstName;
     private String customerLastName;
     private Date customerDateOfBirth;
-    private double customerPANCardNumber;
+    private String customerPANCardNumber;
     private double customerAadharCardNumber;
     private String customerGender;
     private String customerEmail;
@@ -31,7 +31,7 @@ public class CustomerDTO {
     private boolean isEmailVerified;
     private String accountType;
 
-    public CustomerDTO(long customerId, String customerFirstName, String customerLastName, Date customerDateOfBirth, double customerPANCardNumber, double customerAadharCardNumber, String customerGender, String customerEmail, double customerMobileNo, String customerAddress, Date customerRegistrationDate, boolean isEmailVerified) {
+    public CustomerDTO(long customerId, String customerFirstName, String customerLastName, Date customerDateOfBirth, String customerPANCardNumber, double customerAadharCardNumber, String customerGender, String customerEmail, double customerMobileNo, String customerAddress, Date customerRegistrationDate, boolean isEmailVerified) {
         this.customerId = customerId;
         this.customerFirstName = customerFirstName;
         this.customerLastName = customerLastName;

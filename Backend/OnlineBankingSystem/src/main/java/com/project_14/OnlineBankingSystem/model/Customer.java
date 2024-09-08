@@ -24,7 +24,7 @@ public class Customer {
     @Column(nullable = false)
     private Date customerDateOfBirth;
     @Column(nullable = false)
-    private double customerPANCardNumber;
+    private String customerPANCardNumber;
     @Column(nullable = false)
     private double customerAadharCardNumber;
     @Column(nullable = false)
@@ -53,7 +53,7 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Beneficiary> beneficiaryList;
 
-    public Customer(long customerId, String customerFirstName, String customerLastName, Date customerDateOfBirth, double customerPANCardNumber, double customerAadharCardNumber, String customerGender, String customerEmail, double customerMobileNo, String customerAddress, Date customerRegistrationDate, String customerPassword) {
+    public Customer(long customerId, String customerFirstName, String customerLastName, Date customerDateOfBirth, String customerPANCardNumber, double customerAadharCardNumber, String customerGender, String customerEmail, double customerMobileNo, String customerAddress, Date customerRegistrationDate, String customerPassword) {
         this.customerId = customerId;
         this.customerFirstName = customerFirstName;
         this.customerLastName = customerLastName;

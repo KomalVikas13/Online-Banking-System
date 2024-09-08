@@ -1,21 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import register from '../assets/images/Register.png';
-
+import axios from 'axios';
+import formRules from '../formRules';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 const Registration = () => {
+  const navigator = useNavigate();
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    dob: '',
-    panCardNumber: '',
-    aadharCardNumber: '',
-    customerGender: '',
-    customerEmail: '',
-    customerMobileNo: '',
-    customerAddress: '',
-    accountType: '',
+      customerFirstName : "",
+      customerLastName : "",
+      customerDateOfBirth : "",
+      customerPANCardNumber : "",
+      customerAadharCardNumber : "",
+      customerGender : "",
+      customerEmail : "",
+      customerMobileNo : "",
+      customerAddress : "",
+      customerRegistrationDate : "",
+      accountType : ""
   });
 
   const [errors, setErrors] = useState({});
+
+  const formatDateToYYYYMMDD = (date) => {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -24,56 +37,10 @@ const Registration = () => {
     });
   };
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-    return emailRegex.test(email);
-  };
-
-  const validateAge = (dob) => {
-    const today = new Date();
-    const birthDate = new Date(dob);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age >= 18;
-  };
-
-  const validateMobileNo = (mobileNo) => {
-    const mobileNoRegex = /^[0-9]{10}$/;
-    return mobileNoRegex.test(mobileNo);
-  };
-
-  const validatePanCard = (panCardNumber) => {
-    const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
-    return panRegex.test(panCardNumber);
-  };
-
-  const validateAadharCard = (aadharCardNumber) => {
-    const aadharRegex = /^[0-9]{12}$/;
-    return aadharRegex.test(aadharCardNumber);
-  };
-
   const handleBlur = (e) => {
-    const { name, value } = e.target;
-
-    let error = '';
-    if (!value.trim()) {
-      error = `${name} is required`;
-    } else {
-      if (name === 'customerEmail' && !validateEmail(value)) {
-        error = 'Invalid email address. Must be a @gmail.com email.';
-      } else if (name === 'dob' && !validateAge(value)) {
-        error = 'Age must be above 18.';
-      } else if (name === 'customerMobileNo' && !validateMobileNo(value)) {
-        error = 'Mobile number must be 10 digits.';
-      } else if (name === 'panCardNumber' && !validatePanCard(value)) {
-        error = 'Invalid PAN Card Number.';
-      } else if (name === 'aadharCardNumber' && !validateAadharCard(value)) {
-        error = 'Aadhar Card Number must be 12 digits.';
-      }
-    }
+    const {name} = e.target
+    let error = formRules.registrationFormOnBlurRules(e);
+    console.log(error)
 
     setErrors((prevErrors) => ({
       ...prevErrors,
@@ -81,37 +48,81 @@ const Registration = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    // Format the customerRegistrationDate to YYYYMMDD
+    const formattedDate = formatDateToYYYYMMDD(new Date());
+    
+    // Create a copy of formData with the updated registration date
+    const updatedFormData = {
+      ...formData,
+      customerRegistrationDate: formattedDate,
+    };
+  
     const newErrors = {};
-
-    if (!validateEmail(formData.customerEmail)) {
+  
+    // Basic required field validations
+    if (!updatedFormData.customerFirstName) newErrors.customerFirstName = 'This field is required';
+    if (!updatedFormData.customerLastName) newErrors.customerLastName = 'This field is required';
+    if (!updatedFormData.customerDateOfBirth) newErrors.customerDateOfBirth = 'This field is required';
+    if (!updatedFormData.customerPANCardNumber) newErrors.customerPANCardNumber = 'This field is required';
+    if (!updatedFormData.customerAadharCardNumber) newErrors.customerAadharCardNumber = 'This field is required';
+    if (!updatedFormData.customerGender) newErrors.customerGender = 'This field is required';
+    if (!updatedFormData.customerEmail) newErrors.customerEmail = 'This field is required';
+    if (!updatedFormData.customerMobileNo) newErrors.customerMobileNo = 'This field is required';
+    if (!updatedFormData.customerAddress) newErrors.customerAddress = 'This field is required';
+    if (!updatedFormData.accountType) newErrors.accountType = 'This field is required';
+  
+    // Additional validations using form rules
+    if (updatedFormData.customerEmail && !formRules.email(updatedFormData.customerEmail)) {
       newErrors.customerEmail = 'Invalid email address. Must be a @gmail.com email.';
     }
-    if (!validateAge(formData.dob)) {
-      newErrors.dob = 'Age must be above 18.';
+    if (updatedFormData.customerDateOfBirth && !formRules.age(updatedFormData.customerDateOfBirth)) {
+      newErrors.customerDateOfBirth = 'Age must be above 18.';
     }
-    if (!validateMobileNo(formData.customerMobileNo)) {
+    if (updatedFormData.customerMobileNo && !formRules.mobileNo(updatedFormData.customerMobileNo)) {
       newErrors.customerMobileNo = 'Mobile number must be 10 digits.';
     }
-    if (!validatePanCard(formData.panCardNumber)) {
-      newErrors.panCardNumber = 'Invalid PAN Card Number.';
+    if (updatedFormData.customerPANCardNumber && !formRules.panCardNumber(updatedFormData.customerPANCardNumber)) {
+      newErrors.customerPANCardNumber = 'Invalid PAN Card Number.';
     }
-    if (!validateAadharCard(formData.aadharCardNumber)) {
-      newErrors.aadharCardNumber = 'Aadhar Card Number must be 12 digits.';
+    if (updatedFormData.customerAadharCardNumber && !formRules.aadharCardNumber(updatedFormData.customerAadharCardNumber)) {
+      newErrors.customerAadharCardNumber = 'Aadhar Card Number must be 12 digits.';
     }
-
+  
+    // If there are errors, update the error state and return early
     if (Object.keys(newErrors).length > 0) {
+      console.log('newErrors', newErrors);
       setErrors(newErrors);
-    } else {
-      // If no errors, perform form submission logic
-      console.log('Form submitted:', formData);
-      // axios.post('http://localhost:8080/dummy/api/register', formData)
-      //   .then(response => console.log(response))
-      //   .catch(error => console.log(error));
+      return;
+    }
+  
+    try {
+      // Async request to register the customer
+      const response = await axios.post('http://localhost:9999/customer/register', updatedFormData);
+      console.log(response);
+      if(response.data == "CREATED" && response.status == 200){
+        toast.success(`Registration successfull....!`)
+        toast.info(`${formData.accountType} account is created`)
+        navigator("/message")
+      }
+      // Clear form data or handle successful registration
+    } catch (error) {
+          let status = error.response.status
+          let data = error.response.data
+          console.log(error.response.status)
+          console.log(error.response.data)
+          if(status == 409 && data == "EXISTS"){
+            toast.warning(`Already had an account with ${formData.customerEmail}`)
+          }
+          else if(status == 401){
+            toast.error(`Registration failed..`)
+          }      
     }
   };
+  
+  
 
   return (
       <div className="bg-white flex justify-around">
@@ -120,23 +131,23 @@ const Registration = () => {
                     <p className="text-sm text-gray-600 text-center mb-8">
                         Please enter your details.
                     </p>
-          <form onSubmit={handleSubmit} className='w-[80%] mx-auto'>
+          <form className='w-[80%] mx-auto'>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="mb-4">
-                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">First Name</label>
+                <label htmlFor="FirstName" className="block text-sm font-medium text-gray-700">First Name</label>
                 <input
                   type="text"
                   id="firstName"
-                  name="firstName"
+                  name="customerFirstName"
                   placeholder="Enter your first name"
-                  value={formData.firstName}
+                  value={formData.customerFirstName}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
-                {errors.firstName && (
-                  <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
+                {errors.customerFirstName && (
+                  <p className="text-red-500 text-sm mt-1">{errors.customerFirstName}</p>
                 )}
               </div>
               <div className="mb-4">
@@ -144,16 +155,16 @@ const Registration = () => {
                 <input
                   type="text"
                   id="lastName"
-                  name="lastName"
+                  name="customerLastName"
                   placeholder="Enter your last name"
-                  value={formData.lastName}
+                  value={formData.customerLastName}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
-                {errors.lastName && (
-                  <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
+                {errors.customerLastName && (
+                  <p className="text-red-500 text-sm mt-1">{errors.customerLastName}</p>
                 )}
               </div>
             </div>
@@ -162,15 +173,15 @@ const Registration = () => {
               <input
                 type="date"
                 id="dob"
-                name="dob"
-                value={formData.dob}
+                name="customerDateOfBirth"
+                value={formData.customerDateOfBirth}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
-              {errors.dob && (
-                <p className="text-red-500 text-sm mt-1">{errors.dob}</p>
+              {errors.customerDateOfBirth && (
+                <p className="text-red-500 text-sm mt-1">{errors.customerDateOfBirth}</p>
               )}
             </div>
             <div className="mb-4">
@@ -178,16 +189,16 @@ const Registration = () => {
               <input
                 type="text"
                 id="panCardNumber"
-                name="panCardNumber"
+                name="customerPANCardNumber"
                 placeholder="Enter your PAN Card Number"
-                value={formData.panCardNumber}
+                value={formData.customerPANCardNumber}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
-              {errors.panCardNumber && (
-                <p className="text-red-500 text-sm mt-1">{errors.panCardNumber}</p>
+              {errors.customerPANCardNumber && (
+                <p className="text-red-500 text-sm mt-1">{errors.customerPANCardNumber}</p>
               )}
             </div>
             <div className="mb-4">
@@ -195,16 +206,16 @@ const Registration = () => {
               <input
                 type="text"
                 id="aadharCardNumber"
-                name="aadharCardNumber"
+                name="customerAadharCardNumber"
                 placeholder="Enter your Aadhar Card Number"
-                value={formData.aadharCardNumber}
+                value={formData.customerAadharCardNumber}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
-              {errors.aadharCardNumber && (
-                <p className="text-red-500 text-sm mt-1">{errors.aadharCardNumber}</p>
+              {errors.customerAadharCardNumber && (
+                <p className="text-red-500 text-sm mt-1">{errors.customerAadharCardNumber}</p>
               )}
             </div>
             <div className="mb-4">
@@ -299,9 +310,9 @@ const Registration = () => {
                 <p className="text-red-500 text-sm mt-1">{errors.accountType}</p>
               )}
             </div>
-            <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Sign up</button>
+            <button type="submit" onClick={handleSubmit} className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Sign up</button>
           </form>
-          <p className="text-center text-gray-600 mt-4">Already have an account? <a href="#" className="text-blue-500 hover:underline">Login</a></p>
+          <p className="text-center text-gray-600 mt-4">Already have an account? <a href="" className="text-blue-500 hover:underline" onClick={()=>{navigator("/")}}>Login</a></p>
         </div>
         <div className="w-1/2 bg-contain bg-no-repeat" style={{ backgroundImage: `url('${register}')` }}></div>
       </div>
