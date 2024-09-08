@@ -20,7 +20,6 @@ public class OTPService {
 
     private String otp;
 
-    @Autowired
     private  HttpSession httpSession;
 
     @Autowired

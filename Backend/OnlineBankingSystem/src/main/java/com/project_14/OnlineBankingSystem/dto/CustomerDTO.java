@@ -30,6 +30,9 @@ public class CustomerDTO {
     private String customerPassword;
     private boolean isEmailVerified;
     private String accountType;
+    private int tenure;
+    private double amountToBeCredited;
+    private float interest;
 
     public CustomerDTO(long customerId, String customerFirstName, String customerLastName, Date customerDateOfBirth, double customerPANCardNumber, double customerAadharCardNumber, String customerGender, String customerEmail, double customerMobileNo, String customerAddress, Date customerRegistrationDate, boolean isEmailVerified) {
         this.customerId = customerId;

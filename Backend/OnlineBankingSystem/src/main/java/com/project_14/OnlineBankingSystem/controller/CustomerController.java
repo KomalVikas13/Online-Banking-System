@@ -74,7 +74,7 @@ public class CustomerController {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("ACCOUNT NOT VERIFIED");
                 }
 //========= Generate OTP ===========
-            String generatedOTP =otpService.generateOTP();
+            String generatedOTP = otpService.generateOTP();
 //========= Store otp in Session ===========
             httpSession.setAttribute("OTP",generatedOTP);
             httpSession.getAttribute("OTP");

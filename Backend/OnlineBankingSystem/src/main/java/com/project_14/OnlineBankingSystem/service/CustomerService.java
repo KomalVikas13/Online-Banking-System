@@ -42,7 +42,7 @@ public class CustomerService {
             Customer newCustomer = customerRepo.save(customer);
             System.out.println("newCustomer");
             System.out.println(newCustomer);
-            String response = accountService.createAccount(new AccountDTO(customerDTO.getAccountType(), 0.0, customerDTO.getCustomerRegistrationDate(), newCustomer));
+            String response = accountService.createAccount(new AccountDTO(customerDTO.getAccountType(), 0.0, customerDTO.getCustomerRegistrationDate(), newCustomer,customerDTO.getAmountToBeCredited(), customerDTO.getInterest(),customerDTO.getTenure()));
             if(response.equals("Account created")){
                 msg="CREATED";
                 return msg;
