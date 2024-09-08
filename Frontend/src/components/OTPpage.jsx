@@ -46,8 +46,12 @@ const OTPPage = () => {
         if(status == "VALID"){
             console.log(otp.join(""))
             try {
-                const response = axios.post("http://localhost:9999/customer/verifyOtp" , {
+                const response = axios.post("http://localhost:9999/customer/verifyOtp", 
+                {
                     otp : otp.join("")
+                },
+                {
+                    withCredentials : true
                 })
                 console.log("success")
                 console.log(response)

@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RestController
 @RequestMapping("/customer")
 public class CustomerController {
@@ -137,7 +137,7 @@ public class CustomerController {
                 System.out.println(responseMsg);
                 return ResponseEntity.status(HttpStatus.OK).body(responseMsg);
             }catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.OK).body(e.getMessage());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
             }
         }
 }
