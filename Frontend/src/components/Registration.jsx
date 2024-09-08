@@ -3,6 +3,7 @@ import register from '../assets/images/Register.png';
 import axios from 'axios';
 import formRules from '../formRules';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 const Registration = () => {
   const navigator = useNavigate();
   const [formData, setFormData] = useState({
@@ -101,9 +102,23 @@ const Registration = () => {
       // Async request to register the customer
       const response = await axios.post('http://localhost:9999/customer/register', updatedFormData);
       console.log(response);
+      if(response.data == "CREATED" && response.status == 200){
+        toast.success(`Registration successfull....!`)
+        toast.info(`${formData.accountType} account is created`)
+        navigator("/message")
+      }
       // Clear form data or handle successful registration
     } catch (error) {
-      console.error(error);
+          let status = error.response.status
+          let data = error.response.data
+          console.log(error.response.status)
+          console.log(error.response.data)
+          if(status == 409 && data == "EXISTS"){
+            toast.warning(`Already had an account with ${formData.customerEmail}`)
+          }
+          else if(status == 401){
+            toast.error(`Registration failed..`)
+          }      
     }
   };
   

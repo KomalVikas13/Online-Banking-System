@@ -1,9 +1,9 @@
+import axios from "axios";
 import React, { useState, useEffect, useRef } from "react";
 
 const OTPPage = () => {
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
     const [formError, setFormError] = useState("");
-    const [successMsg, setSuccessMsg] = useState("");
 
     const inputRefs = useRef([]);
 
@@ -36,13 +36,26 @@ const OTPPage = () => {
             setFormError("Please enter all 6 digits of the OTP.");
         } else {
             setFormError("");
-            setSuccessMsg("OTP Verified Successfully!");
+            return "VALID"
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        validateOtp();
+        let status = validateOtp();
+        if(status == "VALID"){
+            console.log(otp.join(""))
+            try {
+                const response = axios.post("http://localhost:9999/customer/verifyOtp" , {
+                    otp : otp.join("")
+                })
+                console.log("success")
+                console.log(response)
+            } catch (error) {
+                console.log("errrer")
+                console.log(error)
+            }
+        }
     };
 
     // Focus on the first input box when the page loads
@@ -77,7 +90,6 @@ const OTPPage = () => {
                         ))}
                     </div>
                     {formError && <p className="text-xs text-red-500 text-center">{formError}</p>}
-                    <p className="text-sm text-green-500 text-center">{successMsg}</p>
 
                     <button
                         type="submit"

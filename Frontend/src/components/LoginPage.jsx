@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Login from '../assets/images/Logo.png';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const LoginPage = () => {
@@ -88,17 +88,26 @@ const LoginPage = () => {
         console.log(formData)
         try {
             const response = await axios.post("http://localhost:9999/customer/login",formData)
-            console.log(response)
+            let status = response.status
+            let data = response.data
+            if(status == 200 && data == "VALID CREDENTIALS"){
+                toast.success('Valid credentials..!')
+                navigator("/otp")
+            }
         } catch (error) {
-            handleServerResponse(error.response.status)
-            console.log(error.response.status)
+            let status = error.response.status
+            let data = error.response.data
+            if(status == 401 && data == "INVALID CREDENTIALS"){
+                toast.error('Invalid credentials..!')
+            }
+            else if(status == 401 && data == "ACCOUNT NOT VERIFIED"){
+                toast.warning('Please verify your email to login..!')
+            }
+            
         }
         
     };
 
-    const handleServerResponse = (status) => {
-        toast(status)
-    }
     return (
         <div className=" bg-gray-100">
              {/* <div className="flex bg-white rounded-lg shadow-lg overflow-hidden 4x w-full"> */}
