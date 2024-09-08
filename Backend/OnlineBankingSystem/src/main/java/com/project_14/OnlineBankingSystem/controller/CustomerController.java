@@ -11,7 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+import java.util.Optional;
+
+//@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RestController
 @RequestMapping("/customer")
 public class CustomerController {
@@ -75,7 +77,7 @@ public class CustomerController {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("ACCOUNT NOT VERIFIED");
                 }
 //========= Generate OTP ===========
-            String generatedOTP =otpService.generateOTP();
+            String generatedOTP = otpService.generateOTP();
 //========= Store otp in Session ===========
             httpSession.setAttribute("OTP",generatedOTP);
             httpSession.getAttribute("OTP");
@@ -130,14 +132,30 @@ public class CustomerController {
 
         //=========== Verify OTP =============
         @PostMapping("/verifyOtp")
-        public ResponseEntity<String> verifyUserOTP(@RequestBody OTPService otpToVerify) {
+        public ResponseEntity<String> verifyUserOTP(@RequestBody OTPService otpToVerify, HttpSession sessionOtp) {
             System.out.println(otpToVerify);
             try{
-                String responseMsg = otpService.verifyOTP(otpToVerify.getOtp());
+                String session = (String) sessionOtp.getAttribute("OTP");
+                System.out.println(session);
+                String responseMsg = otpService.verifyOTP(otpToVerify.getOtp(),sessionOtp);
+                if(responseMsg.equals("VERIFIED")){
+                    sessionOtp.setAttribute("isVerified",true);
+                }
                 System.out.println(responseMsg);
                 return ResponseEntity.status(HttpStatus.OK).body(responseMsg);
             }catch (Exception e) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
             }
+        }
+
+        @PostMapping("/test")
+        public ResponseEntity<String> Test(HttpSession httpSession) {
+//            httpSession.setAttribute("demo","yes");
+            Boolean isAuthenticated = (Boolean) httpSession.getAttribute("isVerified");
+            if(isAuthenticated!=null && isAuthenticated){
+                System.out.println("You can access dashboard");
+                return ResponseEntity.status(HttpStatus.OK).body("Verified User");
+            }
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Session expired");
         }
 }

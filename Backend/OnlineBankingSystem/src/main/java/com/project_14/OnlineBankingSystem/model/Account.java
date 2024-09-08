@@ -20,6 +20,9 @@ public class Account {
     private String accountType;
     @Column(nullable = false)
     private double accountBalance;
+    private int tenure;
+    private double amountToBeCredited;
+    private float interest;
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "ddMMyyyy")
     private Date accountCreationDate;
@@ -41,12 +44,15 @@ public class Account {
     @ToString.Exclude
     private List<Transaction> transactionList;
 
-    public Account(Long accountId, String accountType, double accountBalance, Date accountCreationDate, Customer customer) {
+    public Account(Long accountId, String accountType, double accountBalance, Date accountCreationDate, Customer customer,double amountToBeCredited, float interest, int tenure) {
         this.accountId = accountId;
         this.accountType = accountType;
         this.accountBalance = accountBalance;
         this.accountCreationDate = accountCreationDate;
         this.customer = customer;
+        this.amountToBeCredited = amountToBeCredited;
+        this.interest = interest;
+        this.tenure = tenure;
     }
 
 
