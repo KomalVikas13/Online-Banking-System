@@ -7,11 +7,12 @@ import com.project_14.OnlineBankingSystem.repo.CustomerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
-
+//@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @Service
 public class CustomerService {
 
