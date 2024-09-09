@@ -12,7 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginPage></LoginPage>}></Route>
         <Route path="/register" element={<Registration></Registration>}></Route>
-        <Route path="/password_reset" element={<ResetPassword></ResetPassword>}></Route>
+        <Route path="/reset_password" element={<ResetPassword></ResetPassword>}></Route>
         <Route path="/email" element={<EmailPage></EmailPage>}></Route>
         <Route path="/otp" element={<OTPPage></OTPPage>}></Route>
         <Route path="/message" element={<MessagePage></MessagePage>}></Route>
