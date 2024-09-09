@@ -1,11 +1,14 @@
 import axios from "axios";
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const OTPPage = () => {
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
     const [formError, setFormError] = useState("");
 
     const inputRefs = useRef([]);
+    const navigate = useNavigate();
 
     // Handles change for each OTP input
     const handleOtpChange = (index, value) => {
@@ -43,18 +46,19 @@ const OTPPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         let status = validateOtp();
-        if(status == "VALID"){
+        if (status == "VALID") {
             console.log(otp.join(""))
             try {
-                const response = axios.post("http://localhost:9999/customer/verifyOtp", 
-                {
-                    otp : otp.join("")
-                },
-                {
-                    withCredentials : true
-                })
+                const response = await axios.post(
+                    "http://localhost:9999/customer/verifyOtp",
+                    { otp: otp.join("") },
+                    { withCredentials: true }
+                );
                 console.log("success")
                 console.log(response)
+                toast.success("Login Successful!!");
+                navigate("/dashboard");
+
             } catch (error) {
                 console.log("errrer")
                 console.log(error)
