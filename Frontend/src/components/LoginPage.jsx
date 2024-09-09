@@ -7,8 +7,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const LoginPage = () => {
     const [formData, setFormData] = useState({
-        customerId : "",
-        customerPassword : ""
+        customerId: "",
+        customerPassword: ""
     })
     const [errors, setErrors] = useState({});
     const navigator = useNavigate();
@@ -24,14 +24,14 @@ const LoginPage = () => {
     };
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         setFormData(prevData => ({
             ...prevData,
-            [name] : value,
+            [name]: value,
         }))
     }
     const handleBlur = (e) => {
-        const {name} = e.target
+        const { name } = e.target
         let error = ""
 
         if (name === 'customerId') {
@@ -40,25 +40,25 @@ const LoginPage = () => {
             }
             else if (formData.customerId && !validateCustomerId(formData.customerId)) {
                 error = 'Customer ID must be a number with at least 6 digits.';
-            }else{
+            } else {
                 error = ''
             }
         }
 
-        if (name === 'customerPassword') { 
+        if (name === 'customerPassword') {
             if (!formData.customerPassword) {
                 error = 'Password is required';
             }
             else if (formData.customerPassword && !validatePassword(formData.customerPassword)) {
                 error = 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.';
-            }else{
+            } else {
                 error = ''
             }
         }
 
         setErrors(prevErrors => ({
             ...prevErrors,
-            [name] : error
+            [name]: error
         }));
     };
 
@@ -87,30 +87,30 @@ const LoginPage = () => {
         }
         console.log(formData)
         try {
-            const response = await axios.post("http://localhost:9999/customer/login",formData)
+            const response = await axios.post("http://localhost:9999/customer/login", formData, { withCredentials: true })
             let status = response.status
             let data = response.data
-            if(status == 200 && data == "VALID CREDENTIALS"){
+            if (status == 200 && data == "VALID CREDENTIALS") {
                 toast.success('Valid credentials..!')
                 navigator("/otp")
             }
         } catch (error) {
             let status = error.response.status
             let data = error.response.data
-            if(status == 401 && data == "INVALID CREDENTIALS"){
+            if (status == 401 && data == "INVALID CREDENTIALS") {
                 toast.error('Invalid credentials..!')
             }
-            else if(status == 401 && data == "ACCOUNT NOT VERIFIED"){
+            else if (status == 401 && data == "ACCOUNT NOT VERIFIED") {
                 toast.warning('Please verify your email to login..!')
             }
-            
+
         }
-        
+
     };
 
     return (
         <div className=" bg-gray-100">
-             {/* <div className="flex bg-white rounded-lg shadow-lg overflow-hidden 4x w-full"> */}
+            {/* <div className="flex bg-white rounded-lg shadow-lg overflow-hidden 4x w-full"> */}
             <div className="bg-white  flex  justify-center items-center mx-full w-full h-screen ">
                 <div className="w-1/2 p-5">
                     <h2 className="text-3xl font-bold text-gray-800 text-center mb-4">Log in</h2>
@@ -148,8 +148,8 @@ const LoginPage = () => {
                         </div>
 
                         <div className="flex items-center justify-between my-3">
-                            <a href="" onClick={()=>{navigator("/email")}} className="text-sm font-medium text-indigo-600 hover:underline">Forgot Password?</a>
-                            <a href="" onClick={()=>{navigator("/register")}} className="text-sm font-medium text-indigo-600  hover:underline">New User? Sign up</a>
+                            <a href="" onClick={() => { navigator("/email") }} className="text-sm font-medium text-indigo-600 hover:underline">Forgot Password?</a>
+                            <a href="" onClick={() => { navigator("/register") }} className="text-sm font-medium text-indigo-600  hover:underline">New User? Sign up</a>
                         </div>
 
                         <button
@@ -170,7 +170,7 @@ const LoginPage = () => {
                     />
                 </div>
             </div>
-         </div>
+        </div>
     );
 };
 
