@@ -30,10 +30,9 @@ public class AccountService {
     }
 
     private Account convertToEntity(AccountDTO accountDTO){
-        return new Account(accountDTO.getAccountId(),accountDTO.getAccountType(),accountDTO.getAccountBalance(),accountDTO.getAccountCreationDate(),accountDTO.getCustomer());
+        return new Account(accountDTO.getAccountId(),accountDTO.getAccountType(),accountDTO.getAccountBalance(),accountDTO.getAccountCreationDate(),accountDTO.getCustomer(),accountDTO.getAmountToBeCredited(),accountDTO.getInterest(),accountDTO.getTenure());
     }
-
-
+    
     public Account getAccountDetailsByAccountId(long accountId) {
         Optional<Account> accountDetails = accountRepo.findByAccountId(accountId);
         return accountDetails.orElse(null);
@@ -50,4 +49,5 @@ public class AccountService {
         }
         return Long.parseLong(uniqueAccountId);
     }
+
 }
