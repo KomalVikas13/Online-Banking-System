@@ -1,6 +1,7 @@
 package com.project_14.OnlineBankingSystem.controller;
 
 import com.project_14.OnlineBankingSystem.dto.CustomerDTO;
+import com.project_14.OnlineBankingSystem.model.Customer;
 import com.project_14.OnlineBankingSystem.service.CustomerService;
 import com.project_14.OnlineBankingSystem.service.MailService;
 import com.project_14.OnlineBankingSystem.service.OTPService;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
 import java.util.Optional;
 
 //@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
@@ -173,4 +175,63 @@ public class CustomerController {
         }
         return ResponseEntity.status(HttpStatus.OK).body("Session destroyed");
     }
+
+        @PostMapping("/findEmail")
+        public ResponseEntity<String> findEmail(@RequestBody CustomerDTO customerDTO, HttpSession httpSession){
+            Optional<Customer> byEmail = customerService.findEmail(customerDTO);
+            try {
+                if(byEmail.isPresent()){
+                    //========= Generate OTP ===========
+                    Customer customer = byEmail.get();
+                    String generatedOTP = otpService.generateOTP();
+                    //========= Store otp in Session ===========
+                    httpSession.setAttribute("OTP",generatedOTP);
+                    httpSession.getAttribute("OTP");
+                    System.out.println(generatedOTP);
+                    //========= Send OTP via mail ===========
+                    mailService.setSubject("OTP");
+                    mailService.setReceiverName(customer.getCustomerFirstName());
+                    mailService.setTo(customer.getCustomerEmail());
+                    String mailContent= mailService.getOTPMailContent(mailService,generatedOTP);
+                    mailService.setBody(mailContent);
+                    mailService.sendMail();
+                    return ResponseEntity
+                            .status(HttpStatus.OK)
+                            .body("EMAIL_FOUND");
+                }else {
+                    return ResponseEntity
+                            .status(HttpStatus.NOT_FOUND)
+                            .body("EMAIL_NOT_FOUND");
+                }
+            }catch (Exception e) {
+                    return ResponseEntity
+                            .status(HttpStatus.BAD_REQUEST)
+                            .body(e.getMessage());
+            }
+
+        }
+
+        @PostMapping("/resetPassword")
+        public ResponseEntity<String> resetPassword(@RequestBody CustomerDTO customerDTO){
+            String response = customerService.resetPassword(customerDTO);
+            try {
+                if(Objects.equals(response, "UPDATED")){
+                    return ResponseEntity
+                            .status(HttpStatus.OK)
+                            .body(response);
+                }
+                else if(Objects.equals(response, "UPDATED_FAILED")){
+                    return ResponseEntity
+                            .status(HttpStatus.NOT_MODIFIED)
+                            .body(response);
+                }
+            } catch (Exception e) {
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(e.getMessage());
+            }
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("SOMETHING_WENT_WRONG");
+        }
 }

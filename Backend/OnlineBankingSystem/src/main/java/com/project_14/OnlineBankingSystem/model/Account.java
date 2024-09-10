@@ -54,14 +54,4 @@ public class Account {
         this.interest = interest;
         this.tenure = tenure;
     }
-
-
-//    Branch
-//    State
-//    occupation
-//    annual income
-//    loan type
-//    active
-//
-//    serializable
 }

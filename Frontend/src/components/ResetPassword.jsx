@@ -1,10 +1,17 @@
+import axios from "axios";
 import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const ResetPassword = () => {
-    const [formInput, setFormInput] = useState({
+    const navigator = useNavigate()
+    const location = useLocation();
+
+    const queryParams = new URLSearchParams(location.search);
+    const customerEmail = queryParams.get('customerEmail'); 
+        const [formData, setformData] = useState({
         password: "",
         confirmPassword: "",
-        successMsg: "",
     });
 
     const [formError, setFormError] = useState({
@@ -13,8 +20,8 @@ const ResetPassword = () => {
     });
 
     const handleUserInput = (name, value) => {
-        setFormInput({
-            ...formInput,
+        setformData({
+            ...formData,
             [name]: value,
         });
     };
@@ -33,7 +40,10 @@ const ResetPassword = () => {
         }
 
         if (name === "confirmPassword") {
-            if (value !== formInput.password) {
+            if (!value) {
+                error = "Confirm password should not be empty";
+            }
+            else if (value !== formData.password) {
                 error = "Password and confirm password should match";
             }
         }
@@ -44,53 +54,70 @@ const ResetPassword = () => {
         }));
     };
 
-    const validateFormInput = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-
-        let inputError = {
-            password: "",
-            confirmPassword: "",
-        };
 
         // Validate password
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-        if (!formInput.password) {
-            inputError.password = "Password should not be empty";
-        } else if (!passwordRegex.test(formInput.password)) {
-            inputError.password =
-                "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character";
+        if (!formData.password) {
+            setFormError(prevError => ({
+                ...prevError,
+                password : "Password should not be empty",
+            }))
+            
+        } else if (!passwordRegex.test(formData.password)) {
+            setFormError(prevError => ({
+                ...prevError,
+                password : "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+            }))
+            
         }
 
         // Validate confirm password
-        if (formInput.password && formInput.confirmPassword !== formInput.password) {
-            inputError.confirmPassword = "Password and confirm password should match";
+        if(!formData.confirmPassword){
+            setFormError(prevError => ({
+                ...prevError,
+                confirmPassword : "Confirm password should not be empty",
+            }))
+        }
+        else if (formData.password && formData.confirmPassword !== formData.password) {
+            setFormError(prevError => ({
+                ...prevError,
+                confirmPassword : "Password and confirm password should match",
+            }))
+            
+        }else{
+            try {
+                const response = await axios.post("http://localhost:9999/customer/resetPassword",
+                        {
+                            customerEmail : customerEmail,
+                            customerPassword : formData.confirmPassword
+                        },
+                        { withCredentials: true })
+    
+                console.log(response)
+                if(response.status == 200 && response.data == "UPDATED"){
+                    toast.success('Password reset successfull..!')
+                    navigator("/")
+                }
+            } catch (error) {
+                if(error.status == 404 || error){
+                    toast.error('Something went wrong please try again..!')
+                }
+            }
         }
 
-        // If there are no errors, show success message
-        if (!inputError.password && !inputError.confirmPassword) {
-            setFormInput((prevState) => ({
-                ...prevState,
-                successMsg: "Validation Success",
-            }));
-        } else {
-            setFormInput((prevState) => ({
-                ...prevState,
-                successMsg: "",
-            }));
-        }
-
-        setFormError(inputError);
     };
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
             <div className="max-w-md w-full bg-white rounded-lg shadow-md p-6">
                 <h2 className="text-2xl font-semibold text-gray-700 mb-4">Reset Password</h2>
-                <form onSubmit={validateFormInput}>
+                <form>
 
                     <label className="block text-sm font-medium text-gray-700 mt-3">Password</label>
                     <input
-                        value={formInput.password}
+                        value={formData.password}
                         onChange={({ target }) => handleUserInput(target.name, target.value)}
                         onBlur={({ target }) => validateInput(target.name, target.value)}
                         name="password"
@@ -102,7 +129,7 @@ const ResetPassword = () => {
 
                     <label className="block text-sm font-medium text-gray-700 mt-3">Confirm Password</label>
                     <input
-                        value={formInput.confirmPassword}
+                        value={formData.confirmPassword}
                         onChange={({ target }) => handleUserInput(target.name, target.value)}
                         onBlur={({ target }) => validateInput(target.name, target.value)}
                         name="confirmPassword"
@@ -111,11 +138,11 @@ const ResetPassword = () => {
                         placeholder="Enter Confirm Password"
                     />
                     <p className="text-xs text-red-500 mt-1">{formError.confirmPassword}</p>
-                    <p className="text-sm text-green-500 mt-2">{formInput.successMsg}</p>
 
                     <button
                         type="submit"
                         className="w-full mt-6 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"
+                        onClick={handleSubmit}
                     >
                         Submit
                     </button>
