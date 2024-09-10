@@ -1,14 +1,20 @@
 import axios from "axios";
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const OTPPage = () => {
+    const location = useLocation();
+
+    const queryParams = new URLSearchParams(location.search);
+    const customerEmail = queryParams.get('customerEmail'); 
+    const params = useParams()
+    console.log(params)
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
     const [formError, setFormError] = useState("");
 
     const inputRefs = useRef([]);
-    const navigate = useNavigate();
+    const navigator = useNavigate();
 
     // Handles change for each OTP input
     const handleOtpChange = (index, value) => {
@@ -56,11 +62,16 @@ const OTPPage = () => {
                 );
                 console.log("success")
                 console.log(response)
-                toast.success("Login Successful!!");
-                navigate("/dashboard");
+                if(params.navigateTo == "dashboard"){
+                    toast.success("Login Successful!!");
+                    navigator(`/${params.navigateTo}`)
+                }
+                else if(params.navigateTo == "reset_password"){
+                    navigator(`/${params.navigateTo}?customerEmail=${encodeURIComponent(customerEmail)}`)
+                }
 
             } catch (error) {
-                console.log("errrer")
+                console.log("error")
                 console.log(error)
             }
         }

@@ -95,4 +95,20 @@ public class CustomerService {
         }
         return Long.parseLong(uniqueCustomerId);
     }
+
+    public Optional<Customer> findEmail(CustomerDTO customerDTO) {
+        return customerRepo.findByCustomerEmail(customerDTO.getCustomerEmail());
+    }
+
+    public String resetPassword(CustomerDTO customerDTO) {
+        Optional<Customer> byCustomerEmail = customerRepo.findByCustomerEmail(customerDTO.getCustomerEmail());
+        Customer customer = byCustomerEmail.get();
+        customer.setCustomerPassword(customerDTO.getCustomerPassword());
+        Customer savedCustomer = customerRepo.save(customer);
+        System.out.println(savedCustomer.getCustomerPassword().equals(customerDTO.getCustomerPassword()));
+        if(savedCustomer.getCustomerPassword().equals(customerDTO.getCustomerPassword())){
+            return "UPDATED";
+        }
+        return "UPDATED_FAILED";
+    }
 }
