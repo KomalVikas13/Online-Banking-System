@@ -4,11 +4,15 @@ import App from './App.jsx'
 import './index.css'
 import { BrowserRouter } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
+import { AxiosInterceptor } from './middlewares/AxiosInterceptor'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <BrowserRouter>
-      <ToastContainer/>
+  <>
+    <ToastContainer />
+    <BrowserRouter>
+      <AxiosInterceptor />
       <App />
-  </BrowserRouter>
-  
+    </BrowserRouter>
+  </>
+
 )
