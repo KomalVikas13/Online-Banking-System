@@ -69,7 +69,7 @@ const Home = () => {
                             <p className="text-2xl font-semibold mt-2">Rs. {totalBalance.toFixed(2)}</p>
                         </div>
                         <Card className="text-blue-600 hover:text-blue-800 text-sm">
-                            + Add bank
+                            + Add account
                         </Card>
                     </div>
                 </Card>

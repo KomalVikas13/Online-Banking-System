@@ -6,6 +6,7 @@ import EmailPage from "./components/EmailPage"
 import MessagePage from "./components/MessagePage"
 import { Route, Routes } from "react-router-dom"
 import Dashboard from "./components/Dashboard"
+import AddAccount from "./components/AddAccount"
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
       <Route path="/otp/:navigateTo" element={<OTPPage></OTPPage>}></Route>
       <Route path="/message" element={<MessagePage></MessagePage>}></Route>
       <Route path="/dashboard" element={<Dashboard />}></Route>
+      <Route path="/add_account" element={<AddAccount></AddAccount>}></Route>
     </Routes>
   )
 }

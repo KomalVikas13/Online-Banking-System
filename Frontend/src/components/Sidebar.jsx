@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import { FaHome, FaUniversity, FaHistory, FaExchangeAlt, FaLink, FaSignOutAlt } from 'react-icons/fa';
 // import Novo from '../assets/images/Novo.png';
@@ -31,9 +29,9 @@ const Sidebar = () => {
                             </a>
                         </li>
                         <li className="group">
-                            <a href="#my-banks" className="flex items-center p-4 space-x-3 text-gray-700 hover:bg-blue-100 hover:text-blue-600 group">
+                            <a href="" className="flex items-center p-4 space-x-3 text-gray-700 hover:bg-blue-100 hover:text-blue-600 group">
                                 <FaUniversity className="text-xl text-blue-500 group-hover:text-blue-600" />
-                                <span className="font-medium">My Banks</span>
+                                <span className="font-medium">My Accounts</span>
                             </a>
                         </li>
                         <li className="group">

@@ -24,12 +24,12 @@ public class Account {
     private double amountToBeCredited;
     private float interest;
     @Column(nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "ddMMyyyy")
     private Date accountCreationDate;
 
     @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "customerId", nullable = false)
     @JsonBackReference
+    @ToString.Exclude
     private Customer customer;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
