@@ -48,21 +48,16 @@ const OTPPage = () => {
         let status = validateOtp();
         if (status == "VALID") {
             console.log(otp.join(""))
-            try {
-                const response = await axios.post(
-                    "http://localhost:9999/customer/verifyOtp",
-                    { otp: otp.join("") },
-                    { withCredentials: true }
-                );
-                console.log("success")
-                console.log(response)
-                toast.success("Login Successful!!");
+            const response = await axios.post(
+                "http://localhost:9999/customer/verifyOtp",
+                { otp: otp.join("") },
+                { withCredentials: true }
+            );
+            if (response.status == 200) {
+                toast.success("Login Successful!")
                 navigate("/dashboard");
-
-            } catch (error) {
-                console.log("errrer")
-                console.log(error)
             }
+
         }
     };
 
