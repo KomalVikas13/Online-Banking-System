@@ -92,7 +92,7 @@ const LoginPage = () => {
             let data = response.data
             if (status == 200 && data == "VALID CREDENTIALS") {
                 toast.success('Valid credentials..!')
-                navigator("/otp")
+                navigator(`/otp/${"dashboard"}`)
             }
         } catch (error) {
             let status = error.response.status

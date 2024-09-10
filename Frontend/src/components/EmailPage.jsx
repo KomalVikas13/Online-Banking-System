@@ -1,18 +1,21 @@
+import axios from "axios";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const EmailPage = () => {
-    const [formInput, setFormInput] = useState({
-        email: "",
-        successMsg: "",
+    const navigator = useNavigate()
+    const [formData, setformData] = useState({
+        customerEmail: "",
     });
 
     const [formError, setFormError] = useState({
-        email: "",
+        customerEmail: "",
     });
 
     const handleUserInput = (name, value) => {
-        setFormInput({
-            ...formInput,
+        setformData({
+            ...formData,
             [name]: value,
         });
     };
@@ -20,7 +23,7 @@ const EmailPage = () => {
     const validateInput = (name, value) => {
         let error = "";
 
-        if (name === "email") {
+        if (name === "customerEmail") {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!value || !emailRegex.test(value)) {
                 error = "Enter a valid email address";
@@ -33,37 +36,57 @@ const EmailPage = () => {
         }));
     };
 
-    const validateFormInput = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-
-        let inputError = {
-            email: "",
-        };
+        console.log(formData)
 
         // Validate email
-        if (!formInput.email) {
-            inputError.email = "Enter a valid email address";
-        } else {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(formInput.email)) {
-                inputError.email = "Enter a valid email address";
+        
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!formData.customerEmail.trim()) {
+            setFormError(prevError => ({
+                ...prevError,
+                customerEmail : "This field is required",
+            }))
+        } 
+        else if(!emailRegex.test(formData.customerEmail)) {
+            setFormError(prevError => ({
+                ...prevError,
+                customerEmail : "Enter a valid email address",
+            }))
+        }
+        else{
+            console.log(formData)
+            try {
+                const response = await axios.post("http://localhost:9999/customer/findEmail", formData, { withCredentials: true });
+                if (response.status === 200 && response.data === "EMAIL_FOUND") {
+                    navigator(`/otp/reset_password?customerEmail=${encodeURIComponent(formData.customerEmail)}`);
+                }
+            } catch (error) {
+                console.log(error);
+                if (error.response && error.response.status === 404 && error.response.data === "EMAIL_NOT_FOUND") {
+                    toast.error('Please enter the email address used during registration.');
+                } else {
+                    toast.error('Something went wrong. Please try again.');
+                }
             }
+            
         }
 
-        // If there are no errors, show success message
-        if (!inputError.email) {
-            setFormInput((prevState) => ({
-                ...prevState,
-                successMsg: "Validation Success",
-            }));
-        } else {
-            setFormInput((prevState) => ({
-                ...prevState,
-                successMsg: "",
-            }));
-        }
+        // // If there are no errors, show success message
+        // if (!inputError.email) {
+        //     setformData((prevState) => ({
+        //         ...prevState,
+        //         successMsg: "Validation Success",
+        //     }));
+        // } else {
+        //     setformData((prevState) => ({
+        //         ...prevState,
+        //         successMsg: "",
+        //     }));
+        // }
 
-        setFormError(inputError);
+        // setFormError(inputError);
     };
 
     return (
@@ -74,24 +97,23 @@ const EmailPage = () => {
                 Please enter the email address used during registration.<br/>
                 A One-Time Password (OTP) will be sent to this email address.
                 </p>
-                <form onSubmit={validateFormInput}>
+                <form>
                     <label className="block text-sm font-medium text-gray-600 mt-3">Email</label>
                     <input
-                        value={formInput.email}
+                        value={formData.customerEmail}
                         onChange={({ target }) => handleUserInput(target.name, target.value)}
                         onBlur={({ target }) => validateInput(target.name, target.value)}
-                        name="email"
+                        name="customerEmail"
                         type="text"
                         className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
                         placeholder="Enter email"
                     />
-                    <p className="text-xs text-red-500 mt-1">{formError.email}</p>
-
-                    <p className="text-sm text-green-500 mt-2">{formInput.successMsg}</p>
+                    <p className="text-xs text-red-500 mt-1">{formError.customerEmail}</p>
 
                     <button
                         type="submit"
                         className="w-full mt-6 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"
+                        onClick={handleSubmit}
                     >
                         Request OTP
                     </button>
