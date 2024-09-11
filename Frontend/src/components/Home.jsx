@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { GrMoney } from "react-icons/gr";
 import { FaSackDollar } from "react-icons/fa6";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { FaRupeeSign } from 'react-icons/fa';
 
 // Card component
@@ -17,7 +18,8 @@ const Home = ({ customerData }) => {
     console.log(customerData.customerFirstName);
 
     // State for data
-    // const [userName, setUserName] = useState(customerData.customerFirstName);
+    const navigator = useNavigate()
+    const [userName, setUserName] = useState('Username');
     const [totalAccounts, setTotalAccounts] = useState(0);
     const [totalBalance, setTotalBalance] = useState(0);
     const [options, setOptions] = useState([{ title: "Fixed Desposit", icon: <FaSackDollar /> }, { title: "Recurring Desposit", icon: <GrMoney /> }, { title: "Current Account", icon: <FaSackDollar /> }]);
@@ -74,13 +76,13 @@ const Home = ({ customerData }) => {
                 <Card className="mt-8 bg-white rounded-lg shadow-lg w-full">
                     <div className="flex justify-between items-center">
                         <div>
-                            <h2 className="text-lg font-medium">Bank Accounts <span className='text-darkBulish font-bold text-xl'>{customerData.account && customerData.account.length}</span></h2>
+                        <h2 className="text-lg font-medium">Bank Accounts <span className='text-darkBulish font-bold text-xl'>{customerData.account && customerData.account.length}</span></h2>
                             <p className="text-gray-500 mt-3">Total Savings Balance</p>
                             <p className="text-2xl font-semibold mt-2 text-darkBulish flex items-center gap-2"><FaRupeeSign size={20} /><span>{totalBalance.toFixed(2)}</span></p>
                         </div>
-                        <Card className="text-blue-600 hover:text-blue-800 text-sm">
-                            + Add bank
-                        </Card>
+                        <div className="text-blue-600 hover:text-blue-800 text-sm">
+                            <button onClick={() => {navigator("/add_account")}} className="shadow-lg rounded-lg p-4 hover:bg-gradient-to-r from-[#5f9cff] to-[#154884] hover:text-white">+ Create account</button>
+                        </div>
                     </div>
                 </Card>
             </div>

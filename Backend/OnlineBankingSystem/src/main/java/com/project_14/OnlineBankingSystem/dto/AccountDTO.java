@@ -9,7 +9,6 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 public class AccountDTO {
     private long accountId;
     private String accountType;
