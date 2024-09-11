@@ -133,6 +133,8 @@ const OTPPage = () => {
             </div>
         </div>
     );
-};
+
+}
+}
 
 export default OTPPage;

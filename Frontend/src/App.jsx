@@ -4,7 +4,6 @@ import Registration from "./components/Registration"
 import ResetPassword from "./components/ResetPassword"
 import EmailPage from "./components/EmailPage"
 import MessagePage from "./components/MessagePage"
-import { Route, Routes } from "react-router-dom"
 import Dashboard from "./components/Dashboard"
 import AddAccount from "./components/AddAccount"
 import { Route, Routes, useNavigate } from "react-router-dom";
