@@ -31,7 +31,7 @@ const Sidebar = () => {
                         <li className="group">
                             <a href="" className="flex items-center p-4 space-x-3 text-gray-700 hover:bg-blue-100 hover:text-blue-600 group">
                                 <FaUniversity className="text-xl text-blue-500 group-hover:text-blue-600" />
-                                <span className="font-medium">My Accounts</span>
+                                <span className="font-medium">Create Account</span>
                             </a>
                         </li>
                         <li className="group">

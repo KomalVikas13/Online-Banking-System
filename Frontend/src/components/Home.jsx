@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { GrMoney } from "react-icons/gr";
 import { FaSackDollar } from "react-icons/fa6";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 // Card component
 const Card = ({ children, className }) => {
@@ -14,6 +15,7 @@ const Card = ({ children, className }) => {
 
 const Home = () => {
     // State for data
+    const navigator = useNavigate()
     const [userName, setUserName] = useState('Username');
     const [totalAccounts, setTotalAccounts] = useState(0);
     const [totalBalance, setTotalBalance] = useState(0);
@@ -68,9 +70,9 @@ const Home = () => {
                             <p className="text-gray-500">Total Current Balance</p>
                             <p className="text-2xl font-semibold mt-2">Rs. {totalBalance.toFixed(2)}</p>
                         </div>
-                        <Card className="text-blue-600 hover:text-blue-800 text-sm">
-                            + Add account
-                        </Card>
+                        <div className="text-blue-600 hover:text-blue-800 text-sm">
+                            <button onClick={() => {navigator("/add_account")}} className="shadow-lg rounded-lg p-4 hover:bg-gradient-to-r from-[#5f9cff] to-[#154884] hover:text-white">+ Create account</button>
+                        </div>
                     </div>
                 </Card>
             </div>
