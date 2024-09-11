@@ -7,7 +7,7 @@ import { IoPersonCircle } from "react-icons/io5";
 import { PiBankFill } from "react-icons/pi";
 
 
-const Sidebar = ({ customerFirstName, customerLastName, customerEmail }) => {
+const Sidebar = ({ customerFirstName, customerLastName, customerEmail, customerId }) => {
     const [active, setActive] = useState(0);
     return (
         <div className="h-screen w-1/5 bg-white shadow-lg flex flex-col justify-between">
@@ -43,7 +43,7 @@ const Sidebar = ({ customerFirstName, customerLastName, customerEmail }) => {
                             </Link>
                         </li>
                         <li className="group">
-                            <Link to="/make-payment" className={`${active == 3 && 'bg-darkBulish text-white hover:scale-105 duration-500'} text-darkBulish flex items-center w-full p-4 space-x-3 rounded-lg group`}
+                            <Link to={`/make-payment/${customerId}`} className={`${active == 3 && 'bg-darkBulish text-white hover:scale-105 duration-500'} text-darkBulish flex items-center w-full p-4 space-x-3 rounded-lg group`}
                                 onClick={() => setActive(3)}>
                                 <FaExchangeAlt className="text-xl" />
                                 <span className="font-medium">Payment Transfer</span>
