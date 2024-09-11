@@ -8,11 +8,21 @@ export default {
     extend: {
       colors: {
         // Adding a custom color
-        darkBulish: '#328bff',
+        darkBulish: '#407bff',
         mediumBluish: '#2486ff',
         normalBlusih: '#85b7ff',
         lightBlusih: '#e9f2ff'
-      }
+      },
+      animation: {
+        'fade-spin': 'spin 2s linear infinite',
+        'spin-reverse': 'spin 1s linear infinite reverse'
+      },
+      keyframes: {
+        'fade-in': {
+          '0%': { opacity: '0.5' },
+          '100%': { opacity: '1' },
+        },
+      },
     },
   },
   plugins: [],

@@ -6,10 +6,14 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import OTPPage from './OTPpage';
 import { logout } from '../auth/logout';
+import { BiLoaderCircle } from "react-icons/bi";
 
 const LoginPage = () => {
+
+    // clearCookies
     logout();
-    const [isValidCredentails, setIsValidCredentials] = useState(false);
+
+    const [isLoading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         customerId: "",
         customerPassword: ""
@@ -91,7 +95,9 @@ const LoginPage = () => {
         }
         console.log(formData)
         try {
-            const response = await axios.post("http://localhost:9999/customer/login", formData, { withCredentials: true })
+            setLoading(true);
+            const response = await axios.post("http://localhost:9999/customer/login", formData, { withCredentials: true });
+            setLoading(false);
             let status = response.status
             let data = response.data
             if (status == 200 && data == "VALID CREDENTIALS") {
@@ -114,7 +120,7 @@ const LoginPage = () => {
 
     return (
         <div className=" bg-gray-100">
-            {/* <div className="flex bg-white rounded-lg shadow-lg overflow-hidden 4x w-full"> */}
+
             <div className="bg-white  flex  justify-center items-center mx-full w-full h-screen ">
                 <div className="w-1/2 p-5">
                     <h2 className="text-3xl font-bold text-gray-800 text-center mb-4">Log in</h2>
@@ -158,10 +164,11 @@ const LoginPage = () => {
 
                         <button
                             type="submit"
-                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            disabled={isLoading}
+                            className={`${isLoading && 'cursor-not-allowed'} group relative w-full flex justify-center items-center gap-3 py-2 px-4 border transition hover:scale-[1.01] duration-300 border-transparent font-medium rounded-md text-white bg-darkBulish hover:bg-mediumBluish focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
                             onClick={handleLogin}
                         >
-                            Login
+                            Login {isLoading && <BiLoaderCircle size={20} className='text-white animate-fade-in animate-fade-spin' />}
                         </button>
                     </form>
                 </div>
