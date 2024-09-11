@@ -8,12 +8,9 @@ import EmailPage from "./components/EmailPage";
 import MessagePage from "./components/MessagePage";
 import Dashboard from "./components/Dashboard";
 import AddAccount from "./components/AddAccount"
-import { Test } from "./components/Test";
 import { logout } from "./auth/logout"
 import { toast } from "react-toastify"
-// import axios from "axios";
-// import { toast } from "react-toastify";
-// import setupAxiosInterceptor from "./middlewares/axiosInterceptor";
+import Profile from "./components/Profile";
 
 
 function App() {
@@ -33,6 +30,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />}></Route>
       <Route path="/add_account" element={<AddAccount></AddAccount>}></Route>
       <Route path="/logout" element={<Logout />}></Route>
+      <Route path="/profile" element={<Profile />}></Route>
     </Routes>
   )
 }
