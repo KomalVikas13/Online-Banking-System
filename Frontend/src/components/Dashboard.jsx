@@ -1,24 +1,23 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Sidebar from './Sidebar'
 import Home from './Home'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
 
 const Dashboard = () => {
-    const navigate = useNavigate();
-    // useEffect(() => {
-
-    // }, [])
+    const [customerData, setCustomerData] = useState({});
     const getDashboardData = async () => {
         const response = await axios.get("http://localhost:9999/dashboard/", { withCredentials: true });
         console.log(response);
+        setCustomerData(response.data);
     }
-    getDashboardData();
+    useEffect(() => {
+        getDashboardData();
+    }, []);
+
     return (
         <div className='flex'>
-            <Sidebar />
-            <Home />
+            <Sidebar customerFirstName={customerData.customerFirstName} customerLastName={customerData.customerLastName} customerEmail={customerData.customerEmail} />
+            <Home customerData={customerData} />
         </div>
     )
 }
