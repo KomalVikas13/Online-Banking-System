@@ -33,7 +33,7 @@ const Sidebar = ({ customerFirstName, customerLastName, customerEmail }) => {
                             <button className={`${active == 1 && 'bg-darkBulish text-white hover:scale-105 duration-500'} text-darkBulish flex items-center w-full p-4 space-x-3 rounded-lg group`}
                                 onClick={() => setActive(1)}>
                                 <FaUniversity className="text-xl" />
-                                <span className="font-medium">My Banks</span>
+                                <span className="font-medium">My Accounts</span>
                             </button>
                         </li>
                         <li className="group">
@@ -49,27 +49,19 @@ const Sidebar = ({ customerFirstName, customerLastName, customerEmail }) => {
                                 <span className="font-medium">Payment Transfer</span>
                             </Link>
                         </li>
-                        {/* <li className="group">
-                            <button className={`${active == 4 && 'bg-darkBulish text-white hover:scale-105 duration-500'} text-darkBulish flex items-center w-full p-4 space-x-3 rounded-lg group`}
-                                onClick={() => setActive(4)}>
-                                <FaLink className="text-xl" />
-                                <span className="font-medium">Connect Bank</span>
-                            </button>
-                        </li> */}
                     </ul>
                 </nav>
             </div>
 
             {/* Bottom Login Section */}
             <div className="border-t border-gray-200 p-4 flex items-center justify-between">
-                <div className="flex items-center">
-
+                <Link to="/profile" className="flex items-center">
                     <IoPersonCircle className="text-xl text-white-500 hover:text-blue-600 " />
                     <div className="ml-3">
                         <h4 className="font-medium text-gray-800">{customerFirstName} {customerLastName}</h4>
                         <p className="text-sm text-gray-500">{customerEmail}</p>
                     </div>
-                </div>
+                </Link>
                 <Link to="/logout"><FaSignOutAlt className="text-gray-400 hover:text-darkBulish cursor-pointer" title="Logout" />
                 </Link>
             </div>
