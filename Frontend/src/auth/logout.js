@@ -1,9 +1,11 @@
 import axios from "axios";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export const logout = () => {
     console.log("hi ,I am logout!!");
-
+    const navigate = useNavigate();
     useEffect(() => {
         const destroySession = async () => {
             const response = await axios.get("http://localhost:9999/customer/logout", {
@@ -14,6 +16,10 @@ export const logout = () => {
                 document.cookie = document.cookie.split("=")[0] + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
             }
             console.log(response.status);
+            if (response.status == 200) {
+                navigate("/")
+
+            }
 
         }
         destroySession();
