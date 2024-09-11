@@ -7,7 +7,7 @@ const OTPPage = () => {
     const location = useLocation();
 
     const queryParams = new URLSearchParams(location.search);
-    const customerEmail = queryParams.get('customerEmail'); 
+    const customerEmail = queryParams.get('customerEmail');
     const params = useParams()
     console.log(params)
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -73,7 +73,16 @@ const OTPPage = () => {
             } catch (error) {
                 console.log("error")
                 console.log(error)
+            const response = await axios.post(
+                "http://localhost:9999/customer/verifyOtp",
+                { otp: otp.join("") },
+                { withCredentials: true }
+            );
+            if (response.status == 200) {
+                toast.success("Login Successful!")
+                navigate("/dashboard");
             }
+
         }
     };
 

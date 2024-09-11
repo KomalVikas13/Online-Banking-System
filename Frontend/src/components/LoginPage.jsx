@@ -4,8 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import OTPPage from './OTPpage';
+import { logout } from '../auth/logout';
 
 const LoginPage = () => {
+    logout();
+    const [isValidCredentails, setIsValidCredentials] = useState(false);
     const [formData, setFormData] = useState({
         customerId: "",
         customerPassword: ""

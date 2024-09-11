@@ -13,13 +13,14 @@ public class DashboardService {
     private final CustomerRepo customerRepo;
 
     @Autowired
-    public DashboardService(CustomerRepo customerRepo){
+    public DashboardService(CustomerRepo customerRepo) {
         this.customerRepo = customerRepo;
     }
 
-    public Object getCustomerDetails(String email){
+    public Object getCustomerDetails(String email) {
+        System.out.println(email + "====================");
         Optional<Customer> customerDetails = customerRepo.findByCustomerEmail(email);
-        if(customerDetails.isPresent()) {
+        if (customerDetails.isPresent()) {
             return customerDetails.get();
         }else {
             return "Not Found";

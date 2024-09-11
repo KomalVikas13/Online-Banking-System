@@ -7,8 +7,16 @@ import MessagePage from "./components/MessagePage"
 import { Route, Routes } from "react-router-dom"
 import Dashboard from "./components/Dashboard"
 import AddAccount from "./components/AddAccount"
+import { Route, Routes, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+
+// import axios from "axios";
+// import { toast } from "react-toastify";
+// import setupAxiosInterceptor from "./middlewares/axiosInterceptor";
+
 
 function App() {
+
 
   return (
     <Routes>

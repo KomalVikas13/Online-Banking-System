@@ -78,6 +78,9 @@ public class CustomerController {
                 if(!customerData.isEmailVerified()) {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("ACCOUNT NOT VERIFIED");
                 }
+//========= Store email in Session ===========
+            httpSession.setAttribute("email",customerData.getCustomerEmail());
+                System.out.println(httpSession.getAttribute("email"));
 //========= Generate OTP ===========
             String generatedOTP = otpService.generateOTP();
 //========= Store otp in Session ===========
@@ -97,6 +100,7 @@ public class CustomerController {
         }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+        httpSession.setAttribute("isValidCredentials",true);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body("VALID CREDENTIALS");
@@ -135,16 +139,17 @@ public class CustomerController {
         //=========== Verify OTP =============
         @PostMapping("/verifyOtp")
         public ResponseEntity<String> verifyUserOTP(@RequestBody OTPService otpToVerify, HttpSession sessionOtp) {
-            System.out.println(otpToVerify);
+//            System.out.println(otpToVerify);
             try{
                 String session = (String) sessionOtp.getAttribute("OTP");
                 System.out.println(session);
                 String responseMsg = otpService.verifyOTP(otpToVerify.getOtp(),sessionOtp);
                 if(responseMsg.equals("VERIFIED")){
                     sessionOtp.setAttribute("isVerified",true);
+                    return ResponseEntity.status(HttpStatus.OK).body(responseMsg);
+                }else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid OTP");
                 }
-                System.out.println(responseMsg);
-                return ResponseEntity.status(HttpStatus.OK).body(responseMsg);
             }catch (Exception e) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
             }
@@ -160,6 +165,16 @@ public class CustomerController {
             }
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Session expired");
         }
+
+    @GetMapping("/logout")
+    public ResponseEntity<Object> logout(HttpSession httpSession) {
+        try{
+            httpSession.invalidate();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.OK).body(e.toString());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Session destroyed");
+    }
 
         @PostMapping("/findEmail")
         public ResponseEntity<String> findEmail(@RequestBody CustomerDTO customerDTO, HttpSession httpSession){
