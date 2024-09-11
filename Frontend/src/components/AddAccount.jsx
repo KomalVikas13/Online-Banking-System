@@ -150,6 +150,9 @@ const AddAccount = () => {
             } else if (formValues.tenure >= 36 && formValues.tenure <= 60) {
                 interest = 8.08;
                 amountToBeCredited = (formValues.amount * interest * (formValues.tenure/12)) / 100;
+            } else if(formValues.tenure > 60){
+                interest = 8.12;
+                amountToBeCredited = (formValues.amount * interest * (formValues.tenure/12)) / 100;
             }
     
             return { interest, amountToBeCredited };

@@ -1,17 +1,18 @@
 import axios from "axios";
 import React, { useState, useEffect, useRef } from "react";
+import { BiLoaderCircle } from "react-icons/bi";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const OTPPage = () => {
     const location = useLocation();
-
     const queryParams = new URLSearchParams(location.search);
     const customerEmail = queryParams.get('customerEmail');
     const params = useParams()
     console.log(params)
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
     const [formError, setFormError] = useState("");
+    const [isLoading, setLoading] = useState(false);
 
     const inputRefs = useRef([]);
     const navigator = useNavigate();
@@ -55,6 +56,7 @@ const OTPPage = () => {
         if (status == "VALID") {
             console.log(otp.join(""))
             try {
+                setLoading(true);
                 const response = await axios.post(
                     "http://localhost:9999/customer/verifyOtp",
                     { otp: otp.join("") },
@@ -62,27 +64,20 @@ const OTPPage = () => {
                 );
                 console.log("success")
                 console.log(response)
-                if(params.navigateTo == "dashboard"){
+                setLoading(false);
+                if (params.navigateTo == "dashboard") {
                     toast.success("Login Successful!!");
                     navigator(`/${params.navigateTo}`)
                 }
-                else if(params.navigateTo == "reset_password"){
+                else if (params.navigateTo == "reset_password") {
                     navigator(`/${params.navigateTo}?customerEmail=${encodeURIComponent(customerEmail)}`)
                 }
 
             } catch (error) {
+                setLoading(false);
                 console.log("error")
                 console.log(error)
-            const response = await axios.post(
-                "http://localhost:9999/customer/verifyOtp",
-                { otp: otp.join("") },
-                { withCredentials: true }
-            );
-            if (response.status == 200) {
-                toast.success("Login Successful!")
-                navigate("/dashboard");
             }
-
         }
     };
 
@@ -121,9 +116,9 @@ const OTPPage = () => {
 
                     <button
                         type="submit"
-                        className="w-full bg-blue-600 text-white py-2 px-4 rounded-md font-medium hover:bg-indigo-700 transition duration-300"
-                    >
-                        Verify OTP
+                        disabled={isLoading}
+                        className={`${isLoading && 'cursor-not-allowed'} group relative w-full flex justify-center items-center gap-3 py-2 px-4 border transition hover:scale-[1.01] duration-300 border-transparent font-medium rounded-md text-white bg-darkBulish hover:bg-mediumBluish focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}                    >
+                        Verify OTP {isLoading && <BiLoaderCircle className='text-white animate-fade-in animate-fade-spin' />}
                     </button>
 
                     <p className="text-sm text-center text-gray-600 mt-4">
@@ -131,10 +126,9 @@ const OTPPage = () => {
                     </p>
                 </form>
             </div>
-        </div>
+        </div >
     );
 
-}
 }
 
 export default OTPPage;
