@@ -1,8 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const PaymentTransfer = () => {
+  const navigator = useNavigate()
   const params = useParams()
   const [accounts, setAccounts] = useState([])
   const [sourceBank, setSourceBank] = useState(null);
@@ -12,7 +14,7 @@ const PaymentTransfer = () => {
   const [amount, setAmount] = useState("");
 
   const [errors, setErrors] = useState({});
-  const [touched, setTouched] = useState({}); 
+  const [touched, setTouched] = useState({});
 
   const formatDateToYYYYMMDD = (date) => {
     const d = new Date(date);
@@ -97,7 +99,7 @@ const PaymentTransfer = () => {
     validateField(e.target.name, e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formattedDate = formatDateToYYYYMMDD(new Date());
@@ -119,10 +121,23 @@ const PaymentTransfer = () => {
         }
     }
     if (validate()) {
-      console.log("Form is valid! Ready to submit.");
-      // Add your submission logic here
       console.log(data)
-    } else {
+      try {
+        const response = await axios.post("http://localhost:9999/transaction/paymentTransfer", data, { withCredentials: true })
+        console.log(response)
+        if(response.status === 200 && response.data === "SUCCESS"){
+          toast.success('Funds transferred successfully..!')
+          navigator("/dashboard")
+        }
+      } catch (error) {
+        console.log("error")
+        console.log(error)
+        if(error.status === 400 && error.response.data == "NOT_ACCEPTED"){
+          toast.error('Can not transfer funds to this account')
+        }
+      }
+        
+      } else {
       console.log("Form has errors.");
     }
   };

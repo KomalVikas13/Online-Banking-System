@@ -31,7 +31,7 @@ public class TransactionController {
                         .body(response);
             }else if(response.equals("NOT_ACCEPTED")){
                 return ResponseEntity
-                        .status(HttpStatus.UNAUTHORIZED)
+                        .status(HttpStatus.BAD_REQUEST)
                         .body(response);
             }
             return ResponseEntity
