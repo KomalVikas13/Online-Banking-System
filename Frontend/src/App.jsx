@@ -8,7 +8,7 @@ import EmailPage from "./components/EmailPage";
 import MessagePage from "./components/MessagePage";
 import Dashboard from "./components/Dashboard";
 import AddAccount from "./components/AddAccount"
-import { Test } from "./components/Test";
+import  Test  from "./components/Test";
 import { logout } from "./auth/logout"
 import { toast } from "react-toastify"
 import Profile from "./components/Profile";
