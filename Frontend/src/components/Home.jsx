@@ -22,15 +22,27 @@ const Home = ({ customerData }) => {
     const [RDAccounts, setRDAccounts] = useState(0);
     const [SavingsAccounts, setSavingsAccounts] = useState(0);
     const [CurrentAccounts, setCurrentAccounts] = useState(0);
-    const [accounts, setAccounts] = useState(customerData?.account || []);
+    const [accounts, setAccounts] = useState([]);
+
+
+    const getAccountData = async () => {
+        const response = await axios.get("http://localhost:9999/dashboard/", { withCredentials: true });
+        console.log(response);
+        setAccounts(response.data.account);
+    }
+    useEffect(() => {
+        getAccountData();
+    }, []);
 
     const getTotalBalance = () => {
+
         let fd = 0;
         let rd = 0;
         let savings = 0;
         let current = 0;
 
         console.log("Accounts Data:", accounts);  // Log accounts to see if data is being passed correctly
+        console.log("hee");
 
         if (accounts && accounts.length > 0) {
             accounts.forEach(account => {
@@ -69,6 +81,7 @@ const Home = ({ customerData }) => {
     };
 
     useEffect(() => {
+        console.log("hii");
         getTotalBalance();
     }, [accounts]);
 
