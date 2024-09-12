@@ -100,6 +100,7 @@ const Registration = () => {
   
     try {
       // Async request to register the customer
+      console.log(updatedFormData)
       const response = await axios.post('http://localhost:9999/customer/register', updatedFormData);
       console.log(response);
       if(response.data == "CREATED" && response.status == 200){
@@ -301,10 +302,9 @@ const Registration = () => {
                 required
               >
                 <option value="">Select Account Type</option>
-                <option value="saving">Saving</option>
+                <option value="savings">Saving</option>
                 <option value="current">Current</option>
-                <option value="fixed-deposit">Fixed Deposit</option>
-                <option value="loan">Loan Account</option>
+                <option value="fixed_deposit">Fixed Deposit</option>
               </select>
               {errors.accountType && (
                 <p className="text-red-500 text-sm mt-1">{errors.accountType}</p>

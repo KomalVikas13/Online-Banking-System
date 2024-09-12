@@ -8,7 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 public class Beneficiary {
     @Id
     private long beneficiaryId;

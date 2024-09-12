@@ -49,7 +49,7 @@ public class CustomerService {
             System.out.println("newCustomer");
             System.out.println(newCustomer);
             String response = accountService.createAccount(new AccountDTO(customerDTO.getAccountType(), 0.0, customerDTO.getCustomerRegistrationDate(), newCustomer,customerDTO.getAmountToBeCredited(), customerDTO.getInterest(),customerDTO.getTenure()));
-            if(response.equals("Account created")){
+            if(response.equals("CREATED")){
                 msg="CREATED";
                 return msg;
             }else {

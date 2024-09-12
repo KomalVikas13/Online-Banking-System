@@ -38,7 +38,7 @@ const AddAccount = () => {
         setAccountType(selectedType);
 
         // Show Interest Rates link and tenure field based on account type
-        if (selectedType === "Fixed Deposit" || selectedType === "Recurring Deposit") {
+        if (selectedType === "fixed_deposit" || selectedType === "recurring _deposit") {
             setShowInterestRates(true);
             setShowTenureField(true);
         } else {
@@ -192,7 +192,6 @@ const AddAccount = () => {
                 toast.error("Something went wrong..please try again")
             }
         }
-        console.log();
     };
     
 
@@ -229,10 +228,10 @@ const AddAccount = () => {
                             <option value="" disabled>
                                 Select Account Type
                             </option>
-                            <option value="Fixed Deposit">Fixed Deposit</option>
-                            <option value="Recurring Deposit">Recurring Deposit</option>
-                            <option value="Current Account">Current Account</option>
-                            <option value="Savings Account">Savings Account</option>
+                            <option value="fixed_deposit">Fixed Deposit</option>
+                            <option value="recurring _deposit">Recurring Deposit</option>
+                            <option value="current">Current Account</option>
+                            <option value="savings">Savings Account</option>
                         </select>
                         {showInterestRates && (
                             <button

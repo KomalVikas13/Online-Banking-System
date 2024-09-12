@@ -12,7 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +23,8 @@ public class Transaction {
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "ddMMyyyy")
     private Date transactionDate;
-
+    private String transferNote;
+    
     @ManyToMany(mappedBy = "transactionList", fetch = FetchType.LAZY)
     private List<Account> accountList;
 }
