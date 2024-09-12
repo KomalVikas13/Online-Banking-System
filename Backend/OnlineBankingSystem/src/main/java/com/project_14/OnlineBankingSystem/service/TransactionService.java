@@ -14,7 +14,7 @@ public class TransactionService {
 
     public String paymentTransfer(TransactionDTO transactionDTO) {
         Transaction senderTransaction = new Transaction();
-        senderTransaction.setTransactionDate(transactionDTO.);
+        senderTransaction.setTransactionDate(transactionDTO.getRecipient().getTransactionDate());
         return null;
     }
 }

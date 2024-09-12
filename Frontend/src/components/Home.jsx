@@ -4,6 +4,7 @@ import { FaSackDollar } from "react-icons/fa6";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { FaRupeeSign } from 'react-icons/fa';
+import Transaction from './Transaction';
 
 // Card component
 const Card = ({ children, className }) => {
@@ -15,80 +16,105 @@ const Card = ({ children, className }) => {
 };
 
 const Home = ({ customerData }) => {
-    console.log(customerData.customerFirstName);
-
     // State for data
     const navigator = useNavigate()
-    const [userName, setUserName] = useState('Username');
-    const [totalAccounts, setTotalAccounts] = useState(0);
-    const [totalBalance, setTotalBalance] = useState(0);
-    const [options, setOptions] = useState([{ title: "Fixed Desposit", icon: <FaSackDollar /> }, { title: "Recurring Desposit", icon: <GrMoney /> }, { title: "Current Account", icon: <FaSackDollar /> }]);
+    const [FDAccounts, setFDAccounts] = useState(0);
+    const [RDAccounts, setRDAccounts] = useState(0);
+    const [SavingsAccounts, setSavingsAccounts] = useState(0);
+    const [CurrentAccounts, setCurrentAccounts] = useState(0);
+    const [accounts, setAccounts] = useState(customerData?.account || []);
 
     const getTotalBalance = () => {
-        let balance = 0;
-        if (customerData.account > 0) {
-            customerData.forEach(account => {
-                if (account.accountType == 'savings') {
-                    balance += account.accountBalance;
+        let fd = 0;
+        let rd = 0;
+        let savings = 0;
+        let current = 0;
+
+        console.log("Accounts Data:", accounts);  // Log accounts to see if data is being passed correctly
+
+        if (accounts && accounts.length > 0) {
+            accounts.forEach(account => {
+                // Log each account to verify the account type
+                console.log("Processing Account Type:", account.accountType);
+
+                switch (account.accountType.toLowerCase()) {  // Convert to lowercase to avoid case sensitivity issues
+                    case 'savings':
+                        savings++;
+                        break;
+                    case 'current':
+                        current++;
+                        break;
+                    case 'fixed deposit':  // Ensure the case matches the data
+                        fd++;
+                        break;
+                    case 'recurring deposit':  // Ensure the case matches the data
+                        rd++;
+                        break;
+                    default:
+                        console.warn(`Unknown account type: ${account.accountType}`);
+                        break;
                 }
             });
-        }
-        setTotalBalance(balance);
-        console.log(balance);
 
-    }
-    // Loading and error state
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+            // Update the state after iterating through all accounts
+            setCurrentAccounts(current);
+            setSavingsAccounts(savings);
+            setRDAccounts(rd);
+            setFDAccounts(fd);
+
+            console.log("Updated Savings:", savings, "Current:", current, "FD:", fd, "RD:", rd);
+        } else {
+            console.warn("No accounts available or accounts list is empty");
+        }
+    };
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // Replace with your API endpoint
-                // const response = await axios.get('http://localhost:8080/api/dashboard-data');
-
-                // Assuming the response has the necessary data
-                // setUserName(response.data.userName);
-                setTotalAccounts(response.data.totalAccounts);
-                setTotalBalance(response.data.totalBalance);
-                setOptions(response.data.options);
-
-                setLoading(false);
-            } catch (err) {
-                setError('Failed to fetch data');
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-
         getTotalBalance();
-    }, []);
+    }, [accounts]);
+
+
 
     return (
         <div className="w-full justify-center p-8 bg-gray-50 min-h-screen">
-            <div className="p-10 w-full">
+            <div className="px-10 w-full">
                 <h1 className="text-2xl font-semibold">
                     Welcome, <span className="text-blue-600">{customerData.customerFirstName}</span>
                 </h1>
                 <p className="text-gray-500 mt-2">Access & manage your account and transactions efficiently.</p>
 
-                <Card className="mt-8 bg-white rounded-lg shadow-lg w-full">
+                <Card className="mt-5 bg-white rounded-lg shadow-lg w-full">
                     <div className="flex justify-between items-center">
                         <div>
-                        <h2 className="text-lg font-medium">Bank Accounts <span className='text-darkBulish font-bold text-xl'>{customerData.account && customerData.account.length}</span></h2>
-                            <p className="text-gray-500 mt-3">Total Savings Balance</p>
-                            <p className="text-2xl font-semibold mt-2 text-darkBulish flex items-center gap-2"><FaRupeeSign size={20} /><span>{totalBalance.toFixed(2)}</span></p>
+                            <h2 className="text-lg font-medium">Bank Accounts <span className='text-darkBulish font-bold text-xl'>{customerData.account && customerData.account.length}</span></h2>
+                            <div className="flex justify-between gap-5">
+                                <div>
+                                    <p className="text-gray-500 mt-3">Savings</p>
+                                    <p className="text-2xl font-semibold mt-2 text-darkBulish flex items-center gap-2">{SavingsAccounts}</p>
+                                </div>
+                                <div>
+                                    <p className="text-gray-500 mt-3">Current</p>
+                                    <p className="text-2xl font-semibold mt-2 text-darkBulish flex items-center gap-2">{CurrentAccounts}</p>
+                                </div>
+                                <div>
+                                    <p className="text-gray-500 mt-3">Fixed Deposit</p>
+                                    <p className="text-2xl font-semibold mt-2 text-darkBulish flex items-center gap-2">{FDAccounts}</p>
+                                </div>
+                                <div>
+                                    <p className="text-gray-500 mt-3">Recurring Deposit</p>
+                                    <p className="text-2xl font-semibold mt-2 text-darkBulish flex items-center gap-2">{RDAccounts}</p>
+                                </div>
+
+                            </div>
                         </div>
                         <div className="text-blue-600 hover:text-blue-800 text-sm">
-                            <button onClick={() => {navigator("/add_account")}} className="shadow-lg rounded-lg p-4 hover:bg-gradient-to-r from-[#5f9cff] to-[#154884] hover:text-white">+ Create account</button>
+                            <button onClick={() => { navigator("/add_account") }} className="shadow-lg rounded-lg p-4 hover:bg-gradient-to-r from-[#5f9cff] to-[#154884] hover:text-white">+ Create account</button>
                         </div>
                     </div>
                 </Card>
             </div>
 
             <div className="px-10 w-full">
-                <h2 className="text-2xl font-semibold mb-6">My Accounts</h2>
+                {/* <h2 className="text-2xl font-semibold mb-6">My Accounts</h2>
                 <div className="grid grid-cols-3 gap-10">
                     {options.map((option, index) => (
                         <Card
@@ -101,7 +127,8 @@ const Home = ({ customerData }) => {
                             </div>
                         </Card>
                     ))}
-                </div>
+                </div> */}
+                <Transaction />
             </div>
         </div>
     );
