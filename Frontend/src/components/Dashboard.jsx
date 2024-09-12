@@ -16,7 +16,7 @@ const Dashboard = () => {
 
     return (
         <div className='flex'>
-            <Sidebar customerFirstName={customerData.customerFirstName} customerLastName={customerData.customerLastName} customerEmail={customerData.customerEmail} />
+            <Sidebar customerFirstName={customerData.customerFirstName} customerLastName={customerData.customerLastName} customerEmail={customerData.customerEmail} customerId={customerData.customerId} />
             <Home customerData={customerData} />
         </div>
     )

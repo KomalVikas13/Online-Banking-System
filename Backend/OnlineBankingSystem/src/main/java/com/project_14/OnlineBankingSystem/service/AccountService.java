@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,6 +23,18 @@ public class AccountService {
     private CustomerRepo customerRepo;
 
     public String createAccount(AccountDTO accountDTO){
+        Long accountId = generateUniqueAccountId();
+        accountDTO.setAccountId(accountId);
+        Account account = convertToEntity(accountDTO);
+        System.out.println(account.getCustomer());
+        if(account.getCustomer() == null){
+            return "NOT_FOUND";
+        }
+        accountRepo.save(account);
+        return "CREATED";
+    }
+
+    public String createIndividualAccount(AccountDTO accountDTO){
         Long accountId = generateUniqueAccountId();
         accountDTO.setAccountId(accountId);
         Optional<Customer> byCustomerId = customerRepo.findByCustomerId(accountDTO.getCustomerId());
@@ -55,5 +68,11 @@ public class AccountService {
         }
         return Long.parseLong(uniqueAccountId);
     }
+
+    public List<Account> getAllAccounts(Long customerId) {
+        List<Account> allAccounts = accountRepo.findAllByCustomer_CustomerId(customerId);
+        return allAccounts;
+    }
+
 
 }
