@@ -1,10 +1,17 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const AddAccount = () => {
-    const navigator = useNavigate()
+    const navigator = useNavigate();
+    useEffect(() => {
+        if (document.cookie.split('=')[0] != "JSESSIONID") {
+            toast.error("Unauthorized! Please Login.");
+            navigator("/");
+        }
+    }, []);
+
     const [accountType, setAccountType] = useState("");
     const [showInterestRates, setShowInterestRates] = useState(false);
     const [showTenureField, setShowTenureField] = useState(false);
@@ -65,7 +72,7 @@ const AddAccount = () => {
             } else if ((accountType === "Current Account" || accountType === "Savings Account") && amount < 2000) {
                 errorMessage = "Minimum amount for Savings or Current Account is 2000.";
             }
-        }else if(field === "tenure" && value < 12){
+        } else if (field === "tenure" && value < 12) {
             errorMessage = "Tenure must be greater than or equal 12 months."
         }
 
@@ -134,38 +141,38 @@ const AddAccount = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         const formattedDate = formatDateToYYYYMMDD(new Date());
-    
+
         const calculation = () => {
             let interest = 0;
             let amountToBeCredited = 0;
-            
+
             if (formValues.tenure >= 12 && formValues.tenure < 24) {
                 interest = 7;
-                amountToBeCredited = (formValues.amount * interest * (formValues.tenure/12)) / 100;
+                amountToBeCredited = (formValues.amount * interest * (formValues.tenure / 12)) / 100;
             } else if (formValues.tenure >= 24 && formValues.tenure < 36) {
                 interest = 7.9;
-                amountToBeCredited = (formValues.amount * interest * (formValues.tenure/12)) / 100;
+                amountToBeCredited = (formValues.amount * interest * (formValues.tenure / 12)) / 100;
             } else if (formValues.tenure >= 36 && formValues.tenure <= 60) {
                 interest = 8.08;
-                amountToBeCredited = (formValues.amount * interest * (formValues.tenure/12)) / 100;
-            } else if(formValues.tenure > 60){
+                amountToBeCredited = (formValues.amount * interest * (formValues.tenure / 12)) / 100;
+            } else if (formValues.tenure > 60) {
                 interest = 8.12;
-                amountToBeCredited = (formValues.amount * interest * (formValues.tenure/12)) / 100;
+                amountToBeCredited = (formValues.amount * interest * (formValues.tenure / 12)) / 100;
             }
-    
+
             return { interest, amountToBeCredited };
         };
-    
+
         const { interest, amountToBeCredited } = calculation();
-    
+
         // Validate all fields before submitting
         if (!validateFields()) {
             console.error("Validation failed");
-            return; 
+            return;
         }
-    
+
         console.log("Validated");
         const data = {
             accountType: accountType,
@@ -180,21 +187,21 @@ const AddAccount = () => {
         try {
             const response = await axios.post("http://localhost:9999/account/createAccount", data, { withCredentials: true })
             console.log(response)
-            if(response.status === 200 && response.data === "CREATED"){
+            if (response.status === 200 && response.data === "CREATED") {
                 toast.success("Account created")
                 navigator("/dashboard")
             }
         } catch (error) {
-            if(error.response.status === 404 && error.response.data === "NOT_FOUND"){
+            if (error.response.status === 404 && error.response.data === "NOT_FOUND") {
                 toast.error("Customer not found..Please verify Customer Id")
             }
-            else{
+            else {
                 toast.error("Something went wrong..please try again")
             }
         }
         console.log();
     };
-    
+
 
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen); // Toggle modal visibility

@@ -15,9 +15,13 @@ const Dashboard = () => {
     }, []);
 
     return (
-        <div className='flex'>
-            <Sidebar customerFirstName={customerData.customerFirstName} customerLastName={customerData.customerLastName} customerEmail={customerData.customerEmail} />
-            <Home customerData={customerData} />
+        <div className='flex gap-7 justify-between bg-gray-100'>
+            <div className='w-2/12'>
+                <Sidebar customerFirstName={customerData.customerFirstName} customerLastName={customerData.customerLastName} customerEmail={customerData.customerEmail} />
+            </div>
+            <div className='w-full'>
+                <Home customerData={customerData} />
+            </div>
         </div>
     )
 }
