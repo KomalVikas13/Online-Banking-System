@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 const PaymentTransfer = () => {
   const params = useParams()
   const [accounts, setAccounts] = useState([])
-  const [sourceBank, setSourceBank] = useState("");
+  const [sourceBank, setSourceBank] = useState(null);
   const [transferNote, setTransferNote] = useState("");
   const [recipientEmail, setRecipientEmail] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
@@ -13,6 +13,14 @@ const PaymentTransfer = () => {
 
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({}); 
+
+  const formatDateToYYYYMMDD = (date) => {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 
   const validateField = (name, value) => {
     let validationErrors = { ...errors };
@@ -44,8 +52,8 @@ const PaymentTransfer = () => {
       case "amount":
         if (!value) {
           validationErrors.amount = "Please enter an amount.";
-        } else if (Number(value) < 1000) {
-          validationErrors.amount = "Minimum amount should be thousand.";
+        } else if (Number(value) < 1) {
+          validationErrors.amount = "Minimum amount should be 1.";
         } else {
           delete validationErrors.amount;
         }
@@ -58,12 +66,30 @@ const PaymentTransfer = () => {
   };
 
   const validate = () => {
-    validateField("sourceBank", sourceBank);
-    validateField("recipientEmail", recipientEmail);
-    validateField("accountNumber", accountNumber);
-    validateField("amount", amount);
+    let validationErrors = {};
 
-    return Object.keys(errors).length === 0;
+    if (!sourceBank) {
+      validationErrors.sourceBank = "Please select a source bank.";
+    }
+
+    if (!recipientEmail) {
+      validationErrors.recipientEmail = "Recipient's email is required.";
+    } else if (!/\S+@\S+\.\S+/.test(recipientEmail)) {
+      validationErrors.recipientEmail = "Please enter a valid email address.";
+    }
+
+    if (!accountNumber) {
+      validationErrors.accountNumber = "Recipient's account number is required.";
+    }
+
+    if (!amount) {
+      validationErrors.amount = "Please enter an amount.";
+    } else if (amount <= 0) {
+      validationErrors.amount = "Amount must be greater than zero.";
+    }
+
+    setErrors(validationErrors);
+    return Object.keys(validationErrors).length === 0;
   };
 
   const handleBlur = (e) => {
@@ -73,16 +99,29 @@ const PaymentTransfer = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setTouched({
-      sourceBank: true,
-      recipientEmail: true,
-      accountNumber: true,
-      amount: true
-    });
 
+    const formattedDate = formatDateToYYYYMMDD(new Date());
+  
+    const data = {
+        sender : {
+          accountId : sourceBank,
+          transactionType : "debit",
+          transactionAmount : amount,
+          transactionDate : formattedDate,
+          transferNote : transferNote
+        },
+        recipient : {
+          accountId : accountNumber,
+          transactionType : "credit",
+          transactionAmount : amount,
+          transactionDate : formattedDate,
+          transferNote : transferNote
+        }
+    }
     if (validate()) {
       console.log("Form is valid! Ready to submit.");
       // Add your submission logic here
+      console.log(data)
     } else {
       console.log("Form has errors.");
     }
@@ -105,7 +144,7 @@ const PaymentTransfer = () => {
 
   return (
     <div className="bg-gray-100 w-full h-full">
-      <div className="p-6 bg-white shadow-md rounded-lg max-full max-w-full h-screen">
+      <div className="p-6 bg-white rounded-lg max-full max-w-full h-screen">
         <h2 className="text-3xl font-semibold mb-2">Payment Transfer</h2>
         <p className="text-gray-600 mb-6">
           Please provide any specific details or notes related to the payment transfer.
@@ -138,7 +177,7 @@ const PaymentTransfer = () => {
                   </option>
                   {
                   accounts.filter(element => element.accountType === "savings" || element.accountType === "current").map((element,index)=>{
-                    return <option value={element.accountId}>{element.accountType + " account-" + element.accountId}</option>
+                    return <option key={index} value={element.accountId}>{element.accountType + " account-" + element.accountId}</option>
                   })
                 }
                   {/* Add more banks as options */}

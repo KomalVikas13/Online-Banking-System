@@ -102,6 +102,7 @@ const Registration = () => {
 
     try {
       // Async request to register the customer
+      console.log(updatedFormData)
       setLoading(true);
       const response = await axios.post('http://localhost:9999/customer/register', updatedFormData);
       console.log(response);
@@ -133,194 +134,194 @@ const Registration = () => {
     <div className="bg-white flex justify-around">
       <div className="w-1/2 p-5">
         <h2 className="text-3xl font-bold text-gray-800 text-center mb-4">Sign up</h2>
-        <p className="text-sm text-gray-600 text-center mb-8">
-          Please enter your details.
-        </p>
-        <form className='w-[80%] mx-auto'>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <p className="text-sm text-gray-600 text-center mb-8">
+                        Please enter your details.
+                    </p>
+          <form className='w-[80%] mx-auto'>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="mb-4">
+                <label htmlFor="FirstName" className="block text-sm font-medium text-gray-700">First Name</label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="customerFirstName"
+                  placeholder="Enter your first name"
+                  value={formData.customerFirstName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+                {errors.customerFirstName && (
+                  <p className="text-red-500 text-sm mt-1">{errors.customerFirstName}</p>
+                )}
+              </div>
+              <div className="mb-4">
+                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">Last Name</label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="customerLastName"
+                  placeholder="Enter your last name"
+                  value={formData.customerLastName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+                {errors.customerLastName && (
+                  <p className="text-red-500 text-sm mt-1">{errors.customerLastName}</p>
+                )}
+              </div>
+            </div>
             <div className="mb-4">
-              <label htmlFor="FirstName" className="block text-sm font-medium text-gray-700">First Name</label>
+              <label htmlFor="dob" className="block text-sm font-medium text-gray-700">Date of Birth</label>
               <input
-                type="text"
-                id="firstName"
-                name="customerFirstName"
-                placeholder="Enter your first name"
-                value={formData.customerFirstName}
+                type="date"
+                id="dob"
+                name="customerDateOfBirth"
+                value={formData.customerDateOfBirth}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
-              {errors.customerFirstName && (
-                <p className="text-red-500 text-sm mt-1">{errors.customerFirstName}</p>
+              {errors.customerDateOfBirth && (
+                <p className="text-red-500 text-sm mt-1">{errors.customerDateOfBirth}</p>
               )}
             </div>
             <div className="mb-4">
-              <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">Last Name</label>
+              <label htmlFor="panCardNumber" className="block text-sm font-medium text-gray-700">PAN Card Number</label>
               <input
                 type="text"
-                id="lastName"
-                name="customerLastName"
-                placeholder="Enter your last name"
-                value={formData.customerLastName}
+                id="panCardNumber"
+                name="customerPANCardNumber"
+                placeholder="Enter your PAN Card Number"
+                value={formData.customerPANCardNumber}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
-              {errors.customerLastName && (
-                <p className="text-red-500 text-sm mt-1">{errors.customerLastName}</p>
+              {errors.customerPANCardNumber && (
+                <p className="text-red-500 text-sm mt-1">{errors.customerPANCardNumber}</p>
               )}
             </div>
-          </div>
-          <div className="mb-4">
-            <label htmlFor="dob" className="block text-sm font-medium text-gray-700">Date of Birth</label>
-            <input
-              type="date"
-              id="dob"
-              name="customerDateOfBirth"
-              value={formData.customerDateOfBirth}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            {errors.customerDateOfBirth && (
-              <p className="text-red-500 text-sm mt-1">{errors.customerDateOfBirth}</p>
-            )}
-          </div>
-          <div className="mb-4">
-            <label htmlFor="panCardNumber" className="block text-sm font-medium text-gray-700">PAN Card Number</label>
-            <input
-              type="text"
-              id="panCardNumber"
-              name="customerPANCardNumber"
-              placeholder="Enter your PAN Card Number"
-              value={formData.customerPANCardNumber}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            {errors.customerPANCardNumber && (
-              <p className="text-red-500 text-sm mt-1">{errors.customerPANCardNumber}</p>
-            )}
-          </div>
-          <div className="mb-4">
-            <label htmlFor="aadharCardNumber" className="block text-sm font-medium text-gray-700">Aadhar Card Number</label>
-            <input
-              type="text"
-              id="aadharCardNumber"
-              name="customerAadharCardNumber"
-              placeholder="Enter your Aadhar Card Number"
-              value={formData.customerAadharCardNumber}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            {errors.customerAadharCardNumber && (
-              <p className="text-red-500 text-sm mt-1">{errors.customerAadharCardNumber}</p>
-            )}
-          </div>
-          <div className="mb-4">
-            <label htmlFor="customerGender" className="block text-sm font-medium text-gray-700">Gender</label>
-            <select
-              id="customerGender"
-              name="customerGender"
-              value={formData.customerGender}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            >
-              <option value="">Select Gender</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-            </select>
-            {errors.customerGender && (
-              <p className="text-red-500 text-sm mt-1">{errors.customerGender}</p>
-            )}
-          </div>
-          <div className="mb-4">
-            <label htmlFor="customerEmail" className="block text-sm font-medium text-gray-700">Email</label>
-            <input
-              type="email"
-              id="customerEmail"
-              name="customerEmail"
-              placeholder="Enter your email"
-              value={formData.customerEmail}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            {errors.customerEmail && (
-              <p className="text-red-500 text-sm mt-1">{errors.customerEmail}</p>
-            )}
-          </div>
-          <div className="mb-4">
-            <label htmlFor="customerMobileNo" className="block text-sm font-medium text-gray-700">Mobile Number</label>
-            <input
-              type="tel"
-              id="customerMobileNo"
-              name="customerMobileNo"
-              placeholder="Enter your mobile number"
-              value={formData.customerMobileNo}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            {errors.customerMobileNo && (
-              <p className="text-red-500 text-sm mt-1">{errors.customerMobileNo}</p>
-            )}
-          </div>
-          <div className="mb-6">
-            <label htmlFor="customerAddress" className="block text-sm font-medium text-gray-700">Address</label>
-            <input
-              type="text"
-              id="customerAddress"
-              name="customerAddress"
-              placeholder="Enter your address"
-              value={formData.customerAddress}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            {errors.customerAddress && (
-              <p className="text-red-500 text-sm mt-1">{errors.customerAddress}</p>
-            )}
-          </div>
-          <div className="mb-6">
-            <label htmlFor="accountType" className="block text-sm font-medium text-gray-700">Account Type</label>
-            <select
-              id="accountType"
-              name="accountType"
-              value={formData.accountType}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            >
-              <option value="">Select Account Type</option>
-              <option value="saving">Saving</option>
-              <option value="current">Current</option>
-              <option value="fixed-deposit">Fixed Deposit</option>
-              <option value="loan">Loan Account</option>
-            </select>
-            {errors.accountType && (
-              <p className="text-red-500 text-sm mt-1">{errors.accountType}</p>
-            )}
-          </div>
-          <button type="submit" onClick={handleSubmit} disabled={isLoading} className={`${isLoading && 'cursor-not-allowed'} group relative w-full flex justify-center items-center gap-3 py-2 px-4 border transition hover:scale-[1.01] duration-300 border-transparent font-medium rounded-md text-white bg-darkBulish hover:bg-mediumBluish focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}>Sign up {isLoading && <BiLoaderCircle size={20} className='text-white animate-fade-in animate-fade-spin' />}</button>
-        </form>
-        <p className="text-center text-gray-600 mt-4">Already have an account? <a href="" className="text-blue-500 hover:underline" onClick={() => { navigator("/") }}>Login</a></p>
+            <div className="mb-4">
+              <label htmlFor="aadharCardNumber" className="block text-sm font-medium text-gray-700">Aadhar Card Number</label>
+              <input
+                type="text"
+                id="aadharCardNumber"
+                name="customerAadharCardNumber"
+                placeholder="Enter your Aadhar Card Number"
+                value={formData.customerAadharCardNumber}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              {errors.customerAadharCardNumber && (
+                <p className="text-red-500 text-sm mt-1">{errors.customerAadharCardNumber}</p>
+              )}
+            </div>
+            <div className="mb-4">
+              <label htmlFor="customerGender" className="block text-sm font-medium text-gray-700">Gender</label>
+              <select
+                id="customerGender"
+                name="customerGender"
+                value={formData.customerGender}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+              {errors.customerGender && (
+                <p className="text-red-500 text-sm mt-1">{errors.customerGender}</p>
+              )}
+            </div>
+            <div className="mb-4">
+              <label htmlFor="customerEmail" className="block text-sm font-medium text-gray-700">Email</label>
+              <input
+                type="email"
+                id="customerEmail"
+                name="customerEmail"
+                placeholder="Enter your email"
+                value={formData.customerEmail}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              {errors.customerEmail && (
+                <p className="text-red-500 text-sm mt-1">{errors.customerEmail}</p>
+              )}
+            </div>
+            <div className="mb-4">
+              <label htmlFor="customerMobileNo" className="block text-sm font-medium text-gray-700">Mobile Number</label>
+              <input
+                type="tel"
+                id="customerMobileNo"
+                name="customerMobileNo"
+                placeholder="Enter your mobile number"
+                value={formData.customerMobileNo}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              {errors.customerMobileNo && (
+                <p className="text-red-500 text-sm mt-1">{errors.customerMobileNo}</p>
+              )}
+            </div>
+            <div className="mb-6">
+              <label htmlFor="customerAddress" className="block text-sm font-medium text-gray-700">Address</label>
+              <input
+                type="text"
+                id="customerAddress"
+                name="customerAddress"
+                placeholder="Enter your address"
+                value={formData.customerAddress}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              {errors.customerAddress && (
+                <p className="text-red-500 text-sm mt-1">{errors.customerAddress}</p>
+              )}
+            </div>
+            <div className="mb-6">
+              <label htmlFor="accountType" className="block text-sm font-medium text-gray-700">Account Type</label>
+              <select
+                id="accountType"
+                name="accountType"
+                value={formData.accountType}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Select Account Type</option>
+                <option value="saving">Saving</option>
+                <option value="current">Current</option>
+                <option value="fixed-deposit">Fixed Deposit</option>
+                <option value="loan">Loan Account</option>
+              </select>
+              {errors.accountType && (
+                <p className="text-red-500 text-sm mt-1">{errors.accountType}</p>
+              )}
+            </div>
+            <button type="submit" onClick={handleSubmit} className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Sign up</button>
+          </form>
+          <p className="text-center text-gray-600 mt-4">Already have an account? <a href="" className="text-blue-500 hover:underline" onClick={()=>{navigator("/")}}>Login</a></p>
+        </div>
+        <div className="w-1/2 bg-contain bg-no-repeat" style={{ backgroundImage: `url('${register}')` }}></div>
       </div>
-      <div className="w-1/2 bg-contain bg-no-repeat" style={{ backgroundImage: `url('${register}')` }}></div>
-    </div>
   );
 };
 

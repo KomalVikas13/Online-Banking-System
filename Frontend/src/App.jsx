@@ -8,9 +8,15 @@ import EmailPage from "./components/EmailPage";
 import MessagePage from "./components/MessagePage";
 import Dashboard from "./components/Dashboard";
 import AddAccount from "./components/AddAccount"
+import  Test  from "./components/Test";
 import { logout } from "./auth/logout"
 import { toast } from "react-toastify"
 import Profile from "./components/Profile";
+import PaymentTransfer from "./components/PaymentTransfer";
+import DepositAmount from "./components/DepositAmount";
+// import axios from "axios";
+// import { toast } from "react-toastify";
+// import setupAxiosInterceptor from "./middlewares/axiosInterceptor";
 import TransactionHistory from "./components/TransactionHistory";
 import MyAccounts from "./components/MyAccounts";
 
@@ -33,8 +39,6 @@ function App() {
       <Route path="/add_account" element={<AddAccount></AddAccount>}></Route>
       <Route path="/logout" element={<Logout />}></Route>
       <Route path="/profile" element={<Profile />}></Route>
-      <Route path="/txn_history" element={<TransactionHistory />}></Route>
-      <Route path="/my_accounts" element={<MyAccounts />}></Route>
     </Routes>
   )
 }

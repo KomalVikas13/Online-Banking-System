@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 //@CrossOrigin("*")
 
 @AuthAnnotation
@@ -38,7 +40,7 @@ public class AccountController {
 
     @PostMapping("/createAccount")
     public ResponseEntity<String> createAccount(@RequestBody AccountDTO accountDTO){
-        String response = accountService.createAccount(accountDTO);
+        String response = accountService.createIndividualAccount(accountDTO);
         try {
             if(response.equals("NOT_FOUND")){
                 return ResponseEntity
@@ -53,6 +55,13 @@ public class AccountController {
                     .status(HttpStatus.BAD_REQUEST)
                     .body("Something went wrong..!");
         }
+    }
 
+    @GetMapping ("/getAccounts/{customerId}")
+    public ResponseEntity<List<Account>> getAccounts(@PathVariable Long customerId){
+        List<Account> accounts = accountService.getAllAccounts(customerId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(accounts);
     }
 }
