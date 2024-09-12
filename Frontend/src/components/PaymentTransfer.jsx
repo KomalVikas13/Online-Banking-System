@@ -132,8 +132,14 @@ const PaymentTransfer = () => {
       } catch (error) {
         console.log("error")
         console.log(error)
-        if(error.status === 400 && error.response.data == "NOT_ACCEPTED"){
+        if(error.status === 400 && error.response.data === "NOT_ACCEPTED"){
           toast.error('Can not transfer funds to this account')
+        }
+        else if(error.status === 400 && error.response.data === "INSUFFICIENT_BALANCE"){
+          toast.error('Insufficient account balance..!')
+        }
+        else{
+          toast.error('Something went wrong')
         }
       }
         

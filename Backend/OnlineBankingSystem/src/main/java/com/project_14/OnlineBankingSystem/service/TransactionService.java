@@ -26,6 +26,10 @@ public class TransactionService {
         if(senderAccount.isEmpty()){
             return "NOT_FOUND";
         }
+        Account updateSenderAccount = senderAccount.get();
+        if(updateSenderAccount.getAccountBalance() < transactionDTO.getSender().getTransactionAmount()){
+            return "INSUFFICIENT_BALANCE";
+        }
         Optional<Account> recipientAccount = accountRepo.findByAccountId(transactionDTO.getRecipient().getAccountId());
         if(recipientAccount.isEmpty()){
             return "NOT_FOUND";
@@ -39,7 +43,7 @@ public class TransactionService {
         senderTransaction.setTransactionType(transactionDTO.getSender().getTransactionType());
         senderTransaction.setTransferNote(transactionDTO.getSender().getTransferNote());
 
-        Account updateSenderAccount = senderAccount.get();
+
         updateSenderAccount.setAccountBalance(updateSenderAccount.getAccountBalance() - senderTransaction.getTransactionAmount());
         accountRepo.save(updateSenderAccount);
         transactionRepo.save(senderTransaction);

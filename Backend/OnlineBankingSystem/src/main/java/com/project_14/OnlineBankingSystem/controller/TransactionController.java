@@ -33,6 +33,10 @@ public class TransactionController {
                 return ResponseEntity
                         .status(HttpStatus.BAD_REQUEST)
                         .body(response);
+            } else if (response.equals("INSUFFICIENT_BALANCE")) {
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(response);
             }
             return ResponseEntity
                     .status(HttpStatus.OK)
