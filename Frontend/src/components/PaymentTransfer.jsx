@@ -198,7 +198,7 @@ const PaymentTransfer = () => {
                   </option>
                   {
                   accounts.filter(element => element.accountType === "savings" || element.accountType === "current").map((element,index)=>{
-                    return <option key={index} value={element.accountId}>{element.accountType + " account-" + element.accountId}</option>
+                    return <option key={index} value={element.accountId}>{element.accountType + " account-" + element.accountId + ": Account balance - " + element.accountBalance}</option>
                   })
                 }
                   {/* Add more banks as options */}

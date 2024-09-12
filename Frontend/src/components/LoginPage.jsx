@@ -132,7 +132,7 @@ const LoginPage = () => {
                         <div className="my-3">
                             <label className="block text-sm font-medium text-gray-700">Customer ID:</label>
                             <input
-                                type="number"
+                                type="text"
                                 name='customerId'
                                 value={formData.customerId}
                                 onChange={handleChange}
