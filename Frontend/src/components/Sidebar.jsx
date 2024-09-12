@@ -30,7 +30,7 @@ const Sidebar = ({ customerFirstName, customerLastName, customerEmail, customerI
                             </Link>
                         </li>
                         <li className="group">
-                            <Link to="/my_accounts" className={`${active == 1 && 'bg-darkBulish text-white hover:scale-105 duration-500'} text-darkBulish flex items-center w-full p-4 space-x-3 rounded-lg group`}
+                            <Link to={`/my_accounts/${customerId}`} className={`${active == 1 && 'bg-darkBulish text-white hover:scale-105 duration-500'} text-darkBulish flex items-center w-full p-4 space-x-3 rounded-lg group`}
                                 onClick={() => setActive(1)}>
                                 <FaUniversity className="text-xl" />
                                 <span className="font-medium">My Accounts</span>

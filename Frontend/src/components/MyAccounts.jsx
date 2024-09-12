@@ -1,8 +1,21 @@
-import React from 'react'
-import Transaction from './Transaction'
-import { Link } from 'react-router-dom'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
 
 const MyAccounts = () => {
+    const params = useParams();
+    const [accounts, setAccounts] = useState([]);
+
+    const getAccounts = async () => {
+        const response = await axios.get(`http://localhost:9999/account/getAccounts/${params.customerId}`, { withCredentials: true });
+        console.log(response);
+        setAccounts(response.data);
+    }
+    useEffect(() => {
+        getAccounts();
+    }, []);
+    console.log(accounts);
+
     return (
         <div className='p-10'>
             <div className="flex-1">
@@ -15,22 +28,22 @@ const MyAccounts = () => {
                                     <th className="py-3 px-4 text-left font-medium">Account No.</th>
                                     <th className="py-3 px-4 text-left font-medium">Account Type</th>
                                     <th className="py-3 px-4 text-left font-medium">Amount</th>
+                                    <th className="py-3 px-4 text-left font-medium">Tenure</th>
+                                    <th className="py-3 px-4 text-left font-medium">Interest</th>
                                     <th className="py-3 px-4 text-left font-medium">Date</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {/* {currentRecords.map(transaction => (
-                                    <tr key={transaction.id} >
-                                        <td className="py-3 px-4 flex gap-4 items-center"><div className='w-10 h-10 rounded-full bg-lightBlusih text-darkBulish font-medium shadow-lg flex justify-center items-center'>{(transaction.transaction[0])}</div><span>{transaction.transaction}</span></td>
-                                        <td className="py-3 px-4">{transaction.transactionId}</td>
-                                        <td className={`py-3 px-4 ${transaction.amount < 0 ? 'text-red-500' : 'text-green-500'}`}>
-                                            {transaction.amount < 0 ? `- Rs.${Math.abs(transaction.amount)}` : ` + Rs.${transaction.amount}`}
-                                        </td>
-                                        <td className={`${transaction.status == 'Completed' ? "bg-green-50 text-green-600" : "bg-red-50 text-red-500"} text-sm font-medium flex items-center justify-center gap-2 rounded-full`}><div className={`w-[7px] h-[7px] ${transaction.status == 'Completed' ? "bg-green-400" : "bg-red-400"} rounded-full`}></div><div>{transaction.status}</div></td>
-                                        <td className="py-3 px-4">{new Date(transaction.date).toDateString()}</td>
-                                        <td className="py-3 px-4"><span className="text-blue-500">{transaction.account}</span></td>
+                                {(accounts.length > 0) && accounts.map(account => (
+                                    <tr key={account.accountId} >
+                                        <td className="py-3 px-4">{account.accountId}</td>
+                                        <td className="py-3 px-4 capitalize">{account.accountType}</td>
+                                        <td className="py-3 px-4">{account.accountBalance}</td>
+                                        <td className="py-3 px-4">{account.tenure}</td>
+                                        <td className="py-3 px-4">{account.interest} %</td>
+                                        <td className="py-3 px-4">{(account.accountCreationDate)}</td>
                                     </tr>
-                                ))} */}
+                                ))}
                             </tbody>
                         </table>
                     </div>

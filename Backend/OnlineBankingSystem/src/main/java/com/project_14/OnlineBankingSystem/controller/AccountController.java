@@ -25,19 +25,6 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-//    @GetMapping("/getAccountDetails/{accountId}")
-//    public ResponseEntity<Account> getAccountDetailsByAccountId(@PathVariable long accountId){
-//        Account accountDetails = accountService.getAccountDetailsByAccountId(accountId);
-//        if(accountDetails == null){
-//            return ResponseEntity
-//                    .status(HttpStatus.NOT_FOUND)
-//                    .body(null);
-//        }
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(accountDetails);
-//    }
-
     @PostMapping("/createAccount")
     public ResponseEntity<String> createAccount(@RequestBody AccountDTO accountDTO){
         String response = accountService.createIndividualAccount(accountDTO);
@@ -59,6 +46,7 @@ public class AccountController {
 
     @GetMapping ("/getAccounts/{customerId}")
     public ResponseEntity<List<Account>> getAccounts(@PathVariable Long customerId){
+        System.out.println(customerId);
         List<Account> accounts = accountService.getAllAccounts(customerId);
         return ResponseEntity
                 .status(HttpStatus.OK)

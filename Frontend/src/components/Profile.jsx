@@ -19,7 +19,7 @@ const Profile = () => {
             <div className='bg-darkBulish h-60 w-full overflow-hidden'>
             </div>
             <div className='flex justify-center w-full'>
-                <div className="w-1/2 fixed top-20 mx-auto bg-white shadow-lg rounded-lg">
+                <div className="w-3/4 fixed top-20 mx-auto bg-white shadow-lg rounded-lg">
                     <div className="flex p-6">
                         {/* Left Section */}
                         <div className="w-1/3 flex flex-col items-center border-spacing-2 border-r-2">
@@ -34,13 +34,13 @@ const Profile = () => {
                             <p className="text-sm font-medium text-gray-700 mt-6">
                                 <span className="flex items-center">
                                     <FaEnvelope className="w-5 h-5 text-blue-500 mr-2" />
-                                    varunch@gmail.com
+                                    {customerData.customerEmail}
                                 </span>
                             </p>
                             <p className="text-sm font-medium text-gray-700 mt-4">
                                 <span className="flex items-center">
                                     <FaPhoneAlt className="w-5 h-5 text-blue-500 mr-2" />
-                                    (+91) 9948346215
+                                    {customerData.customerMobileNo}
                                 </span>
                             </p>
 
