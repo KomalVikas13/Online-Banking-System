@@ -172,7 +172,7 @@ const PaymentTransfer = () => {
                   onChange={(e) => setSourceBank(e.target.value)}
                   onBlur={handleBlur}
                 >
-                  <option value="" disabled>
+                  <option value="" >
                     Select Account
                   </option>
                   {

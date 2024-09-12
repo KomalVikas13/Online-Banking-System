@@ -58,11 +58,11 @@ const AddAccount = () => {
         } else if (field === "amount") {
             const amount = parseFloat(value);
             // Validate minimum amount based on account type
-            if (accountType === "Fixed Deposit" && amount < 500) {
+            if (accountType === "fixed_deposit" && amount < 500) {
                 errorMessage = "Minimum amount for Fixed Deposit is 500.";
-            } else if (accountType === "Recurring Deposit" && amount < 500) {
+            } else if (accountType === "recurring _deposit" && amount < 500) {
                 errorMessage = "Minimum amount for Recurring Deposit is 500.";
-            } else if ((accountType === "Current Account" || accountType === "Savings Account") && amount < 2000) {
+            } else if ((accountType === "current" || accountType === "savings") && amount < 2000) {
                 errorMessage = "Minimum amount for Savings or Current Account is 2000.";
             }
         }else if(field === "tenure" && value < 12){
@@ -106,11 +106,11 @@ const AddAccount = () => {
             newErrors.amount = "Amount is required.";
         } else if (isNaN(amount)) {
             newErrors.amount = "Amount must be a number.";
-        } else if (accountType === "Fixed Deposit" && amount < 500) {
+        } else if (accountType === "fixed_deposit" && amount < 500) {
             newErrors.amount = "Minimum amount for Fixed Deposit is 500.";
-        } else if (accountType === "Recurring Deposit" && amount < 500) {
+        } else if (accountType === "recurring _deposit" && amount < 500) {
             newErrors.amount = "Minimum amount for Recurring Deposit is 500.";
-        } else if ((accountType === "Current Account" || accountType === "Savings Account") && amount < 2000) {
+        } else if ((accountType === "current" || accountType === "savings") && amount < 2000) {
             newErrors.amount = "Minimum amount for Savings or Current Account is 2000.";
         }
 

@@ -22,7 +22,7 @@ const LoginPage = () => {
     const navigator = useNavigate();
 
     const validateCustomerId = (id) => {
-        const regex = /^\d{6,}$/; // Customer ID should be a number with at least 6 digits
+        const regex = /^\d{7,}$/; // Customer ID should be a number with at least 6 digits
         return regex.test(id);
     };
 
@@ -47,7 +47,7 @@ const LoginPage = () => {
                 error = 'Customer ID is required.';
             }
             else if (formData.customerId && !validateCustomerId(formData.customerId)) {
-                error = 'Customer ID must be a number with at least 6 digits.';
+                error = 'Customer ID must be a number with at least 7 digits.';
             } else {
                 error = ''
             }
