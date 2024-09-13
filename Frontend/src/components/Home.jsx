@@ -101,26 +101,29 @@ const Home = ({ customerData }) => {
                             <h2 className="text-lg font-medium">Bank Accounts <span className='text-darkBulish font-bold text-xl'>{customerData.account && customerData.account.length}</span></h2>
                             <div className="flex justify-between gap-5">
                                 <div>
-                                    <p className="text-gray-500 mt-3">Savings</p>
-                                    <p className="text-2xl font-semibold mt-2 text-darkBulish flex items-center gap-2">{SavingsAccounts}</p>
+                                    <p className="bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white mt-3 px-5 py-1 rounded-full">Savings <b className='ml-2 text-lg'>{SavingsAccounts}</b></p>
+                                    {/* <p className="text-2xl font-semibold mt-2 text-darkBulish flex items-center gap-2">{SavingsAccounts}</p> */}
                                 </div>
                                 <div>
-                                    <p className="text-gray-500 mt-3">Current</p>
-                                    <p className="text-2xl font-semibold mt-2 text-darkBulish flex items-center gap-2">{CurrentAccounts}</p>
+                                    <p className="bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white mt-3 px-5 py-1 rounded-full">Current <b className='ml-2 text-lg'>{CurrentAccounts}</b></p>
+                                    {/* <p className="text-gray-500 mt-3">Current</p>
+                                    <p className="text-2xl font-semibold mt-2 text-darkBulish flex items-center gap-2">{CurrentAccounts}</p> */}
                                 </div>
                                 <div>
-                                    <p className="text-gray-500 mt-3">Fixed Deposit</p>
-                                    <p className="text-2xl font-semibold mt-2 text-darkBulish flex items-center gap-2">{FDAccounts}</p>
+                                    <p className="bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white mt-3 px-5 py-1 rounded-full">Fixed Deposit <b className='ml-2 text-lg'>{FDAccounts}</b></p>
+                                    {/* <p className="text-gray-500 mt-3">Fixed Deposit</p>
+                                    <p className="text-2xl font-semibold mt-2 text-darkBulish flex items-center gap-2">{FDAccounts}</p> */}
                                 </div>
                                 <div>
-                                    <p className="text-gray-500 mt-3">Recurring Deposit</p>
-                                    <p className="text-2xl font-semibold mt-2 text-darkBulish flex items-center gap-2">{RDAccounts}</p>
+                                    <p className="bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white mt-3 px-5 py-1 rounded-full">Recurring Deposit <b className='ml-2 text-lg'>{RDAccounts}</b></p>
+                                    {/* <p className="text-gray-500 mt-3">Recurring Deposit</p>
+                                    <p className="text-2xl font-semibold mt-2 text-darkBulish flex items-center gap-2">{RDAccounts}</p> */}
                                 </div>
 
                             </div>
                         </div>
                         <div className="text-blue-600 hover:text-blue-800 text-sm">
-                            <button onClick={() => { navigator("/add_account") }} className="shadow-lg rounded-lg p-4 hover:bg-gradient-to-r from-[#5f9cff] to-[#154884] hover:text-white">+ Create account</button>
+                            <button onClick={() => { navigator("/add_account") }} className="shadow-lg px-5 py-2 bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white rounded-full font-medium text-md hover:bg-gradient hover:from-white hover:to-white hover:border-[#154884] hover:border hover:text-[#154884]">+ Create account</button>
                         </div>
                     </div>
                 </Card>
