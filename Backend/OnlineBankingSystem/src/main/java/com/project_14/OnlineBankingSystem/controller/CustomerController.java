@@ -127,11 +127,19 @@ public class CustomerController {
     public ResponseEntity<String> verifyToken(@RequestParam String email, @RequestParam String code) {
         String tokenResponse = token.verifyCustomerToken(email,code);
         if(tokenResponse.equals("account verified")) {
-            return ResponseEntity.status(HttpStatus.OK).body("Congratulations, Your account verified! You can login <a style=\"margin-right:10px;background:#328bff;color:white;padding:10px 20px;text-decoration:none\" href=\"http://localhost:5173/\">Login</a> or create <a style=\"margin-right:10px;background:#328bff;color:white;padding:10px 20px;text-decoration:none\" href=\"http://localhost:5173/reset_password\">Create Password</a><br>");
+            return ResponseEntity.status(HttpStatus.OK).body("<body style=\"display:flex\"><div style=\"width: max-content;margin: auto;display:flex;justify-content: center; border: 2px solid #2196F3;border-radius: 10px; background:white; border; padding:20px;align-items:center;\"><div><p style=\"color:green;text-align:center;font-size:1.5rem;font-weight:medium\">Congratulations, Your account verified! </p>You can login <a style=\"margin-right:10px;background:#328bff;color:white;padding:5px 20px;text-decoration:none;border-radius:50px\" href=\"http://localhost:5173/\">Login</a> or create <a style=\"margin-right:10px;background:#328bff;color:white;padding:5px 20px;text-decoration:none;border-radius:50px\" href=\"http://localhost:5173/reset_password?customerEmail="+email+"\">Create Password</a><br></div></body>");
         }else if(tokenResponse.equals("token expired")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token Expired!! <a href=\"http://localhost:5173/verifyEmail\">Resend Verification mail</a>");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("<body style\"display:flex\"><div style=\"\n" +
+                    "    display: flex;\n" +
+                    "    justify-content: center;\n" +
+                    "    align-items: center;\n" +
+                    "    border: 2px solid #2196F3;border-radius: 10px;\n" +
+                    "    width: 30%;\n" +
+                    "    margin: auto;\n" +
+                    "\"><div>\n" +
+                    "    <p style=\"text-align:center; font-size:1.5rem;color:red;font-weight:medium\">Token Expired!!</p><a href=\"http://localhost:5173/verifyEmail\" style=\"display:block;background:#2196F3;text-decoration:none;color:white;margin: 20px;padding:10px 15px;border-radius:50px\">Resend Verification mail</a></div></div>");
         }else if(tokenResponse.equals("user already verified")) {
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Your account already verified,You can login <a style=\"margin-right:10px;background:#328bff;color:white;padding:10px 20px;text-decoration:none\" href=\"http://localhost:5173/\">Login</a> or create <a style=\"margin-right:10px;background:#328bff;color:white;padding:10px 20px;text-decoration:none\" href=\"http://localhost:5173/reset_password\">Create Password</a><br>");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("<body style=\"display:flex\"><div style=\"width: max-content;margin: auto;display:flex;justify-content: center; border: 2px solid #2196F3;border-radius: 10px; background:white; border; padding:20px;align-items:center;\"><div><p style=\"color:green;text-align:center;font-size:1.5rem;font-weight:medium\">Your account has been verified already! </p>You can login <a style=\"margin-right:10px;background:#328bff;color:white;padding:5px 20px;text-decoration:none;border-radius:50px\" href=\"http://localhost:5173/\">Login</a> or create <a style=\"margin-right:10px;background:#328bff;color:white;padding:5px 20px;text-decoration:none;border-radius:50px\" href=\"http://localhost:5173/reset_password?customerEmail="+email+"\">Create Password</a><br></div></body>");
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something went wrong!!");
     }

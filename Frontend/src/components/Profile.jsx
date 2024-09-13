@@ -3,23 +3,30 @@ import React, { useEffect, useState } from 'react';
 import { BiUserCircle } from 'react-icons/bi';
 import { FaEnvelope, FaPhoneAlt, FaEdit } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { formatDate } from '../utilities/DateFormating';
 
 const Profile = () => {
     const [customerData, setCustomerData] = useState({});
+    const [formattedDate, setFormattedDate] = useState(null);
     const getDashboardData = async () => {
         const response = await axios.get("http://localhost:9999/dashboard/", { withCredentials: true });
         console.log(response);
         setCustomerData(response.data);
+        if (response.data) {
+            let date = await formatDate(response.data.customerRegistrationDate);
+            setFormattedDate(date);
+        }
     }
     useEffect(() => {
         getDashboardData();
     }, []);
+
     return (
         <div className='h-screen bg-lightBlusih overflow-hidden'>
             <div className='bg-darkBulish h-60 w-full overflow-hidden'>
             </div>
             <div className='flex justify-center w-full'>
-                <div className="w-1/2 fixed top-20 mx-auto bg-white shadow-lg rounded-lg">
+                <div className="w-3/4 fixed top-20 mx-auto bg-white shadow-lg rounded-lg">
                     <div className="flex p-6">
                         {/* Left Section */}
                         <div className="w-1/3 flex flex-col items-center border-spacing-2 border-r-2">
@@ -34,18 +41,18 @@ const Profile = () => {
                             <p className="text-sm font-medium text-gray-700 mt-6">
                                 <span className="flex items-center">
                                     <FaEnvelope className="w-5 h-5 text-blue-500 mr-2" />
-                                    varunch@gmail.com
+                                    {customerData.customerEmail}
                                 </span>
                             </p>
                             <p className="text-sm font-medium text-gray-700 mt-4">
                                 <span className="flex items-center">
                                     <FaPhoneAlt className="w-5 h-5 text-blue-500 mr-2" />
-                                    (+91) 9948346215
+                                    {customerData.customerMobileNo}
                                 </span>
                             </p>
 
                             <div className='mt-10'>
-                                <Link to="/reset_password" className="bg-darkBulish px-3 py-2 text-white hover:bg-blue-600 rounded-md">
+                                <Link to={`/reset_password?customerEmail=${customerData.customerEmail}`} className="bg-darkBulish px-3 py-2 text-white hover:bg-blue-600 rounded-md">
                                     Reset Password
                                 </Link>
                             </div>
@@ -98,7 +105,7 @@ const Profile = () => {
                                     </div>
                                     <div>
                                         <h4 className="text-sm font-semibold text-gray-500">Account Created On</h4>
-                                        <p className="text-md text-gray-700">{customerData.customerRegistrationDate}</p>
+                                        <p className="text-md text-gray-700">{formattedDate}</p>
                                     </div>
 
                                 </div>

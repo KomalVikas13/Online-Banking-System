@@ -4,23 +4,25 @@ import axios from 'axios';
 import formRules from '../formRules';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { BiLoaderCircle } from 'react-icons/bi';
 const Registration = () => {
   const navigator = useNavigate();
   const [formData, setFormData] = useState({
-      customerFirstName : "",
-      customerLastName : "",
-      customerDateOfBirth : "",
-      customerPANCardNumber : "",
-      customerAadharCardNumber : "",
-      customerGender : "",
-      customerEmail : "",
-      customerMobileNo : "",
-      customerAddress : "",
-      customerRegistrationDate : "",
-      accountType : ""
+    customerFirstName: "",
+    customerLastName: "",
+    customerDateOfBirth: "",
+    customerPANCardNumber: "",
+    customerAadharCardNumber: "",
+    customerGender: "",
+    customerEmail: "",
+    customerMobileNo: "",
+    customerAddress: "",
+    customerRegistrationDate: "",
+    accountType: ""
   });
 
   const [errors, setErrors] = useState({});
+  const [isLoading, setLoading] = useState(false);
 
   const formatDateToYYYYMMDD = (date) => {
     const d = new Date(date);
@@ -38,7 +40,7 @@ const Registration = () => {
   };
 
   const handleBlur = (e) => {
-    const {name} = e.target
+    const { name } = e.target
     let error = formRules.registrationFormOnBlurRules(e);
     console.log(error)
 
@@ -50,18 +52,18 @@ const Registration = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Format the customerRegistrationDate to YYYYMMDD
     const formattedDate = formatDateToYYYYMMDD(new Date());
-    
+
     // Create a copy of formData with the updated registration date
     const updatedFormData = {
       ...formData,
       customerRegistrationDate: formattedDate,
     };
-  
+
     const newErrors = {};
-  
+
     // Basic required field validations
     if (!updatedFormData.customerFirstName) newErrors.customerFirstName = 'This field is required';
     if (!updatedFormData.customerLastName) newErrors.customerLastName = 'This field is required';
@@ -73,7 +75,7 @@ const Registration = () => {
     if (!updatedFormData.customerMobileNo) newErrors.customerMobileNo = 'This field is required';
     if (!updatedFormData.customerAddress) newErrors.customerAddress = 'This field is required';
     if (!updatedFormData.accountType) newErrors.accountType = 'This field is required';
-  
+
     // Additional validations using form rules
     if (updatedFormData.customerEmail && !formRules.email(updatedFormData.customerEmail)) {
       newErrors.customerEmail = 'Invalid email address. Must be a @gmail.com email.';
@@ -90,44 +92,46 @@ const Registration = () => {
     if (updatedFormData.customerAadharCardNumber && !formRules.aadharCardNumber(updatedFormData.customerAadharCardNumber)) {
       newErrors.customerAadharCardNumber = 'Aadhar Card Number must be 12 digits.';
     }
-  
+
     // If there are errors, update the error state and return early
     if (Object.keys(newErrors).length > 0) {
       console.log('newErrors', newErrors);
       setErrors(newErrors);
       return;
     }
-  
+
     try {
       // Async request to register the customer
       console.log(updatedFormData)
       const response = await axios.post('http://localhost:9999/customer/register', updatedFormData);
       console.log(response);
-      if(response.data == "CREATED" && response.status == 200){
+      setLoading(false);
+      if (response.data == "CREATED" && response.status == 200) {
         toast.success(`Registration successfull....!`)
-        toast.info(`${formData.accountType} account is created`)
-        navigator("/message")
+        toast.info(`${formData.accountType} account is created`);
+        navigator("/message");
       }
       // Clear form data or handle successful registration
     } catch (error) {
-          let status = error.response.status
-          let data = error.response.data
-          console.log(error.response.status)
-          console.log(error.response.data)
-          if(status == 409 && data == "EXISTS"){
-            toast.warning(`Already had an account with ${formData.customerEmail}`)
-          }
-          else if(status == 401){
-            toast.error(`Registration failed..`)
-          }      
+      setLoading(false);
+      let status = error.response.status
+      let data = error.response.data
+      console.log(error.response.status)
+      console.log(error.response.data)
+      if (status == 409 && data == "EXISTS") {
+        toast.warning(`Already had an account with ${formData.customerEmail}`)
+      }
+      else if (status == 401) {
+        toast.error(`Registration failed..`)
+      }
     }
   };
-  
-  
+
+
 
   return (
-      <div className="bg-white flex justify-around">
-        <div className="w-1/2 p-5">
+    <div className="bg-white flex justify-around">
+      <div className="w-1/2 p-5">
         <h2 className="text-3xl font-bold text-gray-800 text-center mb-4">Sign up</h2>
                     <p className="text-sm text-gray-600 text-center mb-8">
                         Please enter your details.

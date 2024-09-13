@@ -1,0 +1,74 @@
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
+
+const MyAccounts = () => {
+    const params = useParams();
+    const [accounts, setAccounts] = useState([]);
+
+    const getAccounts = async () => {
+        const response = await axios.get(`http://localhost:9999/account/getAccounts/${params.customerId}`, { withCredentials: true });
+        console.log(response);
+        setAccounts(response.data);
+    }
+    useEffect(() => {
+        getAccounts();
+    }, []);
+    console.log(accounts);
+
+    return (
+        <div className='p-10'>
+            <div className="flex-1">
+                <h1 className='text-darkBulish font-semibold text-2xl'>All Accounts</h1>
+                <div className="mt-5">
+                    <div>
+                        <table className="min-w-full mt-4 bg-white rounded-lg shadow">
+                            <thead>
+                                <tr className='bg-slate-100'>
+                                    <th className="py-3 px-4 text-left font-medium">Account No.</th>
+                                    <th className="py-3 px-4 text-left font-medium">Account Type</th>
+                                    <th className="py-3 px-4 text-left font-medium">Amount</th>
+                                    <th className="py-3 px-4 text-left font-medium">Tenure</th>
+                                    <th className="py-3 px-4 text-left font-medium">Interest</th>
+                                    <th className="py-3 px-4 text-left font-medium">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {(accounts.length > 0) && accounts.map(account => (
+                                    <tr key={account.accountId} >
+                                        <td className="py-3 px-4">{account.accountId}</td>
+                                        <td className="py-3 px-4 capitalize">{account.accountType}</td>
+                                        <td className="py-3 px-4">{account.accountBalance}</td>
+                                        <td className="py-3 px-4">{account.tenure}</td>
+                                        <td className="py-3 px-4">{account.interest} %</td>
+                                        <td className="py-3 px-4">{(account.accountCreationDate)}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    {/* Pagination controls */}
+                    {/* <div className="mt-4 flex justify-center">
+                    {Array.from({ length: totalPages }, (v, i) => (
+                        <button
+                            key={i + 1}
+                            onClick={() => handlePageChange(i + 1)}
+                            className={`mx - 1 px - 3 py - 1 rounded - md ${ currentPage === i + 1 ? 'bg-blue-600 text-white' : 'bg-white text-blue-600 border'
+                                }`}
+                        >
+                        {i + 1}
+                    </button>
+                    ))}
+            </div> */}
+                </div>
+            </div>
+            <div className='mt-5 float-end'>
+                <Link to="/dashboard" className='bg-darkBulish text-white px-4 py-2 rounded-lg shadow-lg'>Back</Link>
+            </div>
+        </div>
+    )
+}
+
+export default MyAccounts

@@ -105,6 +105,7 @@ const LoginPage = () => {
                 navigator(`/otp/${"dashboard"}`)
             }
         } catch (error) {
+            setLoading(false);
             let status = error.response.status
             let data = error.response.data
             if (status == 401 && data == "INVALID CREDENTIALS") {
