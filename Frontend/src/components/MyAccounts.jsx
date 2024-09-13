@@ -1,10 +1,12 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { formatDate } from '../utilities/DateFormating';
 
 const MyAccounts = () => {
     const params = useParams();
     const [accounts, setAccounts] = useState([]);
+    const [formattedDate, setFormattedDate] = useState(null);
 
     const getAccounts = async () => {
         const response = await axios.get(`http://localhost:9999/account/getAccounts/${params.customerId}`, { withCredentials: true });
@@ -30,20 +32,27 @@ const MyAccounts = () => {
                                     <th className="py-3 px-4 text-left font-medium">Amount</th>
                                     <th className="py-3 px-4 text-left font-medium">Tenure</th>
                                     <th className="py-3 px-4 text-left font-medium">Interest</th>
+                                    <th className="py-3 px-4 text-left font-medium">Maturity Amount</th>
                                     <th className="py-3 px-4 text-left font-medium">Date</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {(accounts.length > 0) && accounts.map(account => (
-                                    <tr key={account.accountId} >
-                                        <td className="py-3 px-4">{account.accountId}</td>
-                                        <td className="py-3 px-4 capitalize">{account.accountType}</td>
-                                        <td className="py-3 px-4">{account.accountBalance}</td>
-                                        <td className="py-3 px-4">{account.tenure}</td>
-                                        <td className="py-3 px-4">{account.interest} %</td>
-                                        <td className="py-3 px-4">{(account.accountCreationDate)}</td>
-                                    </tr>
-                                ))}
+                            {accounts.length > 0 && accounts.map((account) => (
+                                <tr key={account.accountId}>
+                                    <td className="py-3 px-4">{account.accountId}</td>
+                                    <td className="py-3 px-4 capitalize">{account.accountType}</td>
+                                    <td className="py-3 px-4">{account.accountBalance}</td>
+                                    <td className="py-3 px-4">{account.tenure}</td>
+                                    <td className="py-3 px-4">{account.interest} %</td>
+                                    <td className="py-3 px-4">
+                                        {account.amountToBeCredited ? parseFloat(account.amountToBeCredited).toFixed(2) : '0.00'}
+                                    </td>
+                                    <td className="py-3 px-4">
+                                        {formatDate(account.accountCreationDate)} {/* Directly call formatDate here */}
+                                    </td>
+                                </tr>
+                            ))}
+
                             </tbody>
                         </table>
                     </div>

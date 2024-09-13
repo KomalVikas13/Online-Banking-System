@@ -1,4 +1,4 @@
-export const formatDate = async (dateToBeformated) => {
+export const formatDate = (dateToBeformated) => {
     const dateStr = dateToBeformated;
     const date = new Date(dateStr);
 

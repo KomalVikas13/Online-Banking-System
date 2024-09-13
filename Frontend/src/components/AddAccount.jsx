@@ -27,9 +27,9 @@ const AddAccount = () => {
 
     // State to handle input values
     const [formValues, setFormValues] = useState({
-        customerId: "",
-        amount: "",
-        tenure: "",
+        customerId: 0,
+        amount: 0,
+        tenure: 0,
     });
 
     // State to handle error messages
@@ -147,20 +147,47 @@ const AddAccount = () => {
         const calculation = () => {
             let interest = 0;
             let amountToBeCredited = 0;
-
-            if (formValues.tenure >= 12 && formValues.tenure < 24) {
-                interest = 7;
-                amountToBeCredited = (formValues.amount * interest * (formValues.tenure / 12)) / 100;
-            } else if (formValues.tenure >= 24 && formValues.tenure < 36) {
-                interest = 7.9;
-                amountToBeCredited = (formValues.amount * interest * (formValues.tenure / 12)) / 100;
-            } else if (formValues.tenure >= 36 && formValues.tenure <= 60) {
-                interest = 8.08;
-                amountToBeCredited = (formValues.amount * interest * (formValues.tenure / 12)) / 100;
-            } else if (formValues.tenure > 60) {
-                interest = 8.12;
-                amountToBeCredited = (formValues.amount * interest * (formValues.tenure / 12)) / 100;
+            if(accountType == "fixed_deposit"){
+                if (formValues.tenure >= 12 && formValues.tenure < 24) {
+                    interest = 7;
+                    amountToBeCredited = (formValues.amount * interest * (formValues.tenure / 12)) / 100;
+                } else if (formValues.tenure >= 24 && formValues.tenure < 36) {
+                    interest = 7.9;
+                    amountToBeCredited = (formValues.amount * interest * (formValues.tenure / 12)) / 100;
+                } else if (formValues.tenure >= 36 && formValues.tenure <= 60) {
+                    interest = 8.08;
+                    amountToBeCredited = (formValues.amount * interest * (formValues.tenure / 12)) / 100;
+                } else if (formValues.tenure > 60) {
+                    interest = 8.12;
+                    amountToBeCredited = (formValues.amount * interest * (formValues.tenure / 12)) / 100;
+                }
+                amountToBeCredited = parseFloat(amountToBeCredited) + parseFloat(formValues.amount);
             }
+            else if (accountType == "recurring _deposit") {
+                // Function to calculate RD maturity with compounding interest
+                function calculateRDMaturity(principal, interestRate, tenureMonths) {
+                    const monthlyInterestRate = interestRate / (12 * 100); // Convert annual rate to monthly rate in decimal
+                    const maturityAmount = principal * ((Math.pow(1 + monthlyInterestRate, tenureMonths) - 1) / (1 - Math.pow(1 + monthlyInterestRate, -1)));
+                    return maturityAmount;
+                }
+            
+                // Determine interest rate and calculate maturity amount based on tenure
+                if (formValues.tenure >= 12 && formValues.tenure < 24) {
+                    interest = 7;
+                    amountToBeCredited = calculateRDMaturity(formValues.amount, interest, formValues.tenure);
+                } else if (formValues.tenure >= 24 && formValues.tenure < 36) {
+                    interest = 7.9;
+                    amountToBeCredited = calculateRDMaturity(formValues.amount, interest, formValues.tenure);
+                } else if (formValues.tenure >= 36 && formValues.tenure <= 60) {
+                    interest = 8.08;
+                    amountToBeCredited = calculateRDMaturity(formValues.amount, interest, formValues.tenure);
+                } else if (formValues.tenure > 60) {
+                    interest = 8.12;
+                    amountToBeCredited = calculateRDMaturity(formValues.amount, interest, formValues.tenure);
+                }
+                 
+            }
+            
 
             return { interest, amountToBeCredited };
         };

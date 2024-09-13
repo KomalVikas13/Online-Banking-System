@@ -56,10 +56,10 @@ const Home = ({ customerData }) => {
                     case 'current':
                         current++;
                         break;
-                    case 'fixed deposit':  // Ensure the case matches the data
+                    case 'fixed_deposit':  // Ensure the case matches the data
                         fd++;
                         break;
-                    case 'recurring deposit':  // Ensure the case matches the data
+                    case 'recurring _deposit':  // Ensure the case matches the data
                         rd++;
                         break;
                     default:

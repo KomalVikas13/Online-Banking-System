@@ -150,7 +150,7 @@ const PaymentTransfer = () => {
 
   const getAllAccounts = async () => {
     try {
-      const response = await axios.get(`http://localhost:9999/account/getAccounts/${params.customerId}`)
+      const response = await axios.get(`http://localhost:9999/account/getAccounts/${params.customerId}`, {withCredentials : true})
       console.log(response.data)
       setAccounts(()=>response.data)
     } catch (error) {

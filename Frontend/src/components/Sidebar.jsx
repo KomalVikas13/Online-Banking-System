@@ -43,7 +43,7 @@ const Sidebar = ({ customerFirstName, customerLastName, customerEmail, customerI
                             </Link>
                         </li>
                         <li className="group">
-                            <Link to={`/make-payment/${customerId}`} className={`${active == 3 && 'bg-darkBulish text-white hover:scale-105 duration-500'} text-darkBulish flex items-center w-full p-4 space-x-3 rounded-lg group`}
+                            <Link to={`/make_payment/${customerId}`} className={`${active == 3 && 'bg-darkBulish text-white hover:scale-105 duration-500'} text-darkBulish flex items-center w-full p-4 space-x-3 rounded-lg group`}
                                 onClick={() => setActive(3)}>
                                 <FaExchangeAlt className="text-xl" />
                                 <span className="font-medium">Payment Transfer</span>

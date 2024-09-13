@@ -8,6 +8,7 @@ import com.project_14.OnlineBankingSystem.repo.TransactionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -58,4 +59,10 @@ public class TransactionService {
         transactionRepo.save(recipientTransaction);
         return "SUCCESS";
     }
+
+    public List<Transaction> getTransactionHistoryByCustomerId(Long customerId) {
+        return transactionRepo.findAllTransactionsByCustomerId(customerId);
+    }
 }
+//        account.setTransactionList(Collections.singletonList(transaction));
+//        transaction.setAccountList(Collections.singletonList(account));
