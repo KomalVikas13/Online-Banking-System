@@ -27,9 +27,9 @@ const AddAccount = () => {
 
     // State to handle input values
     const [formValues, setFormValues] = useState({
-        customerId: "",
-        amount: "",
-        tenure: "",
+        customerId: 0,
+        amount: 0,
+        tenure: 0,
     });
 
     // State to handle error messages
@@ -65,11 +65,11 @@ const AddAccount = () => {
         } else if (field === "amount") {
             const amount = parseFloat(value);
             // Validate minimum amount based on account type
-            if (accountType === "Fixed Deposit" && amount < 500) {
+            if (accountType === "fixed_deposit" && amount < 500) {
                 errorMessage = "Minimum amount for Fixed Deposit is 500.";
-            } else if (accountType === "Recurring Deposit" && amount < 500) {
+            } else if (accountType === "recurring _deposit" && amount < 500) {
                 errorMessage = "Minimum amount for Recurring Deposit is 500.";
-            } else if ((accountType === "Current Account" || accountType === "Savings Account") && amount < 2000) {
+            } else if ((accountType === "current" || accountType === "savings") && amount < 2000) {
                 errorMessage = "Minimum amount for Savings or Current Account is 2000.";
             }
         } else if (field === "tenure" && value < 12) {
@@ -113,11 +113,11 @@ const AddAccount = () => {
             newErrors.amount = "Amount is required.";
         } else if (isNaN(amount)) {
             newErrors.amount = "Amount must be a number.";
-        } else if (accountType === "Fixed Deposit" && amount < 500) {
+        } else if (accountType === "fixed_deposit" && amount < 500) {
             newErrors.amount = "Minimum amount for Fixed Deposit is 500.";
-        } else if (accountType === "Recurring Deposit" && amount < 500) {
+        } else if (accountType === "recurring _deposit" && amount < 500) {
             newErrors.amount = "Minimum amount for Recurring Deposit is 500.";
-        } else if ((accountType === "Current Account" || accountType === "Savings Account") && amount < 2000) {
+        } else if ((accountType === "current" || accountType === "savings") && amount < 2000) {
             newErrors.amount = "Minimum amount for Savings or Current Account is 2000.";
         }
 
@@ -147,20 +147,47 @@ const AddAccount = () => {
         const calculation = () => {
             let interest = 0;
             let amountToBeCredited = 0;
-
-            if (formValues.tenure >= 12 && formValues.tenure < 24) {
-                interest = 7;
-                amountToBeCredited = (formValues.amount * interest * (formValues.tenure / 12)) / 100;
-            } else if (formValues.tenure >= 24 && formValues.tenure < 36) {
-                interest = 7.9;
-                amountToBeCredited = (formValues.amount * interest * (formValues.tenure / 12)) / 100;
-            } else if (formValues.tenure >= 36 && formValues.tenure <= 60) {
-                interest = 8.08;
-                amountToBeCredited = (formValues.amount * interest * (formValues.tenure / 12)) / 100;
-            } else if (formValues.tenure > 60) {
-                interest = 8.12;
-                amountToBeCredited = (formValues.amount * interest * (formValues.tenure / 12)) / 100;
+            if(accountType == "fixed_deposit"){
+                if (formValues.tenure >= 12 && formValues.tenure < 24) {
+                    interest = 7;
+                    amountToBeCredited = (formValues.amount * interest * (formValues.tenure / 12)) / 100;
+                } else if (formValues.tenure >= 24 && formValues.tenure < 36) {
+                    interest = 7.9;
+                    amountToBeCredited = (formValues.amount * interest * (formValues.tenure / 12)) / 100;
+                } else if (formValues.tenure >= 36 && formValues.tenure <= 60) {
+                    interest = 8.08;
+                    amountToBeCredited = (formValues.amount * interest * (formValues.tenure / 12)) / 100;
+                } else if (formValues.tenure > 60) {
+                    interest = 8.12;
+                    amountToBeCredited = (formValues.amount * interest * (formValues.tenure / 12)) / 100;
+                }
+                amountToBeCredited = parseFloat(amountToBeCredited) + parseFloat(formValues.amount);
             }
+            else if (accountType == "recurring _deposit") {
+                // Function to calculate RD maturity with compounding interest
+                function calculateRDMaturity(principal, interestRate, tenureMonths) {
+                    const monthlyInterestRate = interestRate / (12 * 100); // Convert annual rate to monthly rate in decimal
+                    const maturityAmount = principal * ((Math.pow(1 + monthlyInterestRate, tenureMonths) - 1) / (1 - Math.pow(1 + monthlyInterestRate, -1)));
+                    return maturityAmount;
+                }
+            
+                // Determine interest rate and calculate maturity amount based on tenure
+                if (formValues.tenure >= 12 && formValues.tenure < 24) {
+                    interest = 7;
+                    amountToBeCredited = calculateRDMaturity(formValues.amount, interest, formValues.tenure);
+                } else if (formValues.tenure >= 24 && formValues.tenure < 36) {
+                    interest = 7.9;
+                    amountToBeCredited = calculateRDMaturity(formValues.amount, interest, formValues.tenure);
+                } else if (formValues.tenure >= 36 && formValues.tenure <= 60) {
+                    interest = 8.08;
+                    amountToBeCredited = calculateRDMaturity(formValues.amount, interest, formValues.tenure);
+                } else if (formValues.tenure > 60) {
+                    interest = 8.12;
+                    amountToBeCredited = calculateRDMaturity(formValues.amount, interest, formValues.tenure);
+                }
+                 
+            }
+            
 
             return { interest, amountToBeCredited };
         };
