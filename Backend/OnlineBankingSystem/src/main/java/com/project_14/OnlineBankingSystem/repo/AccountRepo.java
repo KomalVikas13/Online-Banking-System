@@ -14,4 +14,5 @@ public interface AccountRepo extends JpaRepository<Account, Long> {
     Optional<Account> findByAccountId(long accountId);
 
     List<Account> findAllByCustomer_CustomerId(Long customerId);
+
 }

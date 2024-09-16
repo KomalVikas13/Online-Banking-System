@@ -4,15 +4,16 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const PaymentTransfer = () => {
-  const navigator = useNavigate()
-  const params = useParams()
-  const [accounts, setAccounts] = useState([])
+  const navigator = useNavigate();
+  const params = useParams();
+  const [accounts, setAccounts] = useState([]);
   const [sourceBank, setSourceBank] = useState(null);
+  const [destinationBank, setDestinationBank] = useState(null); // State for destination bank
   const [transferNote, setTransferNote] = useState("");
   const [recipientEmail, setRecipientEmail] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [amount, setAmount] = useState("");
-
+  const [transferType, setTransferType] = useState("other"); // For radio button state
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
 
@@ -35,17 +36,24 @@ const PaymentTransfer = () => {
           delete validationErrors.sourceBank;
         }
         break;
+      case "destinationBank":
+        if (transferType === "self" && !value) {
+          validationErrors.destinationBank = "Please select a destination bank.";
+        } else {
+          delete validationErrors.destinationBank;
+        }
+        break;
       case "recipientEmail":
-        if (!value) {
+        if (transferType === "other" && !value) {
           validationErrors.recipientEmail = "Recipient's email is required.";
-        } else if (!/\S+@\S+\.\S+/.test(value)) {
+        } else if (transferType === "other" && !/\S+@\S+\.\S+/.test(value)) {
           validationErrors.recipientEmail = "Please enter a valid email address.";
         } else {
           delete validationErrors.recipientEmail;
         }
         break;
       case "accountNumber":
-        if (!value) {
+        if (transferType === "other" && !value) {
           validationErrors.accountNumber = "Recipient's account number is required.";
         } else {
           delete validationErrors.accountNumber;
@@ -74,14 +82,20 @@ const PaymentTransfer = () => {
       validationErrors.sourceBank = "Please select a source bank.";
     }
 
-    if (!recipientEmail) {
-      validationErrors.recipientEmail = "Recipient's email is required.";
-    } else if (!/\S+@\S+\.\S+/.test(recipientEmail)) {
-      validationErrors.recipientEmail = "Please enter a valid email address.";
+    if (transferType === "self" && !destinationBank) {
+      validationErrors.destinationBank = "Please select a destination bank.";
     }
 
-    if (!accountNumber) {
-      validationErrors.accountNumber = "Recipient's account number is required.";
+    if (transferType === "other") {
+      if (!recipientEmail) {
+        validationErrors.recipientEmail = "Recipient's email is required.";
+      } else if (!/\S+@\S+\.\S+/.test(recipientEmail)) {
+        validationErrors.recipientEmail = "Please enter a valid email address.";
+      }
+
+      if (!accountNumber) {
+        validationErrors.accountNumber = "Recipient's account number is required.";
+      }
     }
 
     if (!amount) {
@@ -103,65 +117,76 @@ const PaymentTransfer = () => {
     e.preventDefault();
 
     const formattedDate = formatDateToYYYYMMDD(new Date());
-  
+
     const data = {
-        sender : {
-          accountId : sourceBank,
-          transactionType : "debit",
-          transactionAmount : amount,
-          transactionDate : formattedDate,
-          transferNote : transferNote
-        },
-        recipient : {
-          accountId : accountNumber,
-          transactionType : "credit",
-          transactionAmount : amount,
-          transactionDate : formattedDate,
-          transferNote : transferNote
+      sender: {
+        accountId: sourceBank,
+        transactionType: "debit",
+        transactionAmount: amount,
+        transactionDate: formattedDate,
+        transferNote: transferNote
+      },
+      recipient: transferType === "other"
+        ? {
+          accountId: accountNumber,
+          transactionType: "credit",
+          transactionAmount: amount,
+          transactionDate: formattedDate,
+          transferNote: transferNote
         }
-    }
+        : {
+          accountId: destinationBank,
+          transactionType: "credit",
+          transactionAmount: amount,
+          transactionDate: formattedDate,
+          transferNote: transferNote
+        }
+    };
+
     if (validate()) {
-      console.log(data)
+      console.log(data);
       try {
-        const response = await axios.post("http://localhost:9999/transaction/paymentTransfer", data, { withCredentials: true })
-        console.log(response)
-        if(response.status === 200 && response.data === "SUCCESS"){
-          toast.success('Funds transferred successfully..!')
-          navigator("/dashboard")
+        const response = await axios.post("http://localhost:9999/transaction/paymentTransfer", data, { withCredentials: true });
+        console.log(response);
+        if (response.status === 200 && response.data === "SUCCESS") {
+          toast.success('Funds transferred successfully..!');
+          navigator("/dashboard");
         }
       } catch (error) {
-        console.log("error")
-        console.log(error)
-        if(error.status === 400 && error.response.data === "NOT_ACCEPTED"){
-          toast.error('Can not transfer funds to this account')
-        }
-        else if(error.status === 400 && error.response.data === "INSUFFICIENT_BALANCE"){
-          toast.error('Insufficient account balance..!')
-        }
-        else{
-          toast.error('Something went wrong')
+        console.log("error");
+        console.log(error);
+        if (error.status === 400 && error.response.data === "NOT_ACCEPTED") {
+          toast.error('Cannot transfer funds to this account');
+        } else if (error.status === 400 && error.response.data === "INSUFFICIENT_BALANCE") {
+          toast.error('Insufficient account balance..!');
+        } else {
+          toast.error('Something went wrong');
         }
       }
-        
-      } else {
+    } else {
       console.log("Form has errors.");
     }
   };
 
   const getAllAccounts = async () => {
     try {
-      const response = await axios.get(`http://localhost:9999/account/getAccounts/${params.customerId}`, {withCredentials : true})
-      console.log(response.data)
-      setAccounts(()=>response.data)
+      const response = await axios.get(`http://localhost:9999/account/getAccounts/${params.customerId}`, { withCredentials: true });
+      console.log(response.data);
+      setAccounts(() => response.data);
     } catch (error) {
-      console.log("error")
-      console.log(error)
+      console.log("error");
+      console.log(error);
     }
-  }
+  };
 
-  useEffect(()=>{
-    getAllAccounts()
-  },[])
+  useEffect(() => {
+    getAllAccounts();
+  }, []);
+
+  // Filtered destination accounts, excluding the selected source bank
+  const filteredDestinationAccounts = accounts.filter(
+    (account) => account.accountId !== sourceBank
+  );
 
   return (
     <div className="bg-gray-100 w-full h-full">
@@ -171,10 +196,31 @@ const PaymentTransfer = () => {
           Please provide any specific details or notes related to the payment transfer.
         </p>
 
-        <h2 className="text-2xl font-semibold mb-2">Transfer details</h2>
-        <p className="text-gray-600 mb-4 border-b border-gray-200 pb-6">
-          Enter the details of the recipient.
-        </p>
+        {/* Transfer Type Radio Buttons */}
+        <div className="mb-4">
+          <label className="mr-4">
+            <input
+              type="radio"
+              name="transferType"
+              value="self"
+              checked={transferType === "self"}
+              onChange={(e) => setTransferType(e.target.value)}
+              className="mr-2"
+            />
+            Self Transfer
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="transferType"
+              value="other"
+              checked={transferType === "other"}
+              onChange={(e) => setTransferType(e.target.value)}
+              className="mr-2"
+            />
+            Other Accounts
+          </label>
+        </div>
 
         <form onSubmit={handleSubmit}>
           <div className="space-y-6">
@@ -193,101 +239,131 @@ const PaymentTransfer = () => {
                   onChange={(e) => setSourceBank(e.target.value)}
                   onBlur={handleBlur}
                 >
-                  <option value="" >
+                  <option value="">
                     Select Account
                   </option>
-                  {
-                  accounts.filter(element => element.accountType === "savings" || element.accountType === "current").map((element,index)=>{
-                    return <option key={index} value={element.accountId}>{element.accountType + " account-" + element.accountId + ": Account balance - " + element.accountBalance}</option>
-                  })
-                }
-                  {/* Add more banks as options */}
+                  {accounts.filter(element => element.accountType === "savings" || element.accountType === "current").map((element, index) => (
+                    <option key={index} value={element.accountId}>{element.accountType + " account-" + element.accountId + ": Account balance - " + element.accountBalance}</option>
+                  ))}
                 </select>
                 {errors.sourceBank && <p className="text-red-500 text-sm text-left">{errors.sourceBank}</p>}
               </div>
             </div>
 
+            {/* Destination Bank Dropdown (Visible when Self Transfer is selected) */}
+            {transferType === "self" && (
+              <div className="flex items-start max-w-[85%] border-b border-gray-200 pb-6">
+                <label className="w-1/3 text-gray-700">
+                  Select Destination Bank
+                  <p className="text-sm text-gray-500">
+                    Select the bank account you want to transfer funds to
+                  </p>
+                </label>
+                <div className="w-2/3">
+                  <select
+                    name="destinationBank"
+                    className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 ${errors.destinationBank ? 'border-red-500' : ''}`}
+                    value={destinationBank}
+                    onChange={(e) => setDestinationBank(e.target.value)}
+                    onBlur={handleBlur}
+                  >
+                    <option value="">
+                      Select Account
+                    </option>
+                    {filteredDestinationAccounts
+                      .filter(element => element.accountType === "savings" || element.accountType === "current")
+                      .map((element, index) => (
+                        <option key={index} value={element.accountId}>{element.accountType + " account-" + element.accountId + ": Account balance - " + element.accountBalance}</option>
+                      ))}
+                  </select>
+                  {errors.destinationBank && <p className="text-red-500 text-sm text-left">{errors.destinationBank}</p>}
+                </div>
+              </div>
+            )}
+
+            {transferType === "other" && (
+              <>
+                <div className="flex items-start max-w-[85%] border-b border-gray-200 pb-6">
+                  <label className="w-1/3 text-gray-700">
+                    Recipient Email
+                    <p className="text-sm text-gray-500">
+                      Provide the recipient's registered email
+                    </p>
+                  </label>
+                  <div className="w-2/3">
+                    <input
+                      name="recipientEmail"
+                      value={recipientEmail}
+                      onChange={(e) => setRecipientEmail(e.target.value)}
+                      onBlur={handleBlur}
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 ${errors.recipientEmail ? 'border-red-500' : ''}`}
+                    />
+                    {errors.recipientEmail && <p className="text-red-500 text-sm text-left">{errors.recipientEmail}</p>}
+                  </div>
+                </div>
+
+                <div className="flex items-start max-w-[85%] border-b border-gray-200 pb-6">
+                  <label className="w-1/3 text-gray-700">
+                    Recipient Account Number
+                    <p className="text-sm text-gray-500">
+                      Provide the recipient's account number
+                    </p>
+                  </label>
+                  <div className="w-2/3">
+                    <input
+                      name="accountNumber"
+                      value={accountNumber}
+                      onChange={(e) => setAccountNumber(e.target.value)}
+                      onBlur={handleBlur}
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 ${errors.accountNumber ? 'border-red-500' : ''}`}
+                    />
+                    {errors.accountNumber && <p className="text-red-500 text-sm text-left">{errors.accountNumber}</p>}
+                  </div>
+                </div>
+              </>
+            )}
+
             <div className="flex items-start max-w-[85%] border-b border-gray-200 pb-6">
               <label className="w-1/3 text-gray-700">
-                Transfer Note (Optional)
+                Amount
                 <p className="text-sm text-gray-500">
-                  Please provide any additional information or instructions related to the transfer
+                  Enter the amount to be transferred
                 </p>
               </label>
-              <div className="w-2/3">
-                <textarea
-                  name="transferNote"
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-                  rows="4"
-                  placeholder="Enter your transfer note here"
-                  value={transferNote}
-                  onChange={(e) => setTransferNote(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <h2 className="text-2xl font-semibold mb-2">Bank account details</h2>
-            <p className="text-gray-600 mb-4">
-              Enter bank account details of recipient
-            </p>
-
-            <div className="flex items-start max-w-[85%] border-b border-gray-200 pb-6">
-              <label className="w-1/3 text-gray-700">Recipient's Email Address</label>
-              <div className="w-2/3">
-                <input
-                  name="recipientEmail"
-                  type="email"
-                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 ${errors.recipientEmail ? 'border-red-500' : ''}`}
-                  placeholder="Enter the email address"
-                  value={recipientEmail}
-                  onChange={(e) => setRecipientEmail(e.target.value)}
-                  onBlur={handleBlur}
-                />
-                {errors.recipientEmail && <p className="text-red-500 text-sm text-left">{errors.recipientEmail}</p>}
-              </div>
-            </div>
-
-            <div className="flex items-start max-w-[85%] border-b border-gray-200 pb-6">
-              <label className="w-1/3 text-gray-700">Recipient's Bank Account Number</label>
-              <div className="w-2/3">
-                <input
-                  name="accountNumber"
-                  type="text"
-                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 ${errors.accountNumber ? 'border-red-500' : ''}`}
-                  placeholder="Enter the account number"
-                  value={accountNumber}
-                  onChange={(e) => setAccountNumber(e.target.value)}
-                  onBlur={handleBlur}
-                />
-                {errors.accountNumber && <p className="text-red-500 text-sm text-left">{errors.accountNumber}</p>}
-              </div>
-            </div>
-
-            <div className="flex items-start max-w-[85%] border-b border-gray-200 pb-6">
-              <label className="w-1/3 text-gray-700">Amount</label>
               <div className="w-2/3">
                 <input
                   name="amount"
                   type="number"
-                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 ${errors.amount ? 'border-red-500' : ''}`}
-                  placeholder="Enter the amount"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   onBlur={handleBlur}
+                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 ${errors.amount ? 'border-red-500' : ''}`}
                 />
                 {errors.amount && <p className="text-red-500 text-sm text-left">{errors.amount}</p>}
               </div>
             </div>
+
+            <div className="flex items-start max-w-[85%] border-b border-gray-200 pb-6">
+              <label className="w-1/3 text-gray-700">
+                Transfer Note
+                <p className="text-sm text-gray-500">
+                  Add any optional note for this transaction
+                </p>
+              </label>
+              <div className="w-2/3">
+                <input
+                  name="transferNote"
+                  value={transferNote}
+                  onChange={(e) => setTransferNote(e.target.value)}
+                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
+                />
+              </div>
+            </div>
           </div>
 
-          <div className="text-right mt-6 max-w-[85%]">
-            <button
-              type="submit"
-              className="bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600 transition duration-200 w-full"
-            >
-              Transfer Funds
-            </button>
-          </div>
+          <button type="submit" className="mt-6 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">
+            Transfer Funds
+          </button>
         </form>
       </div>
     </div>
@@ -295,4 +371,3 @@ const PaymentTransfer = () => {
 };
 
 export default PaymentTransfer;
-

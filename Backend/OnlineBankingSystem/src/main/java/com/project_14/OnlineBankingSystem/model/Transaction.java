@@ -1,6 +1,7 @@
 package com.project_14.OnlineBankingSystem.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,7 +25,12 @@ public class Transaction {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "ddMMyyyy")
     private Date transactionDate;
     private String transferNote;
-    
+    @Column(nullable = false)
+    private long recipientOrSenderAccountId;
+    @Column(nullable = false)
+    private String recipientOrSenderName;
+
+    @JsonIgnore
     @ManyToMany(mappedBy = "transactionList", fetch = FetchType.LAZY)
     private List<Account> accountList;
 }
