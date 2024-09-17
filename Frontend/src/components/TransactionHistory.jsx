@@ -1,11 +1,13 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Transaction from './Transaction'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import axios from 'axios';
 
 const TransactionHistory = () => {
     // State for transactions data
+    const params = useParams()
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -16,6 +18,15 @@ const TransactionHistory = () => {
 
     // Filter state
     const [filter, setFilter] = useState('all');
+
+    const getTransactionHistory = async () => {
+        const response = await axios.get(`http://localhost:9999/transaction/transactionDetails/${params.customerId}`)
+        console.log(response.data)
+        // setTransactions(()=>{response.data})
+    } 
+    useEffect(()=>{
+        getTransactionHistory()
+    },[])
     // Handle page change
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);

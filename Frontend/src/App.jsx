@@ -35,7 +35,7 @@ function App() {
       <Route path="/add_account" element={<AddAccount></AddAccount>}></Route>
       <Route path="/logout" element={<Logout />}></Route>
       <Route path="/profile" element={<Profile />}></Route>
-      <Route path="/txn_history" element={<TransactionHistory />}></Route>
+      <Route path="/txn_history/:customerId" element={<TransactionHistory />}></Route>
       <Route path="/make_payment/:customerId" element={<PaymentTransfer></PaymentTransfer>}></Route>
       <Route path="/deposit-amount" element={<DepositAmount></DepositAmount>}></Route>
       <Route path="/my_accounts/:customerId" element={<MyAccounts />} ></Route>

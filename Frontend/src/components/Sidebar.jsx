@@ -37,7 +37,7 @@ const Sidebar = ({ customerFirstName, customerLastName, customerEmail, customerI
                             </Link>
                         </li>
                         <li className="group">
-                            <Link to='/txn_history' className={`${active == 2 && 'bg-darkBulish text-white hover:scale-105 duration-500'} text-darkBulish flex items-center w-full p-4 space-x-3 rounded-lg group`} onClick={() => setActive(2)}>
+                            <Link to={`/txn_history/${customerId}`} className={`${active == 2 && 'bg-darkBulish text-white hover:scale-105 duration-500'} text-darkBulish flex items-center w-full p-4 space-x-3 rounded-lg group`} onClick={() => setActive(2)}>
                                 <FaHistory className="text-xl" />
                                 <span className="font-medium">Transaction History</span>
                             </Link>
