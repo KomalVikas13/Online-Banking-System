@@ -8,7 +8,8 @@ const PaymentTransfer = () => {
   const params = useParams();
   const [accounts, setAccounts] = useState([]);
   const [sourceBank, setSourceBank] = useState(null);
-  const [destinationBank, setDestinationBank] = useState(null); // State for destination bank
+  const [sourceBankDetails, setSourceBankDetails] = useState(""); // State for source bank details
+  const [destinationBank, setDestinationBank] = useState(null);
   const [transferNote, setTransferNote] = useState("");
   const [recipientEmail, setRecipientEmail] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
@@ -183,6 +184,15 @@ const PaymentTransfer = () => {
     getAllAccounts();
   }, []);
 
+  useEffect(() => {
+    if (sourceBank) {
+      const selectedAccount = accounts.find(account => account.accountId === sourceBank);
+      if (selectedAccount) {
+        setSourceBankDetails(selectedAccount.accountBalance); // Assuming you want to display account balance
+      }
+    }
+  }, [sourceBank, accounts]);
+
   // Filtered destination accounts, excluding the selected source bank
   const filteredDestinationAccounts = accounts.filter(
     (account) => account.accountId !== sourceBank
@@ -231,10 +241,10 @@ const PaymentTransfer = () => {
                   Select the bank account you want to transfer funds from
                 </p>
               </label>
-              <div className="w-2/3">
+              <div className="w-2/3 flex items-center">
                 <select
                   name="sourceBank"
-                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 ${errors.sourceBank ? 'border-red-500' : ''}`}
+                  className={`w-2/3 px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 ${errors.sourceBank ? 'border-red-500' : ''}`}
                   value={sourceBank}
                   onChange={(e) => setSourceBank(e.target.value)}
                   onBlur={handleBlur}
@@ -242,11 +252,19 @@ const PaymentTransfer = () => {
                   <option value="">
                     Select Account
                   </option>
-                  {accounts.filter(element => element.accountType === "savings" || element.accountType === "current").map((element, index) => (
-                    <option key={index} value={element.accountId}>{element.accountType + " account-" + element.accountId + ": Account balance - " + element.accountBalance}</option>
-                  ))}
+                  {accounts
+                    .filter(element => element.accountType === "savings" || element.accountType === "current")
+                    .map((element, index) => (
+                      <option key={index} value={element.accountId}>{element.accountType + " account-" + element.accountId + ": Account balance - " + element.accountBalance}</option>
+                    ))}
                 </select>
-                {errors.sourceBank && <p className="text-red-500 text-sm text-left">{errors.sourceBank}</p>}
+                <input
+                  type="text"
+                  value={sourceBankDetails}
+                  placeholder="Account Balance"
+                  readOnly
+                  className="ml-4 w-1/3 px-4 py-2 border rounded-lg bg-gray-200 text-gray-600"
+                />
               </div>
             </div>
 
