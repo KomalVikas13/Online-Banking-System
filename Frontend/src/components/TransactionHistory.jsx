@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom'
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import axios from 'axios';
+import { formatDate } from '../utilities/DateFormating';
 
 const TransactionHistory = () => {
     // State for transactions data
@@ -69,16 +70,16 @@ const TransactionHistory = () => {
         const doc = new jsPDF();
         doc.text('Transaction History', 20, 20);
 
-        const tableColumn = ['Transaction ID', 'Amount', 'Status', 'Date', 'Account'];
+        const tableColumn = ['Reciever Name', 'Transaction ID', 'Amount', 'Date', 'Account'];
         const tableRows = [];
 
         filteredTransactions.forEach(transaction => {
             const transactionData = [
-                transaction.transactionId,
-                transaction.amount < 0 ? `-$${Math.abs(transaction.amount)}` : `+$${transaction.amount}`,
-                transaction.status,
-                new Date(transaction.date).toDateString(),
-                transaction.account,
+                transaction.recipientOrSenderName.toUpperCase(),
+                "TXN-101" + transaction.transactionId,
+                transaction.transactionType == "debit" ? `- Rs. ${Math.abs(transaction.transactionAmount)}` : `+Rs.${transaction.transactionAmount}`,
+                new Date(transaction.transactionDate).toDateString(),
+                transaction.recipientOrSenderAccountId,
             ];
             tableRows.push(transactionData);
         });
