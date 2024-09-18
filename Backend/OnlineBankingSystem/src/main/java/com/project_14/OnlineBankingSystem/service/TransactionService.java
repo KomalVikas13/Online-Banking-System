@@ -48,10 +48,32 @@ public class TransactionService {
 
         // Fetching recipient account
         Optional<Account> recipientAccount = accountRepo.findByAccountId(transactionDTO.getRecipient().getAccountId());
-        if (recipientAccount.isEmpty()) {
-            return "NOT_FOUND";
-        }
         Account updateRecipientAccount = recipientAccount.get();
+        if(transactionDTO.getRecipient().getTransferNote().equals("electricity") || transactionDTO.getRecipient().getTransferNote().equals("broadband")){
+            System.out.println(transactionDTO.getRecipient().getTransferNote());
+        }
+        else {
+            // Setting recipient transaction details
+            System.out.println("else block");
+            recipientTransaction.setTransactionDate(transactionDTO.getRecipient().getTransactionDate());
+            recipientTransaction.setTransactionAmount(transactionDTO.getRecipient().getTransactionAmount());
+            recipientTransaction.setTransactionType(transactionDTO.getRecipient().getTransactionType());
+            recipientTransaction.setTransferNote(transactionDTO.getRecipient().getTransferNote());
+            recipientTransaction.setRecipientOrSenderAccountId(transactionDTO.getRecipient().getAccountId());
+            recipientTransaction.setRecipientOrSenderName(updateSenderAccount.getCustomer().getCustomerFirstName());
+
+            // Updating recipient account balance
+            updateRecipientAccount.setAccountBalance(updateRecipientAccount.getAccountBalance() + transactionDTO.getSender().getTransactionAmount());
+
+            // Updating bidirectional relationship for recipient
+            recipientTransaction.setAccountList(Collections.singletonList(updateRecipientAccount));
+            updateRecipientAccount.getTransactionList().add(recipientTransaction);
+
+            // Save updated recipient account and transaction
+            accountRepo.save(updateRecipientAccount);
+            transactionRepo.save(recipientTransaction);
+        }
+
 
         // Checking recipient account type
         if (updateRecipientAccount.getAccountType().equals("fixed_deposit")) {
@@ -63,7 +85,7 @@ public class TransactionService {
         senderTransaction.setTransactionAmount(transactionDTO.getSender().getTransactionAmount());
         senderTransaction.setTransactionType(transactionDTO.getSender().getTransactionType());
         senderTransaction.setTransferNote(transactionDTO.getSender().getTransferNote());
-        senderTransaction.setRecipientOrSenderAccountId(transactionDTO.getRecipient().getAccountId());
+        senderTransaction.setRecipientOrSenderAccountId(transactionDTO.getSender().getAccountId());
         senderTransaction.setRecipientOrSenderName(updateRecipientAccount.getCustomer().getCustomerFirstName());
 
         // Updating sender account balance
@@ -77,24 +99,7 @@ public class TransactionService {
         accountRepo.save(updateSenderAccount);
         transactionRepo.save(senderTransaction);
 
-        // Setting recipient transaction details
-        recipientTransaction.setTransactionDate(transactionDTO.getRecipient().getTransactionDate());
-        recipientTransaction.setTransactionAmount(transactionDTO.getRecipient().getTransactionAmount());
-        recipientTransaction.setTransactionType(transactionDTO.getRecipient().getTransactionType());
-        recipientTransaction.setTransferNote(transactionDTO.getRecipient().getTransferNote());
-        recipientTransaction.setRecipientOrSenderAccountId(transactionDTO.getSender().getAccountId());
-        recipientTransaction.setRecipientOrSenderName(updateSenderAccount.getCustomer().getCustomerFirstName());
 
-        // Updating recipient account balance
-        updateRecipientAccount.setAccountBalance(updateRecipientAccount.getAccountBalance() + senderTransaction.getTransactionAmount());
-
-        // Updating bidirectional relationship for recipient
-        recipientTransaction.setAccountList(Collections.singletonList(updateRecipientAccount));
-        updateRecipientAccount.getTransactionList().add(recipientTransaction);
-
-        // Save updated recipient account and transaction
-        accountRepo.save(updateRecipientAccount);
-        transactionRepo.save(recipientTransaction);
 
         return "SUCCESS";
     }
