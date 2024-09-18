@@ -2,11 +2,13 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { formatDateToYYYYMMDD } from "../utilities/DateFormating";
 
 const BillPayment = () => {
     const navigator = useNavigate();
-    const { bill } = useParams();
+    const { bill, customerId } = useParams();
     const [accounts, setAccounts] = useState([]);
+    const [recepientId, setRecepientId] = useState("");
     const [sourceBank, setSourceBank] = useState("");
     const [billType, setBillType] = useState(bill);
     const [amount, setAmount] = useState("");
@@ -16,7 +18,7 @@ const BillPayment = () => {
 
     // Fields specific to bill types
     const [uscNo, setUscNo] = useState(""); // For Current Bill
-    const [customerId, setCustomerId] = useState(""); // For Gas Bill
+    const [customerID, setcustomerID] = useState(""); // For Gas Bill
     const [accountNumber, setAccountNumber] = useState(""); // For Broadband Bill
     const [mobileNumber, setMobileNumber] = useState(""); // For Broadband Bill
 
@@ -57,14 +59,14 @@ const BillPayment = () => {
                     }
                 }
                 break;
-            case "customerId":
+            case "customerID":
                 if (billType === "gas") {
                     if (!value) {
-                        validationErrors.customerId = "Please enter Customer ID.";
+                        validationErrors.customerID = "Please enter Customer ID.";
                     } else if (!/^\d{17}$/.test(value)) {
-                        validationErrors.customerId = "Customer ID should contain 17 digits.";
+                        validationErrors.customerID = "Customer ID should contain 17 digits.";
                     } else {
-                        delete validationErrors.customerId;
+                        delete validationErrors.customerID;
                     }
                 }
                 break;
@@ -106,8 +108,8 @@ const BillPayment = () => {
         if (billType === "electricity" && !uscNo) {
             validationErrors.uscNo = "Please enter USC No.";
         }
-        if (billType === "gas" && !customerId) {
-            validationErrors.customerId = "Please enter Customer ID.";
+        if (billType === "gas" && !customerID) {
+            validationErrors.customerID = "Please enter Customer ID.";
         }
         if (billType === "broadband" && !accountNumber) {
             validationErrors.accountNumber = "Please enter Account Number.";
@@ -126,27 +128,34 @@ const BillPayment = () => {
         e.preventDefault();
         if (validate()) {
             const data = {
-                sender: {
-                    accountId: sourceBank,
-                    transactionType: "debit",
-                    transactionAmount: amount,
-                    billType: billType,
-                    transferNote: transferNote,
-                    uscNo: billType === "electricity" ? uscNo : null,
-                    customerId: billType === "gas" ? customerId : null,
-                    accountNumber: billType === "broadband" ? accountNumber : null,
-                    mobileNumber: billType === "mobile" || billType === "rent" ? mobileNumber : null,
+                "sender": {
+                    "accountId": sourceBank,
+                    "transactionType": "debit",
+                    "transactionAmount": amount,
+                    "transactionDate": formatDateToYYYYMMDD(new Date()),
+                    "transferNote": "test 1"
                 },
+                "recipient": {
+                    "accountId": recepientId,
+                    "transactionType": "credit",
+                    "transactionAmount": amount,
+                    "transactionDate": formatDateToYYYYMMDD(new Date()),
+                    "transferNote": billType
+                }
             };
+
+            console.log(data);
+
+            // ENDPOINT TO TRANSFER MONEY
             try {
                 const response = await axios.post(
-                    "http://localhost:9999/transaction/payBill",
+                    "http://localhost:9999/transaction/paymentTransfer",
                     data,
                     { withCredentials: true }
                 );
                 if (response.status === 200 && response.data === "SUCCESS") {
                     toast.success("Bill paid successfully..!");
-                    navigator("/dashboard");
+                    // navigator("/dashboard");
                 }
             } catch (error) {
                 toast.error("Something went wrong while paying the bill.");
@@ -159,9 +168,11 @@ const BillPayment = () => {
     const getAllAccounts = async () => {
         try {
             const response = await axios.get(
-                "http://localhost:9999/account/getAccounts",
+                `http://localhost:9999/account/getAccounts/${customerId}`,
                 { withCredentials: true }
             );
+            console.log(response);
+
             setAccounts(response.data);
         } catch (error) {
             console.log("Error fetching accounts:", error);
@@ -175,30 +186,16 @@ const BillPayment = () => {
     return (
         <div className="bg-gray-100 w-full h-full">
             <div className=" bg-white rounded-lg max-w-full h-screen">
-                <div className="bg-darkBulish w-full p-2">
-                    <h2 className="text-2xl font-semibold mb-2 text-white">Bill Payment</h2>
+                <div className="bg-darkBulish w-full py-2">
+                    <h2 className="text-2xl font-semibold mb-2 text-center mx-auto text-white">Bill Payment</h2>
                 </div>
                 {/* <p className="text-gray-600 mb-6">Pay your bills quickly and easily.</p> */}
                 <div className="p-5 flex justify-center w-[90%] mx-auto">
                     <form onSubmit={handleSubmit} className="w-full">
                         {/* Bill Type Field */}
-                        <div className="flex items-start max-w-[85%] border-b border-gray-200 pb-2">
-                            <label className="w-1/3 text-gray-700">Payment For</label>
+                        <div className="flex items-start justify-between max-w-[85%] border-b border-gray-200 pb-2">
+                            <label className="text-gray-700">Payment For</label>
                             <div className="w-2/3">
-                                {/* <select
-                                        name="billType"
-                                        className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 ${errors.billType ? "border-red-500" : ""
-                                            }`}
-                                        value={billType}
-                                        onChange={(e) => setBillType(e.target.value)}
-                                        onBlur={handleBlur}
-                                    >
-                                        <option value="">Select Bill Type</option>
-                                        <option value="current">Current Bill</option>
-                                        <option value="gas">Gas Bill</option>
-                                        <option value="mobile">Mobile Recharge</option>
-                                        <option value="rent">House Rent</option>
-                                    </select> */}
                                 <input className={`w-full text-darkBulish font-bold
                                 text-lg px-4 py-2 capitalize border-0 rounded-lg focus:outline-none focus:ring focus:border-0 ${errors.billType ? "border-red-500" : ""
                                     }`}
@@ -222,7 +219,9 @@ const BillPayment = () => {
                                         className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 ${errors.sourceBank ? "border-red-500" : ""
                                             }`}
                                         value={sourceBank}
-                                        onChange={(e) => setSourceBank(e.target.value)}
+                                        onChange={(e) =>
+                                            setSourceBank(e.target.value)
+                                        }
                                         onBlur={handleBlur}
                                     >
                                         <option value="">Select Account</option>
@@ -253,11 +252,14 @@ const BillPayment = () => {
                                     <div className="w-2/3">
                                         <input
                                             type="text"
-                                            name="uscNo"
+                                            name="recipientAccountId"
                                             className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 ${errors.uscNo ? "border-red-500" : ""
                                                 }`}
                                             value={uscNo}
-                                            onChange={(e) => setUscNo(e.target.value)}
+                                            onChange={(e) => {
+                                                setUscNo(e.target.value);
+                                                setRecepientId(e.target.value);
+                                            }}
                                             onBlur={handleBlur}
                                         />
                                         {errors.uscNo && (
@@ -273,15 +275,19 @@ const BillPayment = () => {
                                     <div className="w-2/3">
                                         <input
                                             type="text"
-                                            name="customerId"
-                                            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 ${errors.customerId ? "border-red-500" : ""
+                                            name="recipientAccountId"
+                                            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 ${errors.customerID ? "border-red-500" : ""
                                                 }`}
-                                            value={customerId}
-                                            onChange={(e) => setCustomerId(e.target.value)}
+                                            value={customerID}
+                                            onChange={(e) => {
+                                                setcustomerID(e.target.value);
+                                                setRecepientId(e.target.value);
+                                            }
+                                            }
                                             onBlur={handleBlur}
                                         />
-                                        {errors.customerId && (
-                                            <p className="text-red-500 text-sm text-left">{errors.customerId}</p>
+                                        {errors.customerID && (
+                                            <p className="text-red-500 text-sm text-left">{errors.customerID}</p>
                                         )}
                                     </div>
                                 </div>
@@ -293,11 +299,14 @@ const BillPayment = () => {
                                     <div className="w-2/3">
                                         <input
                                             type="text"
-                                            name="accountNumber"
+                                            name="recipientAccountId"
                                             className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 ${errors.accountNumber ? "border-red-500" : ""
                                                 }`}
                                             value={accountNumber}
-                                            onChange={(e) => setAccountNumber(e.target.value)}
+                                            onChange={(e) => {
+                                                setAccountNumber(e.target.value);
+                                                setRecepientId(e.target.value);
+                                            }}
                                             onBlur={handleBlur}
                                         />
                                         {errors.accountNumber && (
@@ -314,11 +323,15 @@ const BillPayment = () => {
                                     <div className="w-2/3">
                                         <input
                                             type="text"
-                                            name="accountNumber"
+                                            name="recipientAccountId"
                                             className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 ${errors.accountNumber ? "border-red-500" : ""
                                                 }`}
                                             value={mobileNumber}
-                                            onChange={(e) => setMobileNumber(e.target.value)}
+                                            onChange={(e) => {
+                                                setMobileNumber(e.target.value);
+                                                setRecepientId(e.target.value);
+                                            }
+                                            }
                                             onBlur={handleBlur}
                                         />
                                         {errors.mobileNumber && (
@@ -337,7 +350,7 @@ const BillPayment = () => {
                                 <div className="w-2/3">
                                     <input
                                         type="number"
-                                        name="amount"
+                                        name="recipientAccountId"
                                         className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 ${errors.amount ? "border-red-500" : ""
                                             }`}
                                         value={amount}
@@ -351,27 +364,27 @@ const BillPayment = () => {
                             </div>
 
                             {/* Transfer Note */}
-                            <div className="flex items-start max-w-[85%] border-b border-gray-200 pb-6">
+                            {/* <div className="flex items-start max-w-[85%] border-b border-gray-200 pb-6">
                                 <label className="w-1/3 text-gray-700">
                                     Remarks
                                     <p className="text-sm text-gray-500">Optional: Add any note</p>
                                 </label>
                                 <div className="w-2/3">
                                     <input
-                                        name="transferNote"
+                                        name="recipientAccountId"
                                         value={transferNote}
                                         onChange={(e) => setTransferNote(e.target.value)}
                                         className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
                                     />
                                 </div>
-                            </div>
+                            </div> */}
                             <div className=" border-b border-gray-200 pb-6">
                                 <div className="">
                                     <input
                                         type="checkbox"
                                         name="autopay"
-                                        value={transferNote}
-                                        onChange={(e) => setTransferNote(e.target.value)}
+                                        // value={transferNote}
+                                        // onChange={(e) => setTransferNote(e.target.value)}
                                         className=" px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
                                     />
                                     <label className="pl-2 text-darkBulish font-semibold">

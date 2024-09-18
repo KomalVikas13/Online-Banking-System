@@ -21,23 +21,23 @@ const MyBills = () => {
             <div className='mt-10 flex gap-10 items-center px-5'>
                 <div className='border shadow-md pt-1'>
                     <IoMdWifi className='text-darkBulish mx-auto p-2' size={80} />
-                    <Link to={`/my_billform/broadband`} className='p-2 bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white '>Pay Wifi Bill</Link>
+                    <Link to={`/my_billform/broadband/${customerId}`} className='p-2 bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white '>Pay Wifi Bill</Link>
                 </div>
                 <div className='border shadow-md pt-1'>
                     <BiBulb className='text-darkBulish mx-auto p-2' size={80} />
-                    <Link to={`/my_billform/electricity`} className='p-2 bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white '>Pay Electric Bill</Link>
+                    <Link to={`/my_billform/electricity/${customerId}`} className='p-2 bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white '>Pay Electric Bill</Link>
                 </div>
                 <div className='border shadow-md pt-1'>
                     <GiGasStove className='text-darkBulish mx-auto p-2' size={80} />
-                    <Link to={`/my_billform/gas`} className='p-2 bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white'>Book LPG Gas</Link>
+                    <Link to={`/my_billform/gas/${customerId}`} className='p-2 bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white'>Book LPG Gas</Link>
                 </div>
                 <div className='border shadow-md pt-1'>
                     <BiMobileAlt className='text-darkBulish mx-auto p-2' size={80} />
-                    <Link to={`/my_billform/mobile`} className='p-2 bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white'>Mobile Recharge</Link>
+                    <Link to={`/my_billform/mobile/${customerId}`} className='p-2 bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white'>Mobile Recharge</Link>
                 </div>
                 <div className='border shadow-md pt-1'>
                     <FaHouse className='text-darkBulish mx-auto p-2' size={80} />
-                    <Link to={`/my_billform/rent`} className='p-2 bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white'>Pay House Rent</Link>
+                    <Link to={`/my_billform/rent/${customerId}`} className='p-2 bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white'>Pay House Rent</Link>
                 </div>
             </div>
         </div>
