@@ -48,13 +48,16 @@ public class TransactionService {
 
         // Fetching recipient account
         Optional<Account> recipientAccount = accountRepo.findByAccountId(transactionDTO.getRecipient().getAccountId());
-        Account updateRecipientAccount = recipientAccount.get();
         if(transactionDTO.getRecipient().getTransferNote().equals("electricity") || transactionDTO.getRecipient().getTransferNote().equals("broadband")){
             System.out.println(transactionDTO.getRecipient().getTransferNote());
         }
         else {
             // Setting recipient transaction details
             System.out.println("else block");
+            Account updateRecipientAccount = recipientAccount.get();
+            if (updateRecipientAccount.getAccountType().equals("fixed_deposit")) {
+                return "NOT_ACCEPTED";
+            }
             recipientTransaction.setTransactionDate(transactionDTO.getRecipient().getTransactionDate());
             recipientTransaction.setTransactionAmount(transactionDTO.getRecipient().getTransactionAmount());
             recipientTransaction.setTransactionType(transactionDTO.getRecipient().getTransactionType());
@@ -76,9 +79,7 @@ public class TransactionService {
 
 
         // Checking recipient account type
-        if (updateRecipientAccount.getAccountType().equals("fixed_deposit")) {
-            return "NOT_ACCEPTED";
-        }
+
 
         // Setting sender transaction details
         senderTransaction.setTransactionDate(transactionDTO.getSender().getTransactionDate());
@@ -86,7 +87,12 @@ public class TransactionService {
         senderTransaction.setTransactionType(transactionDTO.getSender().getTransactionType());
         senderTransaction.setTransferNote(transactionDTO.getSender().getTransferNote());
         senderTransaction.setRecipientOrSenderAccountId(transactionDTO.getSender().getAccountId());
-        senderTransaction.setRecipientOrSenderName(updateRecipientAccount.getCustomer().getCustomerFirstName());
+        if(transactionDTO.getRecipient().getTransferNote().equals("electricity") || transactionDTO.getRecipient().getTransferNote().equals("broadband")){
+//            senderTransaction.setRecipientOrSenderName(updateRecipientAccount.getCustomer().getCustomerFirstName());
+            senderTransaction.setRecipientOrSenderName(transactionDTO.getRecipient().getTransferNote());
+        }else{
+            senderTransaction.setRecipientOrSenderName(recipientAccount.get().getCustomer().getCustomerFirstName());
+        }
 
         // Updating sender account balance
         updateSenderAccount.setAccountBalance(updateSenderAccount.getAccountBalance() - senderTransaction.getTransactionAmount());
