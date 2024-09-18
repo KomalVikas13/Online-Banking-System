@@ -25,7 +25,6 @@ public class TransactionDTO {
         private String transactionType;
         private double transactionAmount;
 
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "ddMMyyyy")
         private Date transactionDate;
 
         private String transferNote;

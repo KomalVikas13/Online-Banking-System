@@ -15,6 +15,6 @@ public interface TransactionRepo extends JpaRepository<Transaction, Long> {
     @Query("SELECT t FROM Transaction t JOIN t.accountList a WHERE a.customer.customerId = :customerId")
     List<Transaction> findAllTransactionsByCustomerId(@Param("customerId") Long customerId);
 //    findAllRecentTransactionsByCustomerId
-@Query("SELECT t FROM Transaction t JOIN t.accountList a WHERE a.customer.customerId = :customerId")
-List<Transaction> findAllRecentTransactionsByCustomerId(@Param("customerId") Long customerId, Pageable pageable);
+    @Query("SELECT t FROM Transaction t JOIN t.accountList a WHERE a.customer.customerId = :customerId ORDER BY t.transactionDate DESC")
+    List<Transaction> findAllRecentTransactionsByCustomerId(@Param("customerId") Long customerId, Pageable pageable);
 }
