@@ -22,7 +22,6 @@ public class Transaction {
     @Column(nullable = false)
     private double transactionAmount;
     @Column(nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "ddMMyyyy")
     private Date transactionDate;
     private String transferNote;
     @Column(nullable = false)
