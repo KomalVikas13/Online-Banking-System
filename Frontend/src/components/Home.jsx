@@ -26,7 +26,7 @@ const Home = ({ customerData }) => {
     const [transaction, setTransaction] = useState([]);
 
     const getRecenTransactions = async () => {
-        const response = await axios.get("localhost:9999/transaction/recent_transactions", { withCredentials: true });
+        const response = await axios.get("http://localhost:9999/transaction/recent_transactions", { withCredentials: true });
         console.log("recent_txn", response);
         setTransaction(response.data);
     }
@@ -39,7 +39,7 @@ const Home = ({ customerData }) => {
     useEffect(() => {
         getAccountData();
         getRecenTransactions();
-    }, [transaction]);
+    }, []);
 
     const getTotalBalance = () => {
 

@@ -16,7 +16,7 @@ export const AxiosInterceptor = () => {
             toast.error("Unauthorized Please login");
             navigate("/");
         }
-        if (error.response.status == 404) {
+        if (error.status == 404) {
             toast.error(error.response.data);
         }
         return Promise.reject(error);
