@@ -25,19 +25,19 @@ const MyBills = () => {
                 </div>
                 <div className='border shadow-md pt-1'>
                     <BiBulb className='text-darkBulish mx-auto p-2' size={80} />
-                    <button className='p-2 bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white '>Pay Electric Bill</button>
+                    <Link to={`/my_billform/electricity`} className='p-2 bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white '>Pay Electric Bill</Link>
                 </div>
                 <div className='border shadow-md pt-1'>
                     <GiGasStove className='text-darkBulish mx-auto p-2' size={80} />
-                    <button className='p-2 bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white'>Book LPG Gas</button>
+                    <Link to={`/my_billform/gas`} className='p-2 bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white'>Book LPG Gas</Link>
                 </div>
                 <div className='border shadow-md pt-1'>
                     <BiMobileAlt className='text-darkBulish mx-auto p-2' size={80} />
-                    <button className='p-2 bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white'>Mobile Recharge</button>
+                    <Link to={`/my_billform/mobile`} className='p-2 bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white'>Mobile Recharge</Link>
                 </div>
                 <div className='border shadow-md pt-1'>
                     <FaHouse className='text-darkBulish mx-auto p-2' size={80} />
-                    <button className='p-2 bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white'>Pay House Rent</button>
+                    <Link to={`/my_billform/rent`} className='p-2 bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white'>Pay House Rent</Link>
                 </div>
             </div>
         </div>
