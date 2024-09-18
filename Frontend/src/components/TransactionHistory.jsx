@@ -86,6 +86,7 @@ const TransactionHistory = () => {
         doc.autoTable(tableColumn, tableRows, { startY: 30 });
         doc.save('transaction_history.pdf');
     };
+    console.log(transactions);
 
     return (
         <div className='p-10'>
@@ -113,7 +114,8 @@ const TransactionHistory = () => {
                     Download PDF
                 </button>
             </div>
-            <Transaction transactionData={transactions} />
+            {transactions.length ? <Transaction transactionData={transactions} /> : "Loading"}
+
             <div className='mt-5 float-end'>
                 <Link to="/dashboard" className='bg-darkBulish text-white px-4 py-2 rounded-lg shadow-lg'>Back</Link>
             </div>

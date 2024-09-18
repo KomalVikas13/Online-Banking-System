@@ -68,14 +68,20 @@ public class TransactionController {
 
     @GetMapping("/recent_transactions")
     public ResponseEntity<List<Transaction>> recentTransactions(HttpSession httpSession) {
-        System.out.println("recent txns");
-        String email = (String) httpSession.getAttribute("email");
-        System.out.println("session email");
-        List<Transaction> recentTransactions =  transactionService.getRecentTransactionHistory(email);
-        System.out.println(email);
-        System.out.println(recentTransactions);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(recentTransactions);
+        try {
+            System.out.println("recent txns");
+            String email = (String) httpSession.getAttribute("email");
+            System.out.println("session email");
+            List<Transaction> recentTransactions = transactionService.getRecentTransactionHistory(email);
+            System.out.println(email);
+            System.out.println(recentTransactions);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(recentTransactions);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(null);
+        }
     }
 }

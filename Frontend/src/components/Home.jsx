@@ -23,21 +23,23 @@ const Home = ({ customerData }) => {
     const [SavingsAccounts, setSavingsAccounts] = useState(0);
     const [CurrentAccounts, setCurrentAccounts] = useState(0);
     const [accounts, setAccounts] = useState([]);
+    const [transaction, setTransaction] = useState([]);
 
     const getRecenTransactions = async () => {
-        const response = await axios.get("http://localhost:9999/transaction/recent_transactions/", { withCredentials: true });
-        console.log("recent_txn");
+        const response = await axios.get("localhost:9999/transaction/recent_transactions", { withCredentials: true });
+        console.log("recent_txn", response);
+        setTransaction(response.data);
     }
 
     const getAccountData = async () => {
         const response = await axios.get("http://localhost:9999/dashboard/", { withCredentials: true });
-        console.log(response);
+        // console.log(response);
         setAccounts(response.data.account);
     }
     useEffect(() => {
         getAccountData();
         getRecenTransactions();
-    }, []);
+    }, [transaction]);
 
     const getTotalBalance = () => {
 
@@ -149,7 +151,7 @@ const Home = ({ customerData }) => {
                         </Card>
                     ))}
                 </div> */}
-                {/* <Transaction /> */}
+                <Transaction transactionData={transaction} />
             </div>
         </div>
     );
