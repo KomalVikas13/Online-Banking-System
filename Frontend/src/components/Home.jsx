@@ -24,6 +24,10 @@ const Home = ({ customerData }) => {
     const [CurrentAccounts, setCurrentAccounts] = useState(0);
     const [accounts, setAccounts] = useState([]);
 
+    const getRecenTransactions = async () => {
+        const response = await axios.get("http://localhost:9999/transaction/recent_transactions/", { withCredentials: true });
+        console.log("recent_txn");
+    }
 
     const getAccountData = async () => {
         const response = await axios.get("http://localhost:9999/dashboard/", { withCredentials: true });
@@ -32,6 +36,7 @@ const Home = ({ customerData }) => {
     }
     useEffect(() => {
         getAccountData();
+        getRecenTransactions();
     }, []);
 
     const getTotalBalance = () => {
@@ -123,7 +128,7 @@ const Home = ({ customerData }) => {
                             </div>
                         </div>
                         <div className="text-blue-600 hover:text-blue-800 text-sm">
-                            <button onClick={() => { navigator("/add_account") }} className="shadow-lg px-5 py-2 bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white rounded-full font-medium text-md hover:bg-gradient hover:from-white hover:to-white hover:border-[#154884] hover:border hover:text-[#154884]">+ Create account</button>
+                            <button onClick={() => { navigator(`/add_account/${customerData.customerId}`) }} className="shadow-lg px-5 py-2 bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white rounded-full font-medium text-md hover:bg-gradient hover:from-white hover:to-white hover:border-[#154884] hover:border hover:text-[#154884]">+ Create account</button>
                         </div>
                     </div>
                 </Card>
@@ -144,7 +149,7 @@ const Home = ({ customerData }) => {
                         </Card>
                     ))}
                 </div> */}
-                <Transaction />
+                {/* <Transaction /> */}
             </div>
         </div>
     );

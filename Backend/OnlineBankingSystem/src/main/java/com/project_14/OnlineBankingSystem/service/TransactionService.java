@@ -2,10 +2,14 @@ package com.project_14.OnlineBankingSystem.service;
 
 import com.project_14.OnlineBankingSystem.dto.TransactionDTO;
 import com.project_14.OnlineBankingSystem.model.Account;
+import com.project_14.OnlineBankingSystem.model.Customer;
 import com.project_14.OnlineBankingSystem.model.Transaction;
 import com.project_14.OnlineBankingSystem.repo.AccountRepo;
+import com.project_14.OnlineBankingSystem.repo.CustomerRepo;
 import com.project_14.OnlineBankingSystem.repo.TransactionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +25,9 @@ public class TransactionService {
 
     @Autowired
     private AccountRepo accountRepo;
+
+    @Autowired
+    private CustomerRepo customerRepo;
 
     @Transactional
     public String paymentTransfer(TransactionDTO transactionDTO) {
@@ -95,6 +102,15 @@ public class TransactionService {
     @Transactional(readOnly = true)
     public List<Transaction> getTransactionHistoryByCustomerId(Long customerId) {
         return transactionRepo.findAllTransactionsByCustomerId(customerId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Transaction> getRecentTransactionHistory(String customerEmail) {
+        Optional<Customer> customer = customerRepo.findByCustomerEmail(customerEmail);
+        Long customerId = customer.get().getCustomerId();
+        System.out.println(customerId);
+        Pageable pageable = PageRequest.of(0, 5);
+        return transactionRepo.findAllRecentTransactionsByCustomerId(customerId,pageable);
     }
 }
 //        account.setTransactionList(Collections.singletonList(transaction));

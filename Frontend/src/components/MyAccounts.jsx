@@ -33,25 +33,29 @@ const MyAccounts = () => {
                                     <th className="py-3 px-4 text-left font-medium">Tenure</th>
                                     <th className="py-3 px-4 text-left font-medium">Interest</th>
                                     <th className="py-3 px-4 text-left font-medium">Maturity Amount</th>
+                                    <th className="py-3 px-4 text-left font-medium">Maturity Date</th>
                                     <th className="py-3 px-4 text-left font-medium">Date</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            {accounts.length > 0 && accounts.map((account) => (
-                                <tr key={account.accountId}>
-                                    <td className="py-3 px-4">{account.accountId}</td>
-                                    <td className="py-3 px-4 capitalize">{account.accountType}</td>
-                                    <td className="py-3 px-4">{account.accountBalance}</td>
-                                    <td className="py-3 px-4">{account.tenure}</td>
-                                    <td className="py-3 px-4">{account.interest} %</td>
-                                    <td className="py-3 px-4">
-                                        {account.amountToBeCredited ? parseFloat(account.amountToBeCredited).toFixed(2) : '0.00'}
-                                    </td>
-                                    <td className="py-3 px-4">
-                                        {formatDate(account.accountCreationDate)} {/* Directly call formatDate here */}
-                                    </td>
-                                </tr>
-                            ))}
+                                {accounts.length > 0 && accounts.map((account) => (
+                                    <tr key={account.accountId}>
+                                        <td className="py-3 px-4">{account.accountId}</td>
+                                        <td className="py-3 px-4 capitalize">{account.accountType}</td>
+                                        <td className="py-3 px-4">{account.accountBalance}</td>
+                                        <td className="py-3 px-4">{account.tenure}</td>
+                                        <td className="py-3 px-4">{account.interest} %</td>
+                                        <td className="py-3 px-4">
+                                            {account.amountToBeCredited ? parseFloat(account.amountToBeCredited).toFixed(2) : '0.00'}
+                                        </td>
+                                        <td className="py-3 px-4">
+                                            {account.amountToBeCredited ? parseFloat(account.amountToBeCredited).toFixed(2) : '0.00'}
+                                        </td>
+                                        <td className="py-3 px-4">
+                                            {formatDate(account.accountCreationDate)} {/* Directly call formatDate here */}
+                                        </td>
+                                    </tr>
+                                ))}
 
                             </tbody>
                         </table>

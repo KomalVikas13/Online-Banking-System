@@ -22,11 +22,11 @@ const TransactionHistory = () => {
     const getTransactionHistory = async () => {
         const response = await axios.get(`http://localhost:9999/transaction/transactionDetails/${params.customerId}`)
         console.log(response.data)
-        // setTransactions(()=>{response.data})
-    } 
-    useEffect(()=>{
+        setTransactions(response.data)
+    }
+    useEffect(() => {
         getTransactionHistory()
-    },[])
+    }, [])
     // Handle page change
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -113,7 +113,7 @@ const TransactionHistory = () => {
                     Download PDF
                 </button>
             </div>
-            <Transaction />
+            <Transaction transactionData={transactions} />
             <div className='mt-5 float-end'>
                 <Link to="/dashboard" className='bg-darkBulish text-white px-4 py-2 rounded-lg shadow-lg'>Back</Link>
             </div>
