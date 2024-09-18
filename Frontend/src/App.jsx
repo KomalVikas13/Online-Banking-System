@@ -16,6 +16,7 @@ import DepositAmount from "./components/DepositAmount";
 import TransactionHistory from "./components/TransactionHistory";
 import MyAccounts from "./components/MyAccounts";
 import MyBills from "./components/MyBills";
+import BillPayment from "./components/BillPayment";
 
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
       <Route path="/deposit-amount" element={<DepositAmount></DepositAmount>}></Route>
       <Route path="/my_accounts/:customerId" element={<MyAccounts />} ></Route>
       <Route path="/my_bills/:customerId" element={<MyBills />} ></Route>
+      <Route path="/my_billform/:bill" element={<BillPayment />} ></Route>
     </Routes>
   )
 }

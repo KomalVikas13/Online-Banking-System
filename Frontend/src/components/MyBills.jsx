@@ -21,7 +21,7 @@ const MyBills = () => {
             <div className='mt-10 flex gap-10 items-center px-5'>
                 <div className='border shadow-md pt-1'>
                     <IoMdWifi className='text-darkBulish mx-auto p-2' size={80} />
-                    <Link to={`/make_payment/${customerId}/autopay`} className='p-2 bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white '>Pay Wifi Bill</Link>
+                    <Link to={`/my_billform/broadband`} className='p-2 bg-gradient-to-r from-[#5f9cff] to-[#154884] text-white '>Pay Wifi Bill</Link>
                 </div>
                 <div className='border shadow-md pt-1'>
                     <BiBulb className='text-darkBulish mx-auto p-2' size={80} />
