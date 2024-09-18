@@ -1,10 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const AddAccount = () => {
     const navigator = useNavigate();
+    const { customerId } = useParams();
     useEffect(() => {
         if (document.cookie.split('=')[0] != "JSESSIONID") {
             toast.error("Unauthorized! Please Login.");
@@ -27,7 +28,7 @@ const AddAccount = () => {
 
     // State to handle input values
     const [formValues, setFormValues] = useState({
-        customerId: 0,
+        customerId: customerId,
         amount: 0,
         tenure: 0,
     });
@@ -147,7 +148,7 @@ const AddAccount = () => {
         const calculation = () => {
             let interest = 0;
             let amountToBeCredited = 0;
-            if(accountType == "fixed_deposit"){
+            if (accountType == "fixed_deposit") {
                 if (formValues.tenure >= 12 && formValues.tenure < 24) {
                     interest = 7;
                     amountToBeCredited = (formValues.amount * interest * (formValues.tenure / 12)) / 100;
@@ -170,7 +171,7 @@ const AddAccount = () => {
                     const maturityAmount = principal * ((Math.pow(1 + monthlyInterestRate, tenureMonths) - 1) / (1 - Math.pow(1 + monthlyInterestRate, -1)));
                     return maturityAmount;
                 }
-            
+
                 // Determine interest rate and calculate maturity amount based on tenure
                 if (formValues.tenure >= 12 && formValues.tenure < 24) {
                     interest = 7;
@@ -185,9 +186,9 @@ const AddAccount = () => {
                     interest = 8.12;
                     amountToBeCredited = calculateRDMaturity(formValues.amount, interest, formValues.tenure);
                 }
-                 
+
             }
-            
+
 
             return { interest, amountToBeCredited };
         };
@@ -243,9 +244,11 @@ const AddAccount = () => {
                         <input
                             type="number"
                             placeholder="Customer Id"
-                            className="w-full p-2 border border-gray-300 rounded"
-                            onChange={(e) => handleChange("customerId", e.target.value)}
-                            onBlur={(e) => handleBlur("customerId", e.target.value)}
+                            value={customerId}
+                            readOnly
+                            className="w-full p-2 border border-gray-300 rounded bg-gray-100 cursor-not-allowed focus:outline-none"
+                        // onChange={(e) => handleChange("customerId", e.target.value)}
+                        // onBlur={(e) => handleBlur("customerId", e.target.value)}
                         />
                         {errors.customerId && (
                             <p className="text-xs text-red-500">{errors.customerId}</p>

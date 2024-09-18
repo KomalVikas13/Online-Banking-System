@@ -15,6 +15,8 @@ import PaymentTransfer from "./components/PaymentTransfer";
 import DepositAmount from "./components/DepositAmount";
 import TransactionHistory from "./components/TransactionHistory";
 import MyAccounts from "./components/MyAccounts";
+import MyBills from "./components/MyBills";
+import BillPayment from "./components/BillPayment";
 
 
 function App() {
@@ -32,13 +34,16 @@ function App() {
       <Route path="/otp/:navigateTo" element={<OTPPage></OTPPage>}></Route>
       <Route path="/message" element={<MessagePage></MessagePage>}></Route>
       <Route path="/dashboard" element={<Dashboard />}></Route>
-      <Route path="/add_account" element={<AddAccount></AddAccount>}></Route>
+      <Route path="/add_account/:customerId" element={<AddAccount></AddAccount>}></Route>
       <Route path="/logout" element={<Logout />}></Route>
       <Route path="/profile" element={<Profile />}></Route>
       <Route path="/txn_history/:customerId" element={<TransactionHistory />}></Route>
       <Route path="/make_payment/:customerId" element={<PaymentTransfer></PaymentTransfer>}></Route>
+      <Route path="/make_payment/:customerId/:autopay" element={<PaymentTransfer></PaymentTransfer>}></Route>
       <Route path="/deposit-amount" element={<DepositAmount></DepositAmount>}></Route>
       <Route path="/my_accounts/:customerId" element={<MyAccounts />} ></Route>
+      <Route path="/my_bills/:customerId" element={<MyBills />} ></Route>
+      <Route path="/my_billform/:bill/:customerId" element={<BillPayment />} ></Route>
     </Routes>
   )
 }

@@ -5,6 +5,7 @@ import { FaHome, FaUniversity, FaHistory, FaExchangeAlt, FaLink, FaSignOutAlt } 
 import { Link } from "react-router-dom";
 import { IoPersonCircle } from "react-icons/io5";
 import { PiBankFill } from "react-icons/pi";
+import { FaMoneyBill } from 'react-icons/fa6';
 
 
 const Sidebar = ({ customerFirstName, customerLastName, customerEmail, customerId }) => {
@@ -34,6 +35,13 @@ const Sidebar = ({ customerFirstName, customerLastName, customerEmail, customerI
                                 onClick={() => setActive(1)}>
                                 <FaUniversity className="text-xl" />
                                 <span className="font-medium">My Accounts</span>
+                            </Link>
+                        </li>
+                        <li className="group">
+                            <Link to={`/my_bills/${customerId}`} className={`${active == 1 && 'bg-darkBulish text-white hover:scale-105 duration-500'} text-darkBulish flex items-center w-full p-4 space-x-3 rounded-lg group`}
+                                onClick={() => setActive(1)}>
+                                <FaMoneyBill className="text-xl" />
+                                <span className="font-medium">Pay Bills</span>
                             </Link>
                         </li>
                         <li className="group">

@@ -3,6 +3,7 @@ package com.project_14.OnlineBankingSystem.controller;
 import com.project_14.OnlineBankingSystem.dto.TransactionDTO;
 import com.project_14.OnlineBankingSystem.model.Transaction;
 import com.project_14.OnlineBankingSystem.service.TransactionService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,5 +66,22 @@ public class TransactionController {
 
     }
 
-
+    @GetMapping("/recent_transactions")
+    public ResponseEntity<List<Transaction>> recentTransactions(HttpSession httpSession) {
+        try {
+            System.out.println("recent txns");
+            String email = (String) httpSession.getAttribute("email");
+            System.out.println("session email");
+            List<Transaction> recentTransactions = transactionService.getRecentTransactionHistory(email);
+            System.out.println(email);
+            System.out.println(recentTransactions);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(recentTransactions);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(null);
+        }
+    }
 }

@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom'
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import axios from 'axios';
+import { formatDate } from '../utilities/DateFormating';
 
 const TransactionHistory = () => {
     // State for transactions data
@@ -22,11 +23,11 @@ const TransactionHistory = () => {
     const getTransactionHistory = async () => {
         const response = await axios.get(`http://localhost:9999/transaction/transactionDetails/${params.customerId}`)
         console.log(response.data)
-        // setTransactions(()=>{response.data})
-    } 
-    useEffect(()=>{
+        setTransactions(response.data)
+    }
+    useEffect(() => {
         getTransactionHistory()
-    },[])
+    }, [])
     // Handle page change
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -69,16 +70,16 @@ const TransactionHistory = () => {
         const doc = new jsPDF();
         doc.text('Transaction History', 20, 20);
 
-        const tableColumn = ['Transaction ID', 'Amount', 'Status', 'Date', 'Account'];
+        const tableColumn = ['Reciever Name', 'Transaction ID', 'Amount', 'Date', 'Account'];
         const tableRows = [];
 
         filteredTransactions.forEach(transaction => {
             const transactionData = [
-                transaction.transactionId,
-                transaction.amount < 0 ? `-$${Math.abs(transaction.amount)}` : `+$${transaction.amount}`,
-                transaction.status,
-                new Date(transaction.date).toDateString(),
-                transaction.account,
+                transaction.recipientOrSenderName.toUpperCase(),
+                "TXN-101" + transaction.transactionId,
+                transaction.transactionType == "debit" ? `- Rs. ${Math.abs(transaction.transactionAmount)}` : `+Rs.${transaction.transactionAmount}`,
+                new Date(transaction.transactionDate).toDateString(),
+                transaction.recipientOrSenderAccountId,
             ];
             tableRows.push(transactionData);
         });
@@ -86,6 +87,7 @@ const TransactionHistory = () => {
         doc.autoTable(tableColumn, tableRows, { startY: 30 });
         doc.save('transaction_history.pdf');
     };
+    console.log(transactions);
 
     return (
         <div className='p-10'>
@@ -113,7 +115,8 @@ const TransactionHistory = () => {
                     Download PDF
                 </button>
             </div>
-            <Transaction />
+            {transactions.length ? <Transaction transactionData={transactions} /> : "Loading"}
+
             <div className='mt-5 float-end'>
                 <Link to="/dashboard" className='bg-darkBulish text-white px-4 py-2 rounded-lg shadow-lg'>Back</Link>
             </div>

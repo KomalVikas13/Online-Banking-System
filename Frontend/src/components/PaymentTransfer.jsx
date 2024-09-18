@@ -18,6 +18,8 @@ const PaymentTransfer = () => {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
 
+  console.log(params);
+
   const formatDateToYYYYMMDD = (date) => {
     const d = new Date(date);
     const year = d.getFullYear();
