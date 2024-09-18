@@ -120,7 +120,7 @@ public class TransactionService {
         Optional<Customer> customer = customerRepo.findByCustomerEmail(customerEmail);
         Long customerId = customer.get().getCustomerId();
         System.out.println(customerId);
-        Pageable pageable = PageRequest.of(0, 5);
+        Pageable pageable = PageRequest.of(0, 4);
         return transactionRepo.findAllRecentTransactionsByCustomerId(customerId,pageable);
     }
 }
