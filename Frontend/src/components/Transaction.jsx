@@ -92,7 +92,7 @@ const Transaction = ({ transactionData }) => {
         filteredTransactions.forEach(transaction => {
             const transactionData = [
                 transaction.transactionId,
-                transaction.transactionAmount < 0 ? `-$${Math.abs(transaction.transactionAmount)}` : `+$${transaction.transactionAmount}`,
+                transaction.transactionType == "debit" ? `-$${Math.abs(transaction.transactionAmount)}` : `+$${transaction.transactionAmount}`,
                 // transaction.status,
                 new Date(transaction.date).toDateString(),
                 transaction.recipientOrSenderAccountId,
@@ -131,10 +131,10 @@ const Transaction = ({ transactionData }) => {
                                 //     <td>Hi</td>
                                 // </tr>
                                 <tr key={transaction.transactionId} >
-                                    <td className="py-3 px-4 flex gap-4 items-center"><div className='w-10 h-10 rounded-full bg-lightBlusih text-darkBulish font-medium shadow-lg flex justify-center items-center'>{(transaction.recipientOrSenderName[0])}</div><span>{transaction.recipientOrSenderName}</span></td>
-                                    <td className="py-3 px-4">TXN-{transaction.transactionId}</td>
-                                    <td className={`py-3 px-4 ${transaction.transactionAmount < 0 ? 'text-red-500' : 'text-green-500'}`}>
-                                        {transaction.transactionAmount < 0 ? `- Rs.${Math.abs(transaction.transactionAmount)}` : ` + Rs.${transaction.transactionAmount}`}
+                                    <td className="py-3 px-4 flex gap-4 items-center"><div className='w-10 h-10 rounded-full bg-lightBlusih text-darkBulish font-medium shadow-lg flex justify-center items-center capitalize'>{(transaction.recipientOrSenderName[0])}</div><span className='capitalize'>{transaction.recipientOrSenderName}</span></td>
+                                    <td className="py-3 px-4">TXN101-{transaction.transactionId}</td>
+                                    <td className={`py-3 px-4 ${transaction.transactionType == "debit" ? 'text-red-500' : 'text-green-500'}`}>
+                                        {transaction.transactionType == "debit" ? `- Rs.${Math.abs(transaction.transactionAmount)}` : ` + Rs.${transaction.transactionAmount}`}
                                     </td>
                                     {console.log(transaction.recipientOrSenderAccountId)
                                     }

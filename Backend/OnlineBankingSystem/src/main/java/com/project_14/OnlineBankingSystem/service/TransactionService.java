@@ -10,6 +10,7 @@ import com.project_14.OnlineBankingSystem.repo.TransactionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,12 +50,18 @@ public class TransactionService {
 
         // Fetching recipient account
         Optional<Account> recipientAccount = accountRepo.findByAccountId(transactionDTO.getRecipient().getAccountId());
-        if(transactionDTO.getRecipient().getTransferNote().equals("electricity") || transactionDTO.getRecipient().getTransferNote().equals("broadband")){
+        if(transactionDTO.getRecipient().getTransferNote().equals("electricity") ||
+                transactionDTO.getRecipient().getTransferNote().equals("broadband") ||
+                transactionDTO.getRecipient().getTransferNote().equals("mobile") ||
+                transactionDTO.getRecipient().getTransferNote().equals("rent") ||
+                transactionDTO.getRecipient().getTransferNote().equals("gas")
+        ){
             System.out.println(transactionDTO.getRecipient().getTransferNote());
         }
         else {
             // Setting recipient transaction details
             System.out.println("else block");
+            if(recipientAccount.isEmpty()) return "NOT_FOUND";
             Account updateRecipientAccount = recipientAccount.get();
 
             recipientTransaction.setTransactionDate(transactionDTO.getRecipient().getTransactionDate());
@@ -93,7 +100,12 @@ public class TransactionService {
         senderTransaction.setTransactionType(transactionDTO.getSender().getTransactionType());
         senderTransaction.setTransferNote(transactionDTO.getSender().getTransferNote());
         senderTransaction.setRecipientOrSenderAccountId(transactionDTO.getSender().getAccountId());
-        if(transactionDTO.getRecipient().getTransferNote().equals("electricity") || transactionDTO.getRecipient().getTransferNote().equals("broadband")){
+        if(transactionDTO.getRecipient().getTransferNote().equals("electricity")
+                || transactionDTO.getRecipient().getTransferNote().equals("broadband") ||
+                transactionDTO.getRecipient().getTransferNote().equals("mobile") ||
+                transactionDTO.getRecipient().getTransferNote().equals("rent") ||
+                transactionDTO.getRecipient().getTransferNote().equals("gas")
+        ){
 //            senderTransaction.setRecipientOrSenderName(updateRecipientAccount.getCustomer().getCustomerFirstName());
             senderTransaction.setRecipientOrSenderName(transactionDTO.getRecipient().getTransferNote());
         }else{
@@ -126,7 +138,7 @@ public class TransactionService {
         Optional<Customer> customer = customerRepo.findByCustomerEmail(customerEmail);
         Long customerId = customer.get().getCustomerId();
         System.out.println(customerId);
-        Pageable pageable = PageRequest.of(0, 4);
+        Pageable pageable = PageRequest.of(0, 5, Sort.by("transactionId").descending());
         return transactionRepo.findAllRecentTransactionsByCustomerId(customerId,pageable);
     }
 }

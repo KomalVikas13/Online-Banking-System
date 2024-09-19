@@ -155,7 +155,7 @@ const BillPayment = () => {
                 );
                 if (response.status === 200 && response.data === "SUCCESS") {
                     toast.success("Bill paid successfully..!");
-                    // navigator("/dashboard");
+                    navigator(`/payment_success?billType=${billType}&accountId=${recepientId}`);
                 }
             } catch (error) {
                 toast.error("Something went wrong while paying the bill.");
@@ -378,20 +378,7 @@ const BillPayment = () => {
                                     />
                                 </div>
                             </div> */}
-                            <div className=" border-b border-gray-200 pb-6">
-                                <div className="">
-                                    <input
-                                        type="checkbox"
-                                        name="autopay"
-                                        // value={transferNote}
-                                        // onChange={(e) => setTransferNote(e.target.value)}
-                                        className=" px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-                                    />
-                                    <label className="pl-2 text-darkBulish font-semibold">
-                                        Set As Autopay
-                                    </label>
-                                </div>
-                            </div>
+
                         </div>
                         <div className="text-center flex gap-5 justify-center">
                             <button
