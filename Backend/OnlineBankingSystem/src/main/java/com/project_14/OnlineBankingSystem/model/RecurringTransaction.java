@@ -1,9 +1,6 @@
 package com.project_14.OnlineBankingSystem.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,17 +14,12 @@ import java.util.Date;
 @Setter
 @Entity
 public class RecurringTransaction {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long Id;
     private long accountId;
     @Column(nullable = false)
-    private String transactionType;
+    private String billType;
     @Column(nullable = false)
-    private double transactionAmount;
-    @Column(nullable = false)
-    private Date transactionDate;
-    private String transferNote;
-    @Column(nullable = false)
-    private long recipientOrSenderAccountId;
-    @Column(nullable = false)
-    private String recipientOrSenderName;
-    private boolean isOnAutopay = false;
+    private boolean isEnabled = false;
 }
