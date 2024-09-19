@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -55,9 +56,7 @@ public class TransactionService {
             // Setting recipient transaction details
             System.out.println("else block");
             Account updateRecipientAccount = recipientAccount.get();
-            if (updateRecipientAccount.getAccountType().equals("fixed_deposit")) {
-                return "NOT_ACCEPTED";
-            }
+
             recipientTransaction.setTransactionDate(transactionDTO.getRecipient().getTransactionDate());
             recipientTransaction.setTransactionAmount(transactionDTO.getRecipient().getTransactionAmount());
             recipientTransaction.setTransactionType(transactionDTO.getRecipient().getTransactionType());
@@ -66,7 +65,14 @@ public class TransactionService {
             recipientTransaction.setRecipientOrSenderName(updateSenderAccount.getCustomer().getCustomerFirstName());
 
             // Updating recipient account balance
-            updateRecipientAccount.setAccountBalance(updateRecipientAccount.getAccountBalance() + transactionDTO.getSender().getTransactionAmount());
+            if (!"recurring _deposit created".equals(transactionDTO.getRecipient().getTransferNote())
+                    && !"fixed_deposit created".equals(transactionDTO.getRecipient().getTransferNote())) {
+
+                updateRecipientAccount.setAccountBalance(
+                        updateRecipientAccount.getAccountBalance() + transactionDTO.getSender().getTransactionAmount()
+                );
+            }
+
 
             // Updating bidirectional relationship for recipient
             recipientTransaction.setAccountList(Collections.singletonList(updateRecipientAccount));
