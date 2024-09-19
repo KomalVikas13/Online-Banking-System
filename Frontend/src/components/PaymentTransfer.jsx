@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const PaymentTransfer = () => {
@@ -381,9 +381,12 @@ const PaymentTransfer = () => {
             </div>
           </div>
 
-          <button type="submit" className="mt-6 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">
+          <button type="submit" className="mt-6 px-5 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">
             Transfer Funds
           </button>
+          <Link to="/dashboard" className="mt-6 px-5 bg-slate-200 py-2 rounded-lg hover:bg-slate-300 ml-3">
+            Close
+          </Link>
         </form>
       </div>
     </div>

@@ -17,6 +17,7 @@ import TransactionHistory from "./components/TransactionHistory";
 import MyAccounts from "./components/MyAccounts";
 import MyBills from "./components/MyBills";
 import BillPayment from "./components/BillPayment";
+import SuccessPayment from "./components/SuccessPayment";
 
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
       <Route path="/my_accounts/:customerId" element={<MyAccounts />} ></Route>
       <Route path="/my_bills/:customerId" element={<MyBills />} ></Route>
       <Route path="/my_billform/:bill/:customerId" element={<BillPayment />} ></Route>
+      <Route path="/payment_success" element={<SuccessPayment />} ></Route>
     </Routes>
   )
 }
