@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -34,19 +35,33 @@ public class AccountService {
         return "CREATED";
     }
 
-    public String createIndividualAccount(AccountDTO accountDTO){
+    public Map<String, Object> createIndividualAccount(AccountDTO accountDTO) {
         Long accountId = generateUniqueAccountId();
         accountDTO.setAccountId(accountId);
+
         Optional<Customer> byCustomerId = customerRepo.findByCustomerId(accountDTO.getCustomerId());
-        if(byCustomerId.isEmpty()){
-            return "NOT_FOUND";
+
+        if(byCustomerId.isEmpty()) {
+            // Return a message if customer is not found
+            return Map.of("message", "NOT_FOUND");
         }
+
+        // Set customer to accountDTO
         accountDTO.setCustomer(byCustomerId.get());
+
+        // Convert DTO to entity
         Account account = convertToEntity(accountDTO);
+
+        // Debugging log
         System.out.println(account.getCustomer());
+
+        // Save the account
         accountRepo.save(account);
-        return "CREATED";
+
+        // Return success message and account ID
+        return Map.of("message", "CREATED", "accountId", accountId);
     }
+
 
     private Account convertToEntity(AccountDTO accountDTO){
         return new Account(accountDTO.getAccountId(),accountDTO.getAccountType(),accountDTO.getAccountBalance(),accountDTO.getAccountCreationDate(),accountDTO.getCustomer(),accountDTO.getAmountToBeCredited(),accountDTO.getInterest(),accountDTO.getTenure());

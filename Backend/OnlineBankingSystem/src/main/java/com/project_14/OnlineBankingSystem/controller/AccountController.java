@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 //@CrossOrigin("*")
 
@@ -26,23 +27,30 @@ public class AccountController {
     }
 
     @PostMapping("/createAccount")
-    public ResponseEntity<String> createAccount(@RequestBody AccountDTO accountDTO){
-        String response = accountService.createIndividualAccount(accountDTO);
+    public ResponseEntity<Map<String, Object>> createAccount(@RequestBody AccountDTO accountDTO) {
         try {
-            if(response.equals("NOT_FOUND")){
+            Map<String, Object> response = accountService.createIndividualAccount(accountDTO);
+
+            // Check if the "message" in the response is "NOT_FOUND"
+            if ("NOT_FOUND".equals(response.get("message"))) {
                 return ResponseEntity
                         .status(HttpStatus.NOT_FOUND)
                         .body(response);
             }
+
+            // If creation is successful
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(response);
         } catch (Exception e) {
+            // Return a consistent response format for errors
+            Map<String, Object> errorResponse = Map.of("message", "Something went wrong..!", "error", e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .body("Something went wrong..!");
+                    .body(errorResponse);
         }
     }
+
 
     @GetMapping ("/getAccounts/{customerId}")
     public ResponseEntity<List<Account>> getAccounts(@PathVariable Long customerId){
