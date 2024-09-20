@@ -246,6 +246,13 @@ const AddAccount = () => {
         
         try {
             console.log(data)
+            if(parseFloat(formValues.amount) > parseFloat(accountBalance)){
+                toast.error('Insufficient Balance..!')
+                console.log(accountBalance)
+                console.log(formValues.amount)
+                console.log(formValues.amount > accountBalance)
+                return
+            }
             const response = await axios.post("http://localhost:9999/account/createAccount", data, { withCredentials: true })
             console.log(response)
             if (response.status === 200 && response.data.message === "CREATED") {
@@ -272,7 +279,7 @@ const AddAccount = () => {
                     console.log(response);
                     if (response.status === 200 && response.data === "SUCCESS") {
                     toast.success('Funds transferred successfully..!');
-                    // navigator("/dashboard");
+                    navigator("/dashboard");
                     }
                   } catch (error) {
                     console.log(error)
@@ -280,6 +287,7 @@ const AddAccount = () => {
                   }
                 }
                 toast.success("Account created")
+                navigator("/dashboard");
             }
         } catch (error) {
             console.log("error")

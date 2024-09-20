@@ -126,7 +126,7 @@ const Transaction = ({ transactionData }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {!transactionData.length ? <p className='text-center text-red-500'>None of the transactions done yet!</p> : transactionData.map(transaction => (
+                            {!transactionData.length ? <p className='text-center text-red-500 p-2'>None of the transactions done yet!</p> : transactionData.map(transaction => (
                                 // <tr key={transaction.transactionId}>
                                 //     <td>Hi</td>
                                 // </tr>

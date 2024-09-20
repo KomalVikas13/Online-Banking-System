@@ -77,7 +77,7 @@ const TransactionHistory = () => {
             const transactionData = [
                 transaction.recipientOrSenderName.toUpperCase(),
                 "TXN-101" + transaction.transactionId,
-                transaction.transactionType == "debit" ? `- Rs. ${Math.abs(transaction.transactionAmount)}` : `+Rs.${transaction.transactionAmount}`,
+                transaction.transactionType == "debit" ? `- Rs. ${Math.abs(transaction.transactionAmount)}` : `+ Rs.${transaction.transactionAmount}`,
                 new Date(transaction.transactionDate).toDateString(),
                 transaction.recipientOrSenderAccountId,
             ];
