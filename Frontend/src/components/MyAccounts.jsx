@@ -8,6 +8,14 @@ const MyAccounts = () => {
     const [accounts, setAccounts] = useState([]);
     const [formattedDate, setFormattedDate] = useState(null);
 
+    const getMaturityDate = (date, tenure) => {
+        let maturityDate = new Date(date);
+        maturityDate.setMonth(maturityDate.getMonth() + tenure);
+        console.log(maturityDate);
+
+        return formatDate(maturityDate)
+    }
+
     const getAccounts = async () => {
         const response = await axios.get(`http://localhost:9999/account/getAccounts/${params.customerId}`, { withCredentials: true });
         console.log(response);
@@ -43,13 +51,13 @@ const MyAccounts = () => {
                                         <td className="py-3 px-4">{account.accountId}</td>
                                         <td className="py-3 px-4 capitalize">{account.accountType}</td>
                                         <td className="py-3 px-4">{account.accountBalance}</td>
-                                        <td className="py-3 px-4">{account.tenure}</td>
-                                        <td className="py-3 px-4">{account.interest} %</td>
+                                        <td className="py-3 px-4">{(account.accountType == "savings" || account.accountType == "current") ? "-" : account.tenure}</td>
+                                        <td className="py-3 px-4">{(account.accountType == "savings" || account.accountType == "current") ? "-" : account.interest + " %"}</td>
                                         <td className="py-3 px-4">
                                             {account.amountToBeCredited ? parseFloat(account.amountToBeCredited).toFixed(2) : '0.00'}
                                         </td>
                                         <td className="py-3 px-4">
-                                            {account.amountToBeCredited ? parseFloat(account.amountToBeCredited).toFixed(2) : '0.00'}
+                                            {(account.accountType == "savings" || account.accountType == "current") ? "-" : getMaturityDate(account.accountCreationDate, account.tenure)} {/* Directly call formatDate here */}
                                         </td>
                                         <td className="py-3 px-4">
                                             {formatDate(account.accountCreationDate)} {/* Directly call formatDate here */}

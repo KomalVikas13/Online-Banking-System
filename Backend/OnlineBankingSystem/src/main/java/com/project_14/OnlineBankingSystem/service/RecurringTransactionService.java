@@ -14,14 +14,32 @@ public class RecurringTransactionService {
     @Autowired
     private RecurringTransactionRepo recurringTransactionRepo;
 
-    public Boolean isSetOnAutoPay(long accountId, String billType) throws RuntimeException {
+    public  String checkAccountId(long accountId,String billType) {
+        try{
+            Optional<RecurringTransaction> account = recurringTransactionRepo.findAllRecurringTransactionByAccountIdAndBillType(accountId,billType);
+            System.out.println(account);
+            if (account.isPresent()) {
+                return "FOUND";
+            }else{
+                return "NOT FOUND";
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Something went wrong!");
+        }
+    }
+
+    public String isSetOnAutoPay(long accountId, String billType) throws RuntimeException {
         try{
             Optional<RecurringTransaction> account = recurringTransactionRepo.findAllRecurringTransactionByAccountIdAndBillType(accountId, billType);
             System.out.println(account);
             if (account.isPresent()) {
-                return account.get().isEnabled();
-            }else {
-                return false;
+                if(account.get().isEnabled()){
+                    return "ENABLED";
+                }else {
+                    return "DISABLED";
+                }
+            }else{
+                return "NOT FOUND";
             }
         } catch (Exception e) {
             throw new RuntimeException("NOT FOUND");
