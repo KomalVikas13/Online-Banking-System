@@ -136,7 +136,7 @@ const Transaction = ({ transactionData }) => {
                                     <td className={`py-3 px-4 ${transaction.transactionType == "debit" ? 'text-red-500' : 'text-green-500'}`}>
                                         {transaction.transactionType == "debit" ? `- Rs.${Math.abs(transaction.transactionAmount)}` : ` + Rs.${transaction.transactionAmount}`}
                                     </td>
-                                    {console.log(transaction.recipientOrSenderAccountId)
+                                    {console.log(transaction.transactionDate)
                                     }
                                     {/* <td className={`${transaction.status == 'Completed' ? "bg-green-50 text-green-600" : "bg-red-50 text-red-500"} text-sm font-medium flex items-center justify-center gap-2 rounded-full`}><div className={`w-[7px] h-[7px] ${transaction.status == 'Completed' ? "bg-green-400" : "bg-red-400"} rounded-full`}></div><div>{transaction.status}</div></td> */}
                                     <td className="py-3 px-4">{new Date(transaction.transactionDate).toDateString()}</td>
