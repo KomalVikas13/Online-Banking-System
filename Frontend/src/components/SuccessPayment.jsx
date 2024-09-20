@@ -17,8 +17,11 @@ const SuccessPayment = () => {
             accountId
         }
         const response = await axios.post("http://localhost:9999/recurring_txn/check_autopay_status", data, { withCredentials: true });
-        console.log(response);
+        console.log(response.status, "hh");
         setFlag(response.data)
+        if (response.data == "Invalid Id") {
+            navigate("/dashboard");
+        }
     }
     useEffect(() => {
         checkAutopayStatus();

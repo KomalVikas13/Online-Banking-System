@@ -147,7 +147,13 @@ const BillPayment = () => {
             console.log(data);
 
             // ENDPOINT TO TRANSFER MONEY
-            try {
+
+            let billingData = {
+                accountId: recepientId,
+                billType
+            }
+            const isValidBillingAccount = await axios.post("http://localhost:9999/recurring_txn/isValidAccountId", billingData, { withCredentials: true });
+            if (isValidBillingAccount.status == 200) {
                 const response = await axios.post(
                     "http://localhost:9999/transaction/paymentTransfer",
                     data,
@@ -157,8 +163,9 @@ const BillPayment = () => {
                     toast.success("Bill paid successfully..!");
                     navigator(`/payment_success?billType=${billType}&accountId=${recepientId}`);
                 }
-            } catch (error) {
-                toast.error("Something went wrong while paying the bill.");
+            } else {
+                console.log("Not Found");
+
             }
         } else {
             console.log("Form has errors.");
